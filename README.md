@@ -2,6 +2,8 @@
 
 一个**零依赖、单文件、可离线**的大学英语四级刷题 / 模考训练器。全部代码、题库、离线词典内联进一个 `index.html`，双击即用，数据存在浏览器本地。
 
+**[▶ 在线试用](https://clueless-ux.github.io/cet4-trainer/)** ｜ [下载单文件](https://clueless-ux.github.io/cet4-trainer/index.html)（右键另存为，双击即可离线使用）
+
 ## 功能
 
 - **单题训练**：听力 / 阅读 / 选词填空 / 段落匹配，按题型、考点刷题，做完立刻出答案与依据
