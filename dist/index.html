@@ -14,7 +14,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>四级训练工作台</title>
-<script>window.__VER__="20261122043457";</script>
+<script>window.__VER__="20261122064500";</script>
 <style>/* ===== 四级训练工作台 · 训练前台 ===== */
 :root{
   --bg:#111114; --bg2:#15151a; --card:#1a1a20; --card2:#202027; --card3:#26262e;
@@ -1669,6 +1669,9 @@ window.glossPhrase = glossPhrase;
     let picked = [];
     const used = new Set();
 
+    /* 还没有任何考点记录时，弱项无从谈起，退回智能组卷 */
+    if (mode === 'weak' && !weakPoints(3).length) mode = 'smart';
+
     if (mode === 'wrong') {
       const ids = Object.keys(S.wrong).sort((a, b) => (S.wrong[b].ts || 0) - (S.wrong[a].ts || 0));
       ids.slice(0, size).forEach(id => { if (QMAP[id]) { picked.push(QMAP[id]); used.add(id); } });
@@ -1688,6 +1691,15 @@ window.glossPhrase = glossPhrase;
       const fresh = mcq.filter(q => !S.qs[q.id]);
       picked = weightedPick(fresh, size, used);
       if (picked.length < size) picked = picked.concat(weightedPick(mcq, size - picked.length, used));
+    } else if (mode === 'weak') {
+      /* 只抽当前正确率最低的三个考点 */
+      const wps = weakPoints(3).map(x => x.id);
+      const pool = mcq.filter(q => (q.pt || []).some(id => wps.indexOf(id) >= 0));
+      picked = weightedPick(pool, size, used);
+      if (picked.length < size) {
+        const rest = mcq.filter(q => !used.has(q.id));
+        picked = picked.concat(weightedPick(rest, size - picked.length, used));
+      }
     } else {
       // smart：按模块配额，弱项优先
       const quota = size <= 10
@@ -1821,9 +1833,12 @@ window.glossPhrase = glossPhrase;
       h += '<div class="card"><div class="empty"><b>还没有训练记录</b>做完一组，这里会出现你的正确率、用时和薄弱考点。</div></div>';
     } else {
       h += '<div class="card pad0" style="overflow:hidden"><table class="t"><thead><tr><th>时间</th><th>方式</th><th class="num">题量</th><th class="num">正确率</th><th class="num">用时</th></tr></thead><tbody>' +
-        recent.map(r => '<tr><td class="dim mono">' + r.date + ' ' + pad(r.hh) + ':' + pad(r.mm) + '</td><td>' + esc(r.modeName) + '</td><td class="num mono">' + r.n + '</td>' +
-          '<td class="num mono" style="color:' + (r.right / r.n >= 0.7 ? 'var(--ok)' : 'var(--bad)') + '">' + Math.round(r.right / r.n * 100) + '%</td>' +
-          '<td class="num mono dim">' + fmtDur(r.dur) + '</td></tr>').join('') + '</tbody></table></div>';
+        recent.map(r => {
+          const acc = r.n ? r.right / r.n : null;
+          return '<tr><td class="dim mono">' + r.date + ' ' + pad(r.hh) + ':' + pad(r.mm) + '</td><td>' + esc(r.modeName) + '</td><td class="num mono">' + r.n + '</td>' +
+            '<td class="num mono" style="color:' + (acc === null ? 'var(--dim)' : acc >= 0.7 ? 'var(--ok)' : 'var(--bad)') + '">' + (acc === null ? '—' : Math.round(acc * 100) + '%') + '</td>' +
+            '<td class="num mono dim">' + fmtDur(r.dur) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
     }
     // 套卷：最近做过的
     const pk = Object.keys(S.papers || {}).sort((a, b) => (S.papers[b].ts || 0) - (S.papers[a].ts || 0)).slice(0, 3);
@@ -1984,7 +1999,7 @@ window.glossPhrase = glossPhrase;
       '</div></div>';
 
     if (paperTab === 'mock') {
-      h += '<div class="card" style="margin-top:14px"><div class="small">模考卷是自建卷：听力 6 题、选词 10 空、匹配 6 题、仔细阅读 8 题、写作 + 翻译，按 100 分钟整卷做。' +
+      h += '<div class="card" style="margin-top:14px"><div class="small">模考卷是自建卷：听力 6 题、选词 10 空、匹配 5–6 题、仔细阅读 8 题、写作 + 翻译，按 100 分钟整卷做。' +
         '<b>听力没有录音</b>（自建材料），左边给原文——当精读练，练的是「选项差异 → 原文对应」这一步。</div></div>';
       h += '<div class="pgrid2">' + Object.values(MOCKS).map(P => {
         const st = paperStat(P.k);
@@ -2226,8 +2241,10 @@ window.glossPhrase = glossPhrase;
       });
       if (!ok) {
         const w = S.wrong[q.id] || { n: 0 };
-        w.n = (w.n || 0) + 1; w.ts = Date.now();
+        w.n = (w.n || 0) + 1; w.ts = Date.now(); w.a = a;
         S.wrong[q.id] = w;
+      } else if (S.wrong[q.id]) {
+        delete S.wrong[q.id];
       }
     });
 
@@ -2305,7 +2322,7 @@ window.glossPhrase = glossPhrase;
       ' · 客观得分 ' + Math.round((sess.objGot || 0) * 10) / 10 + ' / ' + Math.round((sess.objMax || 0) * 10) / 10 +
       ' · 用时 ' + fmtDur(spent) + '</div>' +
       ((sess.objMax || 0) >= 490 ? '' : '<div class="small amber" style="margin-top:6px">' +
-        (hasL ? '这是自建模考卷，只有 32 题' : '本套原卷没有印听力（三套共用一份录音）') +
+        (hasL ? '这是自建模考卷，只有 ' + qs.length + ' 题' : '本套原卷没有印听力（三套共用一份录音）') +
         '：客观题按比例折算成 ' + Math.round(scaled * 10) / 10 + ' / 497，再加写作翻译，才是估算总分。</div>') +
       '</div>' +
       '<div style="margin-left:auto;display:flex;flex-direction:column;gap:8px">' +
@@ -2476,7 +2493,7 @@ window.glossPhrase = glossPhrase;
     h += optionsHTML(q, judged);
     if (judged) h += resultHTML(q);
     else if (isC) {
-      const set = cFillSet(q.u);
+      const set = cFillSet(q.u, q.p);
       const got = set.filter(x => sess.ans[x.id] !== undefined).length;
       h += '<div class="qfoot"><span class="small dim">选词填空：已填 <b>' + got + ' / ' + set.length +
         '</b> 个 · 十空填完统一公布答案</span></div>';
@@ -2519,7 +2536,7 @@ window.glossPhrase = glossPhrase;
       const jd = !!answered;
       text = text.replace(/\[\[(\d{2})\]\]/g, (m, n) => {
         const same = String(+n) === String(q.n);
-        const wq = ALLQ.find(x => x && x.k === 'C' && x.u === q.u && String(x.n) === String(+n));
+        const wq = ALLQ.find(x => x && x.k === 'C' && x.u === q.u && x.p === q.p && String(x.n) === String(+n));
         const pickL = wq ? sess.ans[wq.id] : undefined;
         const mine = pickL !== undefined ? ((u.bank.find(b => b.l === pickL) || {}).w || '') : '';
         const ok = wq ? pickL === wq.a : false;
@@ -2596,8 +2613,9 @@ window.glossPhrase = glossPhrase;
     const ok = sel === q.a;
     const dur = sess.dur ? sess.dur[q.id] : 0;
     let h = '<div class="verdict ' + (ok ? 'ok' : 'bad') + '">' +
-      '<span class="big">' + (ok ? '✓ 正确' : '✗ 答错') + '</span>' +
-      '<span>答案 <b class="mono">' + q.a + '</b>' + (q.w ? ' · ' + esc(q.w) : '') + (ok ? '' : ' ｜ 你选 <b class="mono">' + sel + '</b>') + '</span>' +
+      '<span class="big">' + (ok ? '✓ 正确' : sel === undefined ? '— 未作答' : '✗ 答错') + '</span>' +
+      '<span>答案 <b class="mono">' + q.a + '</b>' + (q.w ? ' · ' + esc(q.w) : '') +
+      (ok ? '' : sel === undefined ? ' ｜ 未作答' : ' ｜ 你选 <b class="mono">' + sel + '</b>') + '</span>' +
       (dur ? '<span class="small dim" style="margin-left:auto">' + Math.round(dur / 1000) + ' 秒</span>' : '') +
       '</div>';
 
@@ -2877,7 +2895,7 @@ window.glossPhrase = glossPhrase;
     if (sess.done) { toast('已交卷，点「逐题解析」看答案'); return; }
     const cur = curQ();
     if (!cur || cur.k !== 'C') return;
-    const all = cFillSet(cur.u);
+    const all = cFillSet(cur.u, cur.p);
     const q = all.find(x => String(x.n) === String(n)) || cur;
     pickQ = q;
     if (isCJudged(cur) || sess.done) { toast('这篇已经判分了，答案在下面'); return; }
@@ -2911,9 +2929,10 @@ window.glossPhrase = glossPhrase;
       .filter(x => x && x.k === 'C' && x.u === u)
       .sort((a, b) => a.n - b.n);
   }
-  /* 整篇文章的十个空（不管这次练了几个），填满它才公布答案 */
-  function cFillSet(u) {
-    return ALLQ.filter(x => x && x.k === 'C' && x.u === u).sort((a, b) => a.n - b.n);
+  /* 整篇文章的十个空（不管这次练了几个），填满它才公布答案。
+     同一 unit 可能被多套卷共用（如 mock-1 / mock-4），必须按试卷区分。 */
+  function cFillSet(u, p) {
+    return ALLQ.filter(x => x && x.k === 'C' && x.u === u && (!p || x.p === p)).sort((a, b) => a.n - b.n);
   }
   function isCJudged(q) {
     return !!(sess && sess.cJudge && sess.cJudge[q.u]);
@@ -2935,21 +2954,26 @@ window.glossPhrase = glossPhrase;
     day.n++; if (ok) day.r++;
     if (!ok) {
       const w = S.wrong[q.id] || { n: 0 };
-      w.n = (w.n || 0) + 1; w.ts = Date.now();
+      w.n = (w.n || 0) + 1; w.ts = Date.now(); w.a = letter;
       S.wrong[q.id] = w;
-    } else if (sess.mode === 'wrong') {
+    } else if (S.wrong[q.id]) {
       delete S.wrong[q.id];
     }
     save();
     return ok;
   }
   function answerC(q, letter) {
+    /* 套卷里点材料空位：和点选项一样，只存答案，交卷统一判分 */
+    if (sess.exam && !sess.done) {
+      sess.ans[q.id] = letter; saveDraft(); render(); return;
+    }
     const had = sess.ans[q.id];
     if (had !== undefined && (isCJudged(q) || sess.exam)) { toast('第 ' + q.n + ' 空已填：' + had); return; }
     sess.ans[q.id] = letter;
     sess.dur = sess.dur || {};
     if (!sess.dur[q.id]) sess.dur[q.id] = Date.now() - (sess.lastTs || sess.t0);
-    const all = cFillSet(q.u);
+    /* 单题重做只判这一题，不要求填满整篇十个空 */
+    const all = sess.mode === 'single' ? [q] : cFillSet(q.u, q.p);
     const left = all.filter(x => sess.ans[x.id] === undefined);
     if (left.length) {
       /* 还没填完：只填空、不判分，自动跳到下一个空 */
@@ -4239,7 +4263,7 @@ window.glossPhrase = glossPhrase;
           '<div class="card pad0"><table class="t"><thead><tr><th style="width:40%">题目</th><th>卷</th><th>我选</th><th>答案</th><th>错因</th><th></th></tr></thead><tbody>' +
           byPt[pid].map(q => '<tr><td>' + esc(cut(q.st || (q.k === 'L' ? '第 ' + q.n + ' 题 · ' + q.ty : q.k === 'C' ? ctxOf(q) : q.ty), 68)) + '</td>' +
             '<td class="dim">' + paperLabel(q.p) + '</td>' +
-            '<td class="mono" style="color:var(--bad)">' + ((S.qs[q.id] || {}).a || '—') + '</td>' +
+            '<td class="mono" style="color:var(--bad)">' + ((S.wrong[q.id] || {}).a || '—') + '</td>' +
             '<td class="mono" style="color:var(--ok)">' + q.a + '</td>' +
             '<td class="dim">' + esc(CAUSE_NAME[((S.wrong[q.id] || {}).cause) || ((S.qs[q.id] || {}).cause)] || '未标') + '</td>' +
             '<td><button class="btn sm ghost" onclick="DESK.single(\'' + q.id + '\')">重做</button></td></tr>').join('') +
@@ -4620,7 +4644,7 @@ window.glossPhrase = glossPhrase;
     const score = paperScore();
     let m = '---\ntype: "套卷复盘"\ndate: ' + today() + '\npaper: "' + (P.label || sess.paperKey) + '"\n';
     m += 'right: ' + right + '\ntotal: ' + obj.length + '\nscore: ' + score + '\n';
-    m += 'tags:/n  - 四级/套卷\n  - 四级/复盘\n---\n\n';
+    m += 'tags:\n  - 四级/套卷\n  - 四级/复盘\n---\n\n';
     m += '# ' + (P.label || sess.paperKey) + ' 整卷复盘\n\n';
     m += '- 客观题 **' + right + '/' + obj.length + '** · 作答 ' + answered.length + ' 题 · 估算 **' + score + ' / 710**\n';
     m += '- 用时 ' + fmtDur(sess.spent || 0) + ' · 写作自评 ' + (self.w ? Math.round(self.w * 106.5) : '未评') + ' · 翻译自评 ' + (self.t ? Math.round(self.t * 106.5) : '未评') + '\n\n';
