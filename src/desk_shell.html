@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="四级真题训练前台：套卷模考、单题训练、单词本，做题、判分、归因，导出脑库节点。">
+<meta name="theme-color" content="#15151c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="四级工作台">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>四级训练工作台</title>
+<script>window.__VER__="__VER__";</script>
+<style>/*__CSS__*/</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal"></div>
+<div id="toast"></div>
+
+<!-- 划词：浮动条 + 释义面板 -->
+<div id="wbar">
+  <button data-act="tr">译</button>
+  <button data-act="y">黄标</button>
+  <button data-act="r">红标</button>
+</div>
+<div id="wpanel"></div>
+
+<script>window.__DESK__=/*__DATA__*/{};</script>
+<script>
+/* ============ 离线词典（划词翻译 / 写作批改共用） ============ */
+window.SPELL_RAW = /*__SPELL__*/"";
+window.DICT_RAW = /*__DICT__*/"";
+
+const IRREG = {
+  was: 'be', were: 'be', been: 'be', am: 'be', is: 'be', are: 'be', went: 'go', gone: 'go', did: 'do', done: 'do',
+  had: 'have', has: 'have', made: 'make', took: 'take', taken: 'take', came: 'come', got: 'get', gotten: 'get', said: 'say',
+  saw: 'see', seen: 'see', knew: 'know', known: 'know', thought: 'think', found: 'find', gave: 'give', given: 'give',
+  told: 'tell', became: 'become', left: 'leave', felt: 'feel', brought: 'bring', began: 'begin', begun: 'begin', kept: 'keep',
+  held: 'hold', wrote: 'write', written: 'write', stood: 'stand', heard: 'hear', let: 'let', meant: 'mean', met: 'meet',
+  ran: 'run', paid: 'pay', sat: 'sit', spoke: 'speak', spoken: 'speak', lay: 'lie', led: 'lead', grew: 'grow', grown: 'grow',
+  lost: 'lose', fell: 'fall', fallen: 'fall', built: 'build', understood: 'understand', drew: 'draw', drawn: 'draw',
+  broke: 'break', broken: 'break', spent: 'spend', cut: 'cut', rose: 'rise', risen: 'rise', drove: 'drive', driven: 'drive',
+  bought: 'buy', wore: 'wear', worn: 'wear', chose: 'choose', chosen: 'choose', ate: 'eat', eaten: 'eat', sold: 'sell',
+  sent: 'send', children: 'child', people: 'person', men: 'man', women: 'woman', feet: 'foot', teeth: 'tooth',
+  data: 'datum', media: 'medium', criteria: 'criterion', analyses: 'analysis', hypotheses: 'hypothesis', lives: 'life'
+};
+let DMAP = null;
+function dictInit() {
+  if (DMAP) return DMAP;
+  DMAP = new Map();
+  if (!window.DICT_RAW) return DMAP;
+  window.DICT_RAW.split('|').forEach(row => {
+    const i = row.indexOf('\t');
+    if (i < 0) return;
+    DMAP.set(row.slice(0, i), row.slice(i + 1));
+  });
+  return DMAP;
+}
+const PREF = ['un', 'in', 'im', 'il', 'ir', 'dis', 'non', 're', 'over', 'under', 'mis', 'pre', 'post', 'anti', 'co', 'multi', 'inter', 'sub', 'super', 'auto', 'semi', 'bi', 'de', 'en', 'em', 'out', 'up', 'fore', 'mid', 'self', 'well', 'ill'];
+const SUF = ['ability', 'ibility', 'ization', 'isation', 'ational', 'iveness', 'ments', 'ness', 'ment', 'ship', 'hood', 'isms', 'ists', 'ism', 'ist', 'ive', 'ity', 'ance', 'ence', 'able', 'ible', 'ful', 'less', 'ous', 'ise', 'ize', 'ally', 'ical', 'ary', 'ory', 'al', 'ic', 'er', 'or', 'ty', 'ly'];
+function _infl(w) {
+  const o = []; const add = x => { if (x && x.length > 2 && !o.includes(x)) o.push(x); };
+  if (/ies$/.test(w)) add(w.slice(0, -3) + 'y');
+  if (/ied$/.test(w)) add(w.slice(0, -3) + 'y');
+  if (/es$/.test(w)) add(w.slice(0, -2));
+  if (/s$/.test(w) && !/ss$/.test(w)) add(w.slice(0, -1));
+  if (/ed$/.test(w)) { add(w.slice(0, -2)); add(w.slice(0, -1)); }
+  if (/ing$/.test(w)) { add(w.slice(0, -3)); add(w.slice(0, -3) + 'e'); }
+  if (/est$/.test(w)) { add(w.slice(0, -3)); add(w.slice(0, -2)); }
+  return o;
+}
+function _stem(w, depth) {
+  const D = dictInit();
+  if (D.has(w)) return w;
+  if (depth > 3) return null;
+  const cands = _infl(w);
+  SUF.forEach(s => {
+    if (w.length - s.length >= 3 && w.endsWith(s)) {
+      const b = w.slice(0, w.length - s.length);
+      [b, b + 'e', b + 'y'].forEach(x => { if (!cands.includes(x)) cands.push(x); });
+    }
+  });
+  PREF.forEach(p => { if (w.length - p.length >= 3 && w.startsWith(p)) cands.push(w.slice(p.length)); });
+  if (/([bcdfghjklmnpqrstvwxz])\1$/.test(w)) cands.push(w.slice(0, -1));
+  for (const c of cands) { const r = _stem(c, depth + 1); if (r) return r; }
+  return null;
+}
+function lookup(raw) {
+  const D = dictInit();
+  const cleaned = (raw || '').toLowerCase().replace(/^[^a-z]+|[^a-z\-']+$/g, '');
+  if (!cleaned) return null;
+  if (D.has(cleaned)) return { word: cleaned, def: D.get(cleaned), base: null };
+  if (IRREG[cleaned] && D.has(IRREG[cleaned])) return { word: cleaned, def: D.get(IRREG[cleaned]), base: IRREG[cleaned] };
+  const bare = cleaned.replace(/['’]s$/, '');
+  if (bare !== cleaned && D.has(bare)) return { word: cleaned, def: D.get(bare), base: bare };
+  if (bare.indexOf('-') > 0) {
+    const parts = bare.split('-').filter(p => p.length > 2);
+    for (const p of parts) { const r = _stem(p, 0); if (r) return { word: cleaned, def: D.get(r), base: r, compound: true }; }
+  }
+  const b = _stem(bare, 0);
+  if (b && D.has(b)) return { word: cleaned, def: D.get(b), base: b === bare ? null : b };
+  return { word: cleaned, def: null, base: null };
+}
+function glossPhrase(txt) {
+  const ws = String(txt || '').toLowerCase().match(/[a-z][a-z'\-]*/g) || [];
+  if (!ws.length) return null;
+  const parts = ws.slice(0, 8).map(w => {
+    const r = lookup(w);
+    return r && r.def ? w + ' ' + r.def.split('；')[0].replace(/^[a-z]+\.\s*/, '').split('，')[0] : null;
+  }).filter(Boolean);
+  return parts.length ? parts : null;
+}
+window.dictInit = dictInit;
+window.lookup = lookup;
+window.glossPhrase = glossPhrase;
+</script>
+<script>/*__ESSAY__*/</script>
+<script>/*__APP__*/</script>
+</body>
+</html>

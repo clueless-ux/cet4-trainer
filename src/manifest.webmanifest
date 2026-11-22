@@ -1,0 +1,18 @@
+{
+  "name": "四级训练工作台",
+  "short_name": "四级工作台",
+  "description": "四级真题训练前台：套卷模考、单题训练、单词本、划词翻译。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#15151c",
+  "theme_color": "#15151c",
+  "categories": ["education", "productivity"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
