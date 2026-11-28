@@ -115,6 +115,13 @@
 
   /* ================= 存储 ================= */
   const LS = 'cet4_desk_v1';
+  const PREFERENCES = {
+    lookupMode: { fallback: 'selection', choices: [['selection', '划词翻译'], ['tap', '点词翻译'], ['both', '两种都用']] },
+    graphMotion: { fallback: 'system', choices: [['system', '跟随系统'], ['on', '开启'], ['off', '关闭']] },
+    graphSpeed: { fallback: '1', choices: [['0.6', '舒缓'], ['1', '标准'], ['1.5', '快速']] },
+    readingSize: { fallback: '0', choices: [['0', '标准'], ['2', '稍大'], ['4', '大字']] },
+    speechRate: { fallback: '0.92', choices: [['0.75', '慢速'], ['0.92', '标准'], ['1.10', '快速']] },
+  };
   let S;
   function blankStore() {
     return { v: 1, qs: {}, pts: {}, runs: [], days: {}, fav: {}, write: {}, wrong: {}, words: [], papers: {}, tapDict: false, tapTip: 0, created: Date.now() };
@@ -151,9 +158,35 @@
     } catch (e) { return false; }
   }
   S = load();
-  /* 微信内置浏览器（鸿蒙版尤其）会接管长按、不派发 pointer 事件，长按取词基本没戏。
-     所以微信里默认打开「点词即译」；用户在面板里手动关掉就不再自动打开。 */
-  if (isWX() && !S.tapOff) S.tapDict = true;
+
+  function preferenceValue(key) {
+    const settings = PREFERENCES[key];
+    const saved = S[key];
+    if (key === 'graphMotion' && typeof saved === 'boolean') return saved ? 'on' : 'off';
+    if (settings.choices.some(([value]) => value === saved)) return saved;
+    // 微信长按可能被浏览器拦截。已有版本里的点词开关也继续生效。
+    if (key === 'lookupMode' && (S.tapDict || (isWX() && !S.tapOff))) return 'both';
+    return settings.fallback;
+  }
+
+  function selectionLookupEnabled() { return preferenceValue('lookupMode') !== 'tap'; }
+  function tapLookupEnabled() { return preferenceValue('lookupMode') !== 'selection'; }
+
+  function applyPreference(key, value) {
+    if (!Object.prototype.hasOwnProperty.call(PREFERENCES, key) || !PREFERENCES[key].choices.some(([choice]) => choice === value)) return;
+    if (key === 'graphMotion') {
+      if (value === 'system') delete S.graphMotion;
+      else S.graphMotion = value === 'on';
+    } else {
+      S[key] = value;
+    }
+    if (key === 'lookupMode') { S.tapTip = 1; hideBar(); }
+    if (key === 'readingSize') {
+      document.getElementById('study-workspace')?.style.setProperty('--question-font-extra', value + 'px');
+    }
+    if (key === 'graphMotion') syncGraphMotion();
+    save();
+  }
 
   function toast(msg) {
     let t = $('#toast');
@@ -318,12 +351,15 @@
   let writeRep = null;
   let writeTab = 'W';
   let wrongFilter = 'all';
+  let settingsReturn = 'desk';
 
   function go(v) {
     if (v !== view && document.getElementById('wpanel')?.classList.contains('on')) closePanel();
+    if (v === 'settings' && view !== 'settings') settingsReturn = view;
     view = v;
     render();
     window.scrollTo(0, 0);
+    if (v === 'settings') document.getElementById('preferences-title')?.focus();
   }
 
   /* ================= 图标 ================= */
@@ -345,6 +381,7 @@
     audio: '<path d="M3 9v6h4l5 4V5L7 9zM16 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/>',
     target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
     download: '<path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/>',
+    settings: '<path d="M4 7h7m4 0h5M4 12h2m4 0h10M4 17h10m4 0h2"/><circle cx="13" cy="7" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="16" cy="17" r="2"/>',
   };
   function svg(p, cls) {
     return '<svg aria-hidden="true" focusable="false" class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
@@ -391,8 +428,40 @@
     return '<header class="topbar"><div class="crumb">' + crumb + '</div><div class="right">' +
       (questionLookup ? '<button type="button" class="btn sm utility" onclick="DESK.search()" title="查词 / 译句">' +
         svg(IC.search) + '<span lang="en">Dictionary</span></button>' : '') +
-      '<button type="button" class="btn sm utility" onclick="DESK.runDiag()" title="划词与存储自检"><span lang="en">Diagnostics</span></button>' +
+      '<button id="settings-link" type="button" class="btn sm utility settings-link" onclick="DESK.go(\'settings\')" title="工作台设置"' +
+      (view === 'settings' ? ' aria-current="page"' : '') + '>' + svg(IC.settings) + '<span lang="en">Settings</span></button>' +
       '</div></header>';
+  }
+
+  function preferenceChoices(key, label) {
+    const current = preferenceValue(key);
+    return '<fieldset class="preference-field"><legend>' + label + '</legend><div class="preference-choices">' +
+      PREFERENCES[key].choices.map(([value, title]) => '<label><input type="radio" name="' + key + '" value="' + value + '"' +
+        (current === value ? ' checked' : '') + ' onchange="DESK.setPreference(this.name,this.value)"><span>' + title + '</span></label>').join('') +
+      '</div></fieldset>';
+  }
+
+  function viewSettings() {
+    return '<div class="wrap settings-page"><header class="settings-head"><div><h1 id="preferences-title" lang="en" tabindex="-1">Settings</h1>' +
+      '<p>工作台设置 · 修改会自动保存在当前浏览器</p></div>' +
+      '<button class="btn sm ghost" type="button" onclick="DESK.closeSettings()">返回</button></header>' +
+      '<div class="settings-grid">' +
+      '<section class="card settings-card"><h2>' + svg(IC.search) + '<span lang="en">Dictionary</span></h2>' +
+      preferenceChoices('lookupMode', '题目英文的查词方式') +
+      '<p>划词支持查询单词、短语和整句。开启点词时，点英文查词，点选项字母作答。</p></section>' +
+      '<section class="card settings-card"><h2>' + svg(IC.brain) + '<span lang="en">Motion</span></h2>' +
+      preferenceChoices('graphMotion', '图谱动效') + preferenceChoices('graphSpeed', '光点流速') +
+      '<p>适用于首页学习图谱和三维考点网络。</p></section>' +
+      '<section class="card settings-card"><h2>' + svg(IC.paper) + '<span lang="en">Reading</span></h2>' +
+      preferenceChoices('readingSize', '题目字号') +
+      '<p>同步调整题干、选项、阅读材料和听力原文。</p>' +
+      '<p class="settings-reading-sample" lang="en">A little practice every day makes a difference.</p></section>' +
+      '<section class="card settings-card"><h2>' + svg(IC.audio) + '<span lang="en">Pronunciation</span></h2>' +
+      preferenceChoices('speechRate', '单词朗读语速') +
+      '<p>适用于词典、单词本和背词练习。</p><button class="btn sm ghost settings-speech-preview" type="button" ' +
+      'onclick="DESK.say(\'Practice makes progress.\')">' + svg(IC.audio) + '试听</button></section></div>' +
+      '<div class="settings-actions"><button class="btn sm ghost" type="button" onclick="DESK.runDiag()">划词与存储自检</button>' +
+      '<button id="settings-reset" class="btn sm ghost" type="button" onclick="DESK.resetPreferences()">恢复默认设置</button></div></div>';
   }
 
   /* ================= 工作台 ================= */
@@ -405,7 +474,12 @@
   const graphMotionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
   let studyFlow = null;
 
-  function graphMotionEnabled() { return S.graphMotion ?? !graphMotionPreference?.matches; }
+  function graphMotionEnabled() {
+    const mode = preferenceValue('graphMotion');
+    return mode === 'system' ? !graphMotionPreference?.matches : mode === 'on';
+  }
+
+  function graphMotionSpeed() { return Number(preferenceValue('graphSpeed')); }
 
   function graphMotionToggle(extraClass = '') {
     const enabled = graphMotionEnabled();
@@ -509,7 +583,7 @@
         }
       });
       ctx.globalAlpha = 1;
-    }, graphMotionEnabled);
+    }, graphMotionEnabled, graphMotionSpeed);
   }
 
   function viewDesk() {
@@ -1268,7 +1342,7 @@
           ' title="第 ' + (+n) + ' 空' + (mine ? ' · 已填 ' + esc(mine) : ' · 点一下填') + '" style="cursor:pointer;' + color + '">' +
           esc(mine || String(+n)) + '</span>';
       });
-      return '<div class="pane-title">Section A · 选词填空</div><div class="passage" lang="en" data-question-english style="font-size:14.4px">' +
+      return '<div class="pane-title">Section A · 选词填空</div><div class="passage" lang="en" data-question-english style="font-size:calc(14.4px + var(--question-font-extra))">' +
         text.split(/\n+/).map(x => '<p>' + x + '</p>').join('') + '</div>';
     }
     return '';
@@ -1310,7 +1384,7 @@
 
   function optionsHTML(q, answered) {
     const sel = sess.ans[q.id];
-    const tapHint = S.tapDict && !answered ? '<div class="small dim" style="margin:8px 0">点英文查词，点选项字母作答。</div>' : '';
+    const tapHint = tapLookupEnabled() && !answered ? '<div class="small dim" style="margin:8px 0">点英文查词，点选项字母作答。</div>' : '';
     if (q.k === 'C') {
       const u = UN[q.u]; if (!u) return '';
       return tapHint + '<div class="wordbank">' + u.bank.map(b => {
@@ -1982,7 +2056,7 @@
     if (!canvas || !status) return;
     const { nodes, edges } = pointGraphData();
     pointGraph = window.mountPointGraph(canvas, status, nodes, edges, openPoint,
-      document.getElementById('point-network-flow'), graphMotionEnabled);
+      document.getElementById('point-network-flow'), graphMotionEnabled, graphMotionSpeed);
   }
 
 
@@ -2140,7 +2214,7 @@
     if (!window.speechSynthesis) return toast('当前浏览器不支持朗读');
     speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(String(t));
-    u.lang = 'en-US'; u.rate = 0.92;
+    u.lang = 'en-US'; u.rate = Number(preferenceValue('speechRate'));
     speechSynthesis.speak(u);
   }
 
@@ -2278,11 +2352,12 @@
       stopPress();
       hideBar();
       heldRegion = null;
+      if (!selectionLookupEnabled()) return;
       const region = lookupRegion(event.target);
       if (!region || !point) return;
       press = { x: point.clientX, y: point.clientY, region };
       pressTimer = setTimeout(() => {
-        if (panelOn() || !press) return;
+        if (panelOn() || !press || !selectionLookupEnabled()) return;
         const { x, y, region } = press;
         const word = wordAtPoint(x, y, region);
         if (!word) return;
@@ -2298,6 +2373,7 @@
 
     function refreshSelection() {
       if (panelOn()) return;
+      if (!selectionLookupEnabled()) { hideBar(); return; }
       const entry = selectedEnglish();
       if (entry) showBar(entry);
       else if (!window.getSelection?.()?.isCollapsed || heldRegion !== wordBar?.region || Date.now() > heldUntil) hideBar();
@@ -2332,7 +2408,7 @@
         event.stopPropagation();
         return;
       }
-      if (!S.tapDict) return;
+      if (!tapLookupEnabled()) return;
       const word = wordAtPoint(event.clientX, event.clientY, region);
       if (!word) return;
       event.preventDefault();
@@ -2367,10 +2443,7 @@
 
 
   function setTapDict(on) {
-    S.tapDict = !!on;
-    S.tapTip = 1;
-    if (on) delete S.tapOff; else S.tapOff = 1;
-    save();
+    applyPreference('lookupMode', on ? 'both' : 'selection');
     toast(on ? '已开启：轻点正文英文词即可查' : '已关闭点词即译');
     render();
   }
@@ -2409,10 +2482,10 @@
         '<input id="wq" type="search" enterkeyhint="search" autocapitalize="off" autocomplete="off" spellcheck="false" maxlength="480" placeholder="输入单词、短语或英文句子" aria-describedby="dict-form-message"></label>' +
         '<button type="submit" class="btn pri dict-submit">查词</button></form>' +
         '<div class="dict-tools"><button type="button" class="dict-text-button" data-dict-action="paste">' + svg(IC.clipboard) + '粘贴</button>' +
-        '<label class="dict-toggle"><input type="checkbox" id="wtap"' + (S.tapDict ? ' checked' : '') + '>点题目英文即译</label></div>' +
+        '<button class="dict-text-button" type="button" data-dict-action="settings">' + svg(IC.settings) + '查词设置</button></div>' +
         '<div id="dict-form-message" class="dict-form-message" role="status"></div></div>' +
         '<div id="dict-scroll" class="dict-scroll"><div id="dict-result"><div class="dict-empty">' +
-        '<p>直接查词，也可以在题目里划词或长按查询。</p><div class="dict-examples" aria-label="查询示例">' +
+        '<p>输入英文单词、短语或句子查询。</p><div class="dict-examples" aria-label="查询示例">' +
         ['approach', 'daily practice', 'take into account'].map(term =>
           '<button type="button" data-dict-action="term" data-term="' + term + '" lang="en">' + term + '</button>').join('') + '</div></div></div></div>';
       fitPanel();
@@ -2471,15 +2544,13 @@
     panel.addEventListener('input', event => {
       if (event.target.id === 'wq') document.getElementById('dict-form-message').textContent = '';
     });
-    panel.addEventListener('change', event => {
-      if (event.target.id === 'wtap') setTapDict(event.target.checked);
-    });
     panel.addEventListener('click', event => {
       const button = event.target.closest('[data-dict-action]');
       if (!button) return;
       const action = button.dataset.dictAction;
       if (action === 'close') closePanel(true);
       if (action === 'paste') pasteWord();
+      if (action === 'settings') go('settings');
       if (action === 'say' && dictEntry) say(dictEntry.term);
       if (action === 'mark') addWordFromPanel(button.dataset.color);
       if (action === 'term' && queryDictionary(button.dataset.term)) document.getElementById('dict-term-title')?.focus();
@@ -2807,7 +2878,7 @@
     d.push(['划词 API', typeof window.getSelection === 'function' ? 'OK' : '缺失']);
     d.push(['按点取词', (document.caretRangeFromPoint ? 'caretRangeFromPoint' : (document.caretPositionFromPoint ? 'caretPositionFromPoint' : '无，走 Range 兜底'))]);
     d.push(['Range 兜底', typeof document.createRange === 'function' ? '可用' : '不可用']);
-    d.push(['点词即译', S.tapDict ? '已开启' : '未开启']);
+    d.push(['题目查词方式', PREFERENCES.lookupMode.choices.find(([value]) => value === preferenceValue('lookupMode'))[1]]);
     d.push(['触摸事件', ('ontouchstart' in window || (navigator.maxTouchPoints || 0) > 0) ? '触摸设备' : '鼠标设备']);
     d.push(['本机存储', storageProbe() ? '可写' : '不可写（无痕/受限）']);
     d.push(['已存数据', sizeText(dataSize())]);
@@ -3487,7 +3558,7 @@
     const crumbs = {
       desk: '工作台', train: '训练', run: sess && sess.exam ? '套卷模考' : '训练中',
       paperReview: '逐题解析', brain: '考点地图', wrong: '错题本', words: '单词本',
-      stats: '数据', vault: '脑库连接', write: '写作翻译',
+      stats: '数据', vault: '脑库连接', write: '写作翻译', settings: '设置',
     };
     let body = '';
     if (view === 'desk') body = viewDesk();
@@ -3500,6 +3571,7 @@
     else if (view === 'stats') body = viewStats();
     else if (view === 'vault') body = viewVault();
     else if (view === 'write') body = viewWrite();
+    else if (view === 'settings') body = viewSettings();
     else body = viewDesk();
 
     const crumb = '<span class="crumb-prefix" lang="en">CET-4</span><span class="crumb-divider" aria-hidden="true">/</span>' +
@@ -3513,7 +3585,7 @@
       : '';
     /* 鸿蒙/部分国产浏览器长按选词会失灵 —— 主动给一个「点词即译」的开关 */
     const questionLookup = body.includes(' data-question-english');
-    const tapTip = (questionLookup && IS_TOUCH && !S.tapDict && !S.tapTip)
+    const tapTip = (questionLookup && IS_TOUCH && !tapLookupEnabled() && !S.tapTip)
       ? '<div class="wxhint tap"><span class="grow">长按取词不灵？打开<b>点词即译</b>后，轻点题目里的英文查词，点选项字母作答' +
         (IS_HARMONY ? '（鸿蒙推荐）' : '') + '。</span>' +
         '<button class="btn sm pri" onclick="DESK.turnOnTap()">打开</button>' +
@@ -3523,7 +3595,8 @@
       '<button type="button" id="wdock" onclick="DESK.search()" aria-label="查词 / 译句"><b>查</b><small>单词</small></button>' : '';
     if (!questionLookup && view !== 'words' && document.getElementById('wpanel')?.classList.contains('dictionary-panel')) closePanel();
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
-      '<main class="main">' + topbar(crumb, questionLookup) + mobileNav() + body + '</main></div>' + dock;
+      '<main id="study-workspace" class="main" style="--question-font-extra:' + preferenceValue('readingSize') + 'px">' +
+      topbar(crumb, questionLookup) + mobileNav() + body + '</main></div>' + dock;
     if (view === 'desk') { drawStudyGraph(); mountStudyFlow(); }
     if (view === 'brain') mountBrainGraph();
     const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
@@ -3540,10 +3613,23 @@
   /* ================= 对外 ================= */
   const DESK = {
     go: go,
-    toggleGraphMotion() {
-      S.graphMotion = !graphMotionEnabled();
+    closeSettings() {
+      go(settingsReturn);
+      document.getElementById('settings-link')?.focus();
+    },
+    setPreference: applyPreference,
+    resetPreferences() {
+      for (const key of Object.keys(PREFERENCES)) delete S[key];
+      delete S.tapDict;
+      delete S.tapOff;
+      delete S.tapTip;
       save();
-      syncGraphMotion();
+      render();
+      document.getElementById('settings-reset')?.focus();
+      toast('已恢复默认设置');
+    },
+    toggleGraphMotion() {
+      applyPreference('graphMotion', graphMotionEnabled() ? 'off' : 'on');
     },
     pointGraphZoom(factor) { pointGraph?.zoom(factor); },
     pointGraphReset() { pointGraph?.reset(); },
@@ -3686,7 +3772,7 @@
         location.replace(u.toString());
       } catch (e) { location.reload(); }
     },
-    turnOnTap() { S.tapDict = true; S.tapTip = 1; save(); toast('已开启：轻点正文英文词即可查'); render(); },
+    turnOnTap() { if (!tapLookupEnabled()) setTapDict(true); },
     dismissTap() { S.tapTip = 1; save(); render(); },
     runDiag() { runDiag(); },
     pingTr() { pingTr(); },

@@ -53,7 +53,7 @@
     return nodes;
   }
 
-  function mountGraphMotion(canvas, paint, enabled) {
+  function mountGraphMotion(canvas, paint, enabled, speed = () => 1) {
     if (typeof window.requestAnimationFrame !== 'function') {
       return { sync() {}, redraw() {}, destroy() {} };
     }
@@ -65,7 +65,7 @@
       if (!playing()) { sync(); return; }
       const delta = lastPaint == null ? 0 : timestamp - lastPaint;
       if (lastPaint == null || delta >= 32) {
-        elapsed += Math.min(delta, 75) / 1000;
+        elapsed += Math.min(delta, 75) / 1000 * speed();
         lastPaint = timestamp;
         paint(elapsed);
       }
@@ -107,7 +107,7 @@
     };
   }
 
-  function mountPointGraph(canvas, status, points, edges, openPoint, motionCanvas, motionEnabled) {
+  function mountPointGraph(canvas, status, points, edges, openPoint, motionCanvas, motionEnabled, motionSpeed) {
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       status.textContent = '当前浏览器无法绘制图谱，可从下方列表打开考点。';
@@ -150,7 +150,7 @@
       }
       motionContext.globalAlpha = 1;
     }
-    const motion = motionContext ? mountGraphMotion(motionCanvas, drawMotion, motionEnabled) : null;
+    const motion = motionContext ? mountGraphMotion(motionCanvas, drawMotion, motionEnabled, motionSpeed) : null;
 
     function project() {
       const cy = Math.cos(camera.yaw), sy = Math.sin(camera.yaw);
