@@ -4,23 +4,23 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="四级真题训练前台：套卷模考、单题训练、单词本，做题、判分、归因，导出脑库节点。">
-<meta name="theme-color" content="#15151c">
+<meta name="theme-color" content="#fafaf6">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="四级工作台">
 <meta name="format-detection" content="telephone=no">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>四级训练工作台</title>
-<script>window.__VER__="20261122064500";</script>
+<script>window.__VER__="20261128082952";</script>
 <style>/* ===== 四级训练工作台 · 训练前台 ===== */
 :root{
-  --bg:#111114; --bg2:#15151a; --card:#1a1a20; --card2:#202027; --card3:#26262e;
-  --line:#2b2b34; --line2:#36363f;
-  --txt:#e9e7f0; --mut:#928fa0; --dim:#6a6778;
-  --acc:#a88bff; --acc-d:#7c5cff; --amber:#f0b060; --ok:#43d19e; --bad:#ff6b7a;
+  --bg:#f5f5ef; --bg2:#fafaf6; --card:#fffefa; --card2:#f0f2eb; --card3:#e8ece2;
+  --line:#e1e4da; --line2:#ced5c9;
+  --txt:#202a23; --mut:#506056; --dim:#59685e;
+  --acc:#286650; --acc-d:#215d46; --amber:#895720; --ok:#146849; --bad:#a33542;
   --serif:Georgia,"Times New Roman",serif;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
 }
@@ -32,47 +32,80 @@ body{
 }
 a{color:var(--acc);text-decoration:none}
 button{font-family:inherit}
-::selection{background:rgba(168,139,255,.3)}
+::selection{background:rgba(46,112,87,.3)}
 
 /* 滚动条 */
 *::-webkit-scrollbar{width:9px;height:9px}
-*::-webkit-scrollbar-thumb{background:#33333d;border-radius:6px}
-*::-webkit-scrollbar-thumb:hover{background:#43434f}
+*::-webkit-scrollbar-thumb{background:#c4cec2;border-radius:6px}
+*::-webkit-scrollbar-thumb:hover{background:#a1afa1}
 *::-webkit-scrollbar-track{background:transparent}
 
 /* ===== 骨架 ===== */
 .shell{display:flex;min-height:100vh}
 .rail{
-  width:212px;flex:0 0 212px;background:var(--bg2);border-right:1px solid var(--line);
-  padding:20px 14px 24px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:4px;
+  width:222px;flex:0 0 222px;background:var(--bg2);border-right:1px solid var(--line);
+  padding:21px 16px 17px;position:sticky;top:0;height:100vh;height:100dvh;
+  display:flex;flex-direction:column;overflow:auto;
 }
-.brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px}
-.brand .logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#f0b060,#e0743c);
-  display:flex;align-items:center;justify-content:center;flex:0 0 34px;box-shadow:0 4px 14px rgba(224,116,60,.28)}
-.brand .logo svg{width:19px;height:19px}
-.brand b{font-size:14px;letter-spacing:.2px;display:block;line-height:1.25}
-.brand span{font-size:10.5px;color:var(--dim);letter-spacing:.14em;text-transform:uppercase}
+.brand{
+  display:flex;align-items:center;gap:11px;padding:5px 5px 16px;text-align:left;
+  border:0;background:transparent;color:var(--txt);cursor:pointer;
+}
+.brand .logo{
+  width:37px;height:37px;border-radius:10px;background:#235641;color:#fff;
+  display:grid;place-items:center;flex:0 0 37px;
+}
+.brand .logo svg{width:21px;height:21px}
+.brand b{display:block;font-size:14px;line-height:1.3}
+.brand-sub{display:block;margin-top:3px;font-size:9px;font-weight:650;letter-spacing:.12em;color:var(--dim)}
+.rail-nav{display:grid;gap:4px}
 .nav-item{
-  display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--mut);
-  font-size:13.5px;cursor:pointer;border:1px solid transparent;transition:.15s;user-select:none;
+  width:100%;display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:9px;color:var(--mut);
+  background:transparent;text-align:left;font-size:14px;line-height:1.4;cursor:pointer;border:1px solid transparent;
+  transition:background .15s,color .15s;
 }
-.nav-item svg{width:16px;height:16px;flex:0 0 16px;opacity:.85}
-.nav-item:hover{background:var(--card);color:var(--txt)}
-.nav-item.on{background:rgba(168,139,255,.13);color:#d6c8ff;border-color:rgba(168,139,255,.26)}
-.nav-item .k{margin-left:auto;font-size:11px;color:var(--dim);font-variant-numeric:tabular-nums}
-.nav-sep{margin:14px 10px 6px;font-size:10.5px;letter-spacing:.14em;color:var(--dim);text-transform:uppercase}
-.rail-foot{margin-top:auto;padding:10px 10px 0;border-top:1px solid var(--line);font-size:11.5px;color:var(--dim);line-height:1.7}
-.rail-foot b{color:var(--mut);font-weight:600}
+.nav-item svg{width:17px;height:17px;flex:none}
+.nav-item:hover{background:var(--card2);color:var(--txt)}
+.nav-item.on{background:#e6eee3;color:#23543f;border-color:#dce7da;font-weight:700}
+.nav-sep{margin:15px 11px 4px;font-size:11px;font-weight:650;color:var(--dim)}
+.rail-foot{margin-top:auto;padding:18px 11px 1px;font-size:12px;color:var(--mut);line-height:1.6}
+.rail-foot>div{font-size:11px;margin:3px 0 0 13px;color:var(--dim)}
+.rail-foot-dot{display:inline-block;width:6px;height:6px;margin:0 7px 1px 0;background:#4e8262;border-radius:50%}
 
 .main{flex:1;min-width:0;padding:0 0 80px}
-.wrap{max-width:1120px;margin:0 auto;padding:0 30px}
+.wrap{max-width:1216px;margin:0 auto;padding:0 clamp(21px,3vw,48px)}
 .topbar{
-  position:sticky;top:0;z-index:20;background:rgba(17,17,20,.86);backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--line);padding:12px 30px;display:flex;align-items:center;gap:14px;
+  position:sticky;top:0;z-index:20;background:rgba(250,250,246,.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);min-height:62px;padding:10px clamp(21px,3vw,48px);display:flex;align-items:center;gap:14px;
 }
-.topbar .crumb{font-size:13px;color:var(--mut);display:flex;align-items:center;gap:8px}
-.topbar .crumb b{color:var(--txt);font-weight:600}
-.topbar .right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.topbar .crumb{font-size:13px;color:var(--mut);display:flex;align-items:center;gap:8px;min-width:0}
+.topbar .crumb b{color:var(--txt);font-weight:700}
+.crumb-home{background:none;border:0;padding:0;color:inherit;font:inherit;cursor:pointer}
+.crumb-home:hover{color:var(--acc)}
+.topbar .right{margin-left:auto;display:flex;align-items:center;gap:8px;flex:none}
+.topbar .utility{background:var(--card);white-space:nowrap}
+.topbar .utility svg{width:15px;height:15px}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid #36765a;outline-offset:3px}
+.mobilenav{display:none}
+
+@media (max-width:820px){
+    .rail{display:none}
+    .topbar{min-height:56px;padding:10px 16px;gap:10px}
+    .topbar .crumb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+    .topbar .crumb .chip{display:none}
+    .topbar .right{gap:5px}
+    .mobilenav{
+      position:relative;display:flex;gap:7px;overflow-x:auto;padding:10px 16px 6px;
+      scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    }
+    .mobilenav::-webkit-scrollbar{display:none}
+    .mobile-tab{
+      flex:0 0 auto;min-height:36px;padding:6px 12px;border-radius:8px;border:1px solid var(--line);
+      background:var(--card);color:var(--mut);font-size:12.5px;cursor:pointer;white-space:nowrap;
+    }
+    .mobile-tab.on{border-color:#cddfcd;background:#e6eee3;color:#23543f;font-weight:700}
+}
+
 
 /* ===== 通用 ===== */
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
@@ -93,11 +126,11 @@ h3{font-size:14.5px;margin:0 0 10px;font-weight:620}
   padding:9px 16px;border-radius:9px;border:1px solid var(--line2);background:var(--card2);
   color:var(--txt);font-size:13.5px;cursor:pointer;transition:.15s;line-height:1.3;
 }
-.btn:hover{background:var(--card3);border-color:#454552}
-.btn.pri{background:linear-gradient(135deg,#8f6dff,#6f4cf0);border-color:transparent;color:#fff;font-weight:600;
-  box-shadow:0 4px 16px rgba(124,92,255,.28)}
+.btn:hover{background:var(--card3);border-color:#aabbad}
+.btn.pri{background:linear-gradient(135deg,#2c7057,#215d46);border-color:transparent;color:#fff;font-weight:600;
+  box-shadow:0 4px 16px rgba(33,93,70,.28)}
 .btn.pri:hover{filter:brightness(1.08)}
-.btn.amber{background:linear-gradient(135deg,#f0b060,#dc8b3c);border-color:transparent;color:#231605;font-weight:650}
+.btn.amber{background:#f0d5a9;border-color:transparent;color:#47290d;font-weight:650}
 .btn.ghost{background:transparent}
 .btn.sm{padding:6px 11px;font-size:12.5px;border-radius:7px}
 .btn.lg{padding:12px 24px;font-size:15px}
@@ -108,67 +141,183 @@ h3{font-size:14.5px;margin:0 0 10px;font-weight:620}
   display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;
   background:var(--card2);border:1px solid var(--line);font-size:11.5px;color:var(--mut);white-space:nowrap;
 }
-.chip.acc{color:#c9b6ff;border-color:rgba(168,139,255,.3);background:rgba(168,139,255,.1)}
-.chip.ok{color:#7ee2bb;border-color:rgba(67,209,158,.3);background:rgba(67,209,158,.1)}
-.chip.bad{color:#ff9aa5;border-color:rgba(255,107,122,.3);background:rgba(255,107,122,.1)}
-.chip.amber{color:#f3c98d;border-color:rgba(240,176,96,.28);background:rgba(240,176,96,.1)}
+.chip.acc{color:#245e49;border-color:rgba(46,112,87,.3);background:rgba(46,112,87,.1)}
+.chip.ok{color:#146849;border-color:rgba(28,132,88,.3);background:rgba(28,132,88,.1)}
+.chip.bad{color:#a33542;border-color:rgba(164,52,67,.3);background:rgba(164,52,67,.1)}
+.chip.amber{color:#895720;border-color:rgba(175,111,45,.28);background:rgba(175,111,45,.1)}
 .chip.click{cursor:pointer}
-.chip.click:hover{border-color:var(--acc);color:#d6c8ff}
+.chip.click:hover{border-color:var(--acc);color:#245e49}
 
 .badge{display:inline-block;padding:1px 7px;border-radius:5px;font-size:11px;border:1px solid var(--line2);color:var(--mut)}
-.badge.a{color:#c9b6ff;border-color:rgba(168,139,255,.3)}
-.badge.w{color:#f3c98d;border-color:rgba(240,176,96,.3)}
+.badge.a{color:#245e49;border-color:rgba(46,112,87,.3)}
+.badge.w{color:#895720;border-color:rgba(175,111,45,.3)}
 
 .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px}
 .kv dt{color:var(--dim);white-space:nowrap}
 
-.progress{height:5px;background:#26262e;border-radius:99px;overflow:hidden}
-.progress i{display:block;height:100%;background:linear-gradient(90deg,#8f6dff,#c0a8ff);border-radius:99px;transition:width .25s}
+.progress{height:5px;background:#e8ece2;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,#2c7057,#60a184);border-radius:99px;transition:width .25s}
 
-.bar{height:6px;background:#26262e;border-radius:99px;overflow:hidden}
+.bar{height:6px;background:#e8ece2;border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;border-radius:99px;background:var(--acc)}
 
 .empty{text-align:center;padding:46px 20px;color:var(--dim)}
 .empty b{display:block;color:var(--mut);font-size:14px;margin-bottom:6px}
 
-/* ===== 首页 hero ===== */
+/* ===== 工作台首页 ===== */
+.desk-home{padding-top:26px}
 .hero{
-  margin-top:22px;border-radius:18px;padding:30px 32px;position:relative;overflow:hidden;
-  background:
-    radial-gradient(900px 300px at 88% -30%,rgba(168,139,255,.28),transparent 60%),
-    radial-gradient(600px 260px at 8% 120%,rgba(240,176,96,.18),transparent 62%),
-    linear-gradient(180deg,#1c1b24,#16161b);
-  border:1px solid #2e2c3a;
+  min-height:278px;isolation:isolate;position:relative;overflow:hidden;display:flex;align-items:center;border-radius:21px;
+  padding:36px clamp(26px,4.2vw,61px);color:#f9fbf3;background:linear-gradient(113deg,#193b30 18%,#214d3b 62%,#2b5b46);
 }
-.hero .tagline{font-size:10.5px;letter-spacing:.22em;color:#a79fc4;text-transform:uppercase;margin-bottom:12px}
-.hero h1{font-size:31px}
-.hero .sub{color:#a9a4bb;margin-top:8px;font-size:13.5px;max-width:560px}
-.hero .acts{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
-.hero .ghoststat{
-  position:absolute;right:32px;bottom:28px;text-align:right;font-size:12px;color:#8f89a6;line-height:1.9;
+.hero-copy{position:relative;z-index:1}
+.hero-meta{display:flex;align-items:center;gap:8px;color:#cfe3d1;font-size:12px;font-weight:650;letter-spacing:.12em}
+.hero-meta>span{width:7px;height:7px;background:#bbd39b;border-radius:50%}
+.hero h1{font-size:clamp(30px,4vw,53px);line-height:1.18;letter-spacing:-.045em;margin:13px 0 0;font-weight:750}
+.hero p{color:#d8e8db;margin:12px 0 0;font-size:15px}
+.hero .acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:25px}
+.hero .btn{min-height:45px;padding:10px 17px;font-weight:700;white-space:nowrap}
+.hero .btn svg,.desk-panel-head svg,.desk-vault .btn svg,.vault-export .btn svg{width:16px;height:16px;flex:none}
+.hero-primary{background:#e4efd1;border-color:transparent;color:#224334}
+.hero-primary:hover{background:#f2f8e6;border-color:transparent}
+.hero-secondary{background:rgba(250,255,247,.06);color:#f3f8ee;border-color:rgba(230,246,223,.4)}
+.hero-secondary:hover{background:rgba(250,255,247,.15);border-color:#c9ddc9}
+.hero .btn:focus-visible{outline-color:#e4efd1}
+.hero-art{
+  position:absolute;inset:-12% -3% -15% 54%;pointer-events:none;
+  background:radial-gradient(ellipse at 52% 58%,rgba(176,216,158,.17),transparent 64%),
+    radial-gradient(circle,rgba(213,235,201,.28) 1px,transparent 1.5px) 4px 2px / 15px 15px;
+  mask-image:linear-gradient(90deg,transparent,black 25% 91%,transparent);
 }
-.hero .ghoststat b{color:#d9d2f0;font-size:15px;font-variant-numeric:tabular-nums}
+.hero-sheet,.hero-orbit{position:absolute;display:block}
+.hero-sheet{
+  top:23%;left:34%;width:32%;height:58%;border:1px solid rgba(209,233,196,.55);border-radius:9px;
+  box-shadow:0 12px 24px rgba(14,38,27,.19);
+}
+.hero-sheet-back{transform:translate(17%,-8%) rotate(21deg);background:#416957}
+.hero-sheet-front{
+  transform:translate(-9%,5%) rotate(-15deg);
+  background:linear-gradient(90deg,transparent 19%,rgba(210,232,192,.24) 19% 20%,transparent 20%) ,
+    repeating-linear-gradient(180deg,transparent 0 15px,rgba(214,238,206,.27) 15px 16px) 0 8px,#52795e;
+}
+.hero-sheet-front::after{
+  content:"";position:absolute;width:26%;height:5%;left:28%;top:16%;border-radius:8px;background:#dcebc4;
+}
+.hero-orbit{
+  width:88%;height:58%;top:26%;left:4%;border:1px solid rgba(209,233,196,.42);
+  border-radius:50%;transform:rotate(-23deg);
+}
+.hero-orbit::after{
+  content:"";position:absolute;left:12%;top:13%;width:7px;height:7px;border-radius:50%;background:#d5e6af;
+  box-shadow:0 0 0 4px rgba(211,236,175,.16);
+}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-.stat .lb{font-size:11.5px;color:var(--dim);letter-spacing:.05em}
-.stat .vv{font-size:23px;font-weight:640;margin-top:4px;font-variant-numeric:tabular-nums;letter-spacing:-.4px}
-.stat .vv small{font-size:12px;color:var(--dim);font-weight:400;margin-left:3px}
-.stat .ft{font-size:11.5px;color:var(--mut);margin-top:2px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:14px}
+.stat{
+  display:block;position:relative;text-align:left;background:var(--card);border:1px solid var(--line);
+  border-radius:13px;padding:14px 16px;color:var(--txt);font:inherit;
+}
+.stat-head{display:flex;justify-content:space-between;align-items:center;gap:5px}
+.stat .lb{font-size:12px;color:var(--mut);font-weight:650}
+.stat .vv{display:block;font-size:23px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums;letter-spacing:-.035em}
+.stat .vv small{font-size:12px;color:var(--dim);font-weight:500;margin-left:4px;letter-spacing:0}
+.stat .ft{display:block;font-size:11.5px;color:var(--mut);margin-top:1px}
+.desk-stats{margin-top:17px}
+.desk-stats .stat{min-height:117px;padding:13px 16px}
+.desk-stats .stat .vv{font-size:31px;line-height:1.24;margin-top:3px}
+.stat-icon{width:30px;height:30px;display:grid;place-items:center;background:#edf2e9;color:#416852;border-radius:8px;flex:none}
+.stat-icon svg,.stat-arrow svg{width:16px;height:16px}
+.stat-action{cursor:pointer;align-self:stretch}
+.stat-action:hover{border-color:#a6c0ab;background:#f8fbf4}
+.stat-arrow{position:absolute;bottom:12px;right:15px;color:#4e745f}
 
-.cols{display:grid;grid-template-columns:1.45fr 1fr;gap:16px;margin-top:16px;align-items:start}
-.list{display:flex;flex-direction:column;gap:2px}
-.li{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px}
-.li:hover{background:var(--card2)}
-.li .idx{width:22px;color:var(--dim);font-size:11.5px;font-variant-numeric:tabular-nums}
+.desk-grid{display:grid;grid-template-columns:minmax(0,1.64fr) minmax(0,1fr);gap:17px;margin-top:17px;align-items:start}
+.desk-stack{display:grid;gap:17px;min-width:0}
+.desk-panel{padding:0;min-width:0}
+.desk-panel-head,.vault-section-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.desk-panel-head{padding:17px 19px 10px}
+.desk-panel-head h2,.vault-section-head h2,.desk-vault h2{margin:0;font-size:17px;font-weight:730}
+.desk-panel-head p{font-size:13px;color:var(--mut);margin:3px 0 0}
+.desk-panel-head .btn,.desk-vault .btn{flex:none;white-space:nowrap}
+.desk-panel-note{padding:0 19px 15px}
+.desk-question,.desk-mode{
+  width:100%;display:flex;align-items:center;gap:10px;padding:11px 19px;border:0;border-top:1px solid var(--line);
+  text-align:left;color:var(--txt);background:transparent;cursor:pointer;font:inherit;font-size:13px;
+}
+.desk-question:last-child,.desk-mode:last-child{border-radius:0 0 13px 13px}
+.desk-question:hover,.desk-mode:hover{background:#f0f5eb}
+.desk-question:focus-visible,.desk-mode:focus-visible{outline-offset:-3px}
+.desk-question svg,.desk-mode svg{width:15px;height:15px;flex:none;color:var(--dim)}
+.desk-question .chip{padding:2px 7px}
+.desk-question .grow{font-family:var(--serif);font-size:14px}
+.question-point{font-size:11px;white-space:nowrap}
+.desk-mode strong,.desk-mode .small{display:block}
+.desk-weak-list,.desk-table{padding:0 19px 12px}
+.desk-table{overflow:auto}
+.desk-weak{padding:10px 0;border-top:1px solid var(--line);font-size:13px}
+.desk-weak .bar{margin:6px 0}
+.desk-weak .mono{color:#825222;font-weight:700}
+.desk-vault{padding:17px 19px;background:#f1edf8;border-color:#e5ddef}
+.desk-vault-icon{display:grid;place-items:center;width:34px;height:34px;background:#e6dcf2;color:#634a85;border-radius:9px;margin-bottom:8px}
+.desk-vault-icon svg{width:18px;height:18px}
+.desk-vault p{color:#594b67;margin:5px 0 12px;font-size:13px}
+.desk-vault .btn{color:#584175;border-color:#dbcee9;background:#fbf8ff}
+.desk-vault .btn:hover{background:#eae0f5}
+
+/* ===== Obsidian 导出 ===== */
+.vault-page-head{
+  display:flex;align-items:flex-start;gap:14px;margin-top:26px;padding:23px 25px;
+  border:1px solid #e5ddef;border-radius:15px;background:#f1edf8;
+}
+.vault-page-head .desk-vault-icon{margin:4px 0 0;flex:none}
+.vault-page-head p{color:#594b67;margin:3px 0 0}
+.vault-section-head{margin:23px 0 11px}
+.vault-exports{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.vault-export{display:flex;flex-direction:column;align-items:flex-start;min-width:0}
+.vault-export h3{margin-bottom:3px}
+.vault-export p{margin:0 0 12px}
+.vault-path{display:flex;align-items:baseline;gap:6px;color:var(--mut);font-size:12px;margin:auto 0 12px;overflow-wrap:anywhere}
+.vault-path code{border-radius:5px;padding:2px 5px;background:#f0ebf6;color:#584175}
+
+@media (max-width:900px){
+    .desk-grid{grid-template-columns:minmax(0,1fr) minmax(0,.85fr)}
+    .question-point{display:none}
+}
+@media (max-width:660px){
+    .desk-home{padding-top:13px}
+    .hero{min-height:225px;padding:24px 20px;border-radius:16px}
+    .hero-art{left:70%;opacity:.55}
+    .hero-sheet{width:57%;height:45%;left:28%;top:26%}
+    .hero .acts{margin-top:20px}
+    .desk-stats{gap:9px;margin-top:12px}
+    .desk-stats .stat{min-height:101px;padding:11px 12px}
+    .desk-stats .stat .vv{font-size:27px}
+    .desk-grid,.desk-stack{gap:12px}
+    .desk-grid{grid-template-columns:1fr;margin-top:12px}
+    .desk-panel-head,.desk-panel-note,.desk-question,.desk-mode,.desk-weak-list,.desk-table{padding-left:14px;padding-right:14px}
+    .desk-vault{padding:14px}
+    .vault-exports{grid-template-columns:1fr}
+    .vault-page-head{margin-top:12px;padding:15px}
+}
+@media (max-width:380px){
+    .hero h1{font-size:27px}
+    .hero p{font-size:13px}
+    .hero .btn{padding-inline:11px}
+    .stat .lb{font-size:11px}
+    .desk-question .chip.done{font-size:10px}
+}
+@media (prefers-reduced-motion:reduce){
+    .desk-home *, .nav-item, .mobile-tab{transition:none}
+}
+
 
 /* ===== 组卷设置 ===== */
 .modes{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:14px}
 .mode{
   border:1px solid var(--line);background:var(--card);border-radius:13px;padding:16px 18px;cursor:pointer;transition:.15s;
 }
-.mode:hover{border-color:#454552;background:var(--card2)}
-.mode.on{border-color:rgba(168,139,255,.55);background:rgba(168,139,255,.09);box-shadow:0 0 0 1px rgba(168,139,255,.2) inset}
+.mode:hover{border-color:#aabbad;background:var(--card2)}
+.mode.on{border-color:rgba(46,112,87,.55);background:rgba(46,112,87,.09);box-shadow:0 0 0 1px rgba(46,112,87,.2) inset}
 .mode b{font-size:14.5px;display:block}
 .mode p{margin:5px 0 0;font-size:12.5px;color:var(--mut);line-height:1.6}
 .mode .ic{font-size:11px;color:var(--acc);letter-spacing:.1em;margin-bottom:6px}
@@ -184,17 +333,17 @@ h3{font-size:14.5px;margin:0 0 10px;font-weight:620}
 }
 .pane.scroll{max-height:calc(100vh - 190px);overflow:auto}
 .pane-title{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
-.passage{font-family:var(--serif);font-size:15px;line-height:1.95;color:#dcd8e6}
+.passage{font-family:var(--serif);font-size:15px;line-height:1.95;color:#253329}
 .passage p{margin:0 0 12px}
 .passage .para-l{color:var(--amber);font-weight:700;margin-right:6px}
-.passage mark, .passage .hit{background:rgba(240,176,96,.22);box-shadow:inset 0 -1px 0 rgba(240,176,96,.6);color:#ffe6c4;padding:1px 1px;border-radius:2px}
-.passage .blank{display:inline-block;min-width:74px;border-bottom:1.5px solid #3f3f4c;text-align:center;color:#c9b6ff;font-family:var(--sans);font-size:12.5px;line-height:1.4}
-.passage .blank.cur{border-bottom:2px solid var(--amber);color:#ffe0b4;font-weight:600;background:rgba(240,176,96,.08);border-radius:4px 4px 0 0;min-width:84px}
-.passage .blank[data-n]:active{background:rgba(168,139,255,.22)}
-.passage .blank.filled{min-width:0;padding:0 5px;color:#e4dbff;border-bottom-color:rgba(168,139,255,.55);background:rgba(168,139,255,.07)}
+.passage mark, .passage .hit{background:rgba(175,111,45,.22);box-shadow:inset 0 -1px 0 rgba(175,111,45,.6);color:#68420f;padding:1px 1px;border-radius:2px}
+.passage .blank{display:inline-block;min-width:74px;border-bottom:1.5px solid #a6b1a4;text-align:center;color:#245e49;font-family:var(--sans);font-size:12.5px;line-height:1.4}
+.passage .blank.cur{border-bottom:2px solid var(--amber);color:#895720;font-weight:600;background:rgba(175,111,45,.08);border-radius:4px 4px 0 0;min-width:84px}
+.passage .blank[data-n]:active{background:rgba(46,112,87,.22)}
+.passage .blank.filled{min-width:0;padding:0 5px;color:#245e49;border-bottom-color:rgba(46,112,87,.55);background:rgba(46,112,87,.07)}
 
 .qtag{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.stem{font-size:16px;line-height:1.7;margin:2px 0 14px;color:#f0eef7}
+.stem{font-size:16px;line-height:1.7;margin:2px 0 14px;color:#202a23}
 .stem.en{font-family:var(--serif);font-size:16.5px}
 
 .opts{display:flex;flex-direction:column;gap:8px}
@@ -202,54 +351,54 @@ h3{font-size:14.5px;margin:0 0 10px;font-weight:620}
   display:flex;gap:11px;align-items:flex-start;padding:11px 14px;border-radius:10px;
   border:1px solid var(--line);background:var(--card2);cursor:pointer;transition:.13s;font-size:14px;line-height:1.6;
 }
-.opt:hover{border-color:#4a4a58;background:var(--card3)}
+.opt:hover{border-color:#aabbad;background:var(--card3)}
 .opt .l{font-weight:700;color:var(--mut);flex:0 0 16px;font-size:13px;padding-top:1px}
 .opt.en{font-family:var(--serif);font-size:14.5px}
-.opt.sel{border-color:rgba(168,139,255,.55);background:rgba(168,139,255,.1)}
-.opt.right{border-color:rgba(67,209,158,.55);background:rgba(67,209,158,.1)}
+.opt.sel{border-color:rgba(46,112,87,.55);background:rgba(46,112,87,.1)}
+.opt.right{border-color:rgba(28,132,88,.55);background:rgba(28,132,88,.1)}
 .opt.right .l{color:var(--ok)}
-.opt.wrong{border-color:rgba(255,107,122,.5);background:rgba(255,107,122,.09)}
+.opt.wrong{border-color:rgba(164,52,67,.5);background:rgba(164,52,67,.09)}
 .opt.wrong .l{color:var(--bad)}
 .opt.dim{opacity:.55}
 .opt .mk{margin-left:auto;font-size:12px;color:var(--dim);white-space:nowrap}
 
 .verdict{display:flex;align-items:center;gap:12px;margin-top:16px;padding:12px 14px;border-radius:10px;font-size:13.5px}
-.verdict.ok{background:rgba(67,209,158,.09);border:1px solid rgba(67,209,158,.28)}
-.verdict.bad{background:rgba(255,107,122,.08);border:1px solid rgba(255,107,122,.26)}
+.verdict.ok{background:rgba(28,132,88,.09);border:1px solid rgba(28,132,88,.28)}
+.verdict.bad{background:rgba(164,52,67,.08);border:1px solid rgba(164,52,67,.26)}
 .verdict .big{font-size:15px;font-weight:650}
-.verdict.ok .big{color:#7ee2bb}
-.verdict.bad .big{color:#ff9aa5}
+.verdict.ok .big{color:#146849}
+.verdict.bad .big{color:#a33542}
 
 .sec-block{margin-top:16px;border-top:1px solid var(--line);padding-top:14px}
 .sec-h{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:9px;display:flex;align-items:center;gap:7px}
 .quote{
-  border-left:2px solid rgba(240,176,96,.55);padding:8px 0 8px 12px;font-family:var(--serif);
-  font-size:13.5px;line-height:1.85;color:#d9d2c4;background:rgba(240,176,96,.04);border-radius:0 6px 6px 0;
+  border-left:2px solid rgba(175,111,45,.55);padding:8px 0 8px 12px;font-family:var(--serif);
+  font-size:13.5px;line-height:1.85;color:#54462f;background:rgba(175,111,45,.04);border-radius:0 6px 6px 0;
 }
-.dist-item{display:flex;gap:9px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed #26262e;line-height:1.6}
+.dist-item{display:flex;gap:9px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed #e8ece2;line-height:1.6}
 .dist-item:last-child{border-bottom:0}
 .dist-item .lb{font-weight:700;color:var(--mut);flex:0 0 14px}
-.dist-item .tx{flex:1;color:#b9b4c6}
+.dist-item .tx{flex:1;color:#506056}
 .dist-item .tg{flex:0 0 auto}
 
 .fold{border:1px solid var(--line);border-radius:10px;margin-top:8px;overflow:hidden;background:var(--card2)}
 .fold>summary{
-  list-style:none;cursor:pointer;padding:10px 13px;font-size:13px;display:flex;align-items:center;gap:8px;color:#cdc8db;
+  list-style:none;cursor:pointer;padding:10px 13px;font-size:13px;display:flex;align-items:center;gap:8px;color:#334339;
 }
 .fold>summary::-webkit-details-marker{display:none}
 .fold>summary:before{content:"›";color:var(--dim);transition:.2s;font-size:15px;line-height:1}
 .fold[open]>summary:before{transform:rotate(90deg)}
-.fold .foldbody{padding:2px 14px 14px;font-size:13px;color:#c4bfd0;line-height:1.85}
+.fold .foldbody{padding:2px 14px 14px;font-size:13px;color:#506056;line-height:1.85}
 .fold .foldbody p{margin:0 0 8px}
-.fold .foldbody b{color:#e6e1f2}
+.fold .foldbody b{color:#202a23}
 
 .cause-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
 .qfoot{display:flex;align-items:center;gap:10px;margin-top:18px}
 
 /* 音频 */
-audio{width:100%;height:38px;filter:invert(.92) hue-rotate(180deg)}
+audio{width:100%;height:38px;accent-color:var(--acc)}
 .audiobar{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--card2);border:1px solid var(--line);border-radius:10px}
-.audiobar .dot{width:8px;height:8px;border-radius:99px;background:var(--amber);box-shadow:0 0 0 4px rgba(240,176,96,.15)}
+.audiobar .dot{width:8px;height:8px;border-radius:99px;background:var(--amber);box-shadow:0 0 0 4px rgba(175,111,45,.15)}
 
 /* 词库 */
 .wordbank{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px}
@@ -257,15 +406,15 @@ audio{width:100%;height:38px;filter:invert(.92) hue-rotate(180deg)}
   padding:4px 10px;border-radius:7px;border:1px solid var(--line);background:var(--card2);font-size:12.5px;cursor:pointer;
   display:flex;gap:6px;align-items:center;
 }
-.wb:hover{border-color:#4a4a58}
-.wb.on{border-color:rgba(168,139,255,.6);background:rgba(168,139,255,.12)}
-.wb.ok{border-color:rgba(67,209,158,.5);background:rgba(67,209,158,.1)}
+.wb:hover{border-color:#aabbad}
+.wb.on{border-color:rgba(46,112,87,.6);background:rgba(46,112,87,.12)}
+.wb.ok{border-color:rgba(28,132,88,.5);background:rgba(28,132,88,.1)}
 .wb .l{color:var(--dim);font-size:11px}
 
 /* 结果页 */
 .scorehero{display:flex;align-items:center;gap:26px;padding:26px 28px;border-radius:16px;
-  background:radial-gradient(600px 200px at 10% -20%,rgba(168,139,255,.22),transparent 60%),linear-gradient(180deg,#1c1b24,#17171c);
-  border:1px solid #2e2c3a;margin-top:20px}
+  background:radial-gradient(600px 200px at 10% -20%,rgba(46,112,87,.22),transparent 60%),linear-gradient(180deg,#eff2ea,#f5f7f0);
+  border:1px solid #dce3d7;margin-top:20px}
 .ring{position:relative;width:104px;height:104px;flex:0 0 104px}
 .ring svg{transform:rotate(-90deg)}
 .ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -275,7 +424,7 @@ audio{width:100%;height:38px;filter:invert(.92) hue-rotate(180deg)}
 /* 考点地图 */
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:.15s}
-.pcard:hover{border-color:#474753;background:var(--card2);transform:translateY(-1px)}
+.pcard:hover{border-color:#a6b1a4;background:var(--card2);transform:translateY(-1px)}
 .pcard .id{font-size:10.5px;letter-spacing:.1em;color:var(--acc);font-variant-numeric:tabular-nums}
 .pcard b{display:block;font-size:14px;margin:3px 0 8px;font-weight:620}
 .pcard .mt{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--dim)}
@@ -287,21 +436,21 @@ table.t th{
   text-align:left;font-weight:600;color:var(--dim);font-size:11px;letter-spacing:.06em;
   padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;
 }
-table.t td{padding:9px 10px;border-bottom:1px solid #232329;vertical-align:top}
+table.t td{padding:9px 10px;border-bottom:1px solid #e9ece3;vertical-align:top}
 table.t tr:last-child td{border-bottom:0}
-table.t tr:hover td{background:#1d1d23}
+table.t tr:hover td{background:#f3f5ee}
 table.t .num{font-variant-numeric:tabular-nums}
 
 /* 图表 */
 .chart{display:flex;align-items:flex-end;gap:6px;height:120px;padding-top:10px}
 .chart .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;height:100%}
-.chart .col i{width:100%;max-width:30px;background:rgba(168,139,255,.35);border-radius:4px 4px 0 0;min-height:2px;transition:.2s}
-.chart .col i.hot{background:linear-gradient(180deg,#a88bff,#7c5cff)}
+.chart .col i{width:100%;max-width:30px;background:rgba(46,112,87,.35);border-radius:4px 4px 0 0;min-height:2px;transition:.2s}
+.chart .col i.hot{background:linear-gradient(180deg,#286650,#215d46)}
 .chart .col span{font-size:10px;color:var(--dim);white-space:nowrap}
 
 /* 弹层 */
 .mask{position:fixed;inset:0;background:rgba(8,8,10,.72);backdrop-filter:blur(3px);z-index:80;display:flex;align-items:flex-start;justify-content:center;padding:60px 20px;overflow:auto}
-.modal{background:#191920;border:1px solid #33333e;border-radius:16px;max-width:720px;width:100%;padding:24px 26px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.modal{background:#fffefa;border:1px solid #ced5c9;border-radius:16px;max-width:720px;width:100%;padding:24px 26px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
 .modal .xh{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .modal h2{margin:0;font-size:18px}
 
@@ -312,32 +461,26 @@ textarea{
   width:100%;min-height:280px;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;
   color:var(--txt);padding:14px 16px;font-family:var(--serif);font-size:15px;line-height:1.85;resize:vertical;outline:none;
 }
-textarea:focus{border-color:rgba(168,139,255,.5)}
-mark.e-spell{background:rgba(255,107,122,.25);color:#ffc3c9;border-radius:2px}
-mark.e-gram{background:rgba(240,176,96,.22);color:#ffe0b4;border-radius:2px}
-mark.e-word{background:rgba(168,139,255,.22);color:#ddd0ff;border-radius:2px}
-mark.e-style{background:rgba(67,209,158,.18);color:#b7f0d8;border-radius:2px}
-mark.e-punct{background:rgba(120,180,255,.2);color:#cfe4ff;border-radius:2px}
+textarea:focus{border-color:rgba(46,112,87,.5)}
+mark.e-spell{background:rgba(164,52,67,.25);color:#8b2835;border-radius:2px}
+mark.e-gram{background:rgba(175,111,45,.22);color:#895720;border-radius:2px}
+mark.e-word{background:rgba(46,112,87,.22);color:#245e49;border-radius:2px}
+mark.e-style{background:rgba(28,132,88,.18);color:#146849;border-radius:2px}
+mark.e-punct{background:rgba(120,180,255,.2);color:#285475;border-radius:2px}
 
 /* toast */
 #toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%) translateY(20px);opacity:0;
-  background:#2a2a33;border:1px solid #3c3c48;color:#e9e7f0;padding:10px 18px;border-radius:10px;font-size:13px;
+  background:#233a30;border:1px solid #233a30;color:#f6fbf4;padding:10px 18px;border-radius:10px;font-size:13px;
   z-index:99;transition:.22s;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
 @media (max-width:1080px){
   .qbody{grid-template-columns:1fr}
-  .cols{grid-template-columns:1fr}
   .pgrid{grid-template-columns:repeat(2,1fr)}
   .wgrid{grid-template-columns:1fr}
 }
 @media (max-width:820px){
-  .rail{display:none}
   .wrap{padding:0 16px}
-  .topbar{padding:10px 16px}
-  .hero{padding:22px 20px}
-  .hero h1{font-size:24px}
-  .hero .ghoststat{display:none}
   .stats{grid-template-columns:repeat(2,1fr)}
   .modes{grid-template-columns:1fr}
   .pgrid{grid-template-columns:1fr}
@@ -355,23 +498,13 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#cfe4ff;border-radius:2px}
 /* ===== 单栏答题（听力） ===== */
 .qbody.single{grid-template-columns:minmax(0,760px)}
 
-/* ===== 手机导航 ===== */
-.mobilenav{display:none}
-
 /* ===== 词库字母 ===== */
-.wb .l{color:#a09aae;font-size:11.5px;font-weight:700}
+.wb .l{color:#59685e;font-size:11.5px;font-weight:700}
 
 @media (max-width:820px){
-  .mobilenav{display:flex;gap:7px;overflow-x:auto;padding:10px 16px 2px;-webkit-overflow-scrolling:touch}
-  .mobilenav::-webkit-scrollbar{display:none}
-  .mobilenav .chip{padding:6px 12px;font-size:12.5px;flex:0 0 auto}
-  .topbar .crumb{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:38%}
-  .topbar .right{gap:6px}
-  .topbar .chip.hide-sm{display:none}
   .card.pad0{overflow-x:auto}
   table.t{min-width:520px}
   .qbody.single{grid-template-columns:1fr}
-  .hero .acts .btn{padding:10px 16px;font-size:14px}
   h1{font-size:23px}
   .stem{font-size:15px}
   .stem.en{font-size:15.5px}
@@ -383,12 +516,8 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#cfe4ff;border-radius:2px}
 }
 
 /* ===== 防溢出 ===== */
-.cols>*,.stats>*,.qbody>*,.modes>*,.pgrid>*,.wgrid>*{min-width:0}
+.stats>*,.qbody>*,.modes>*,.pgrid>*,.wgrid>*{min-width:0}
 .card.pad0{max-width:100%}
-@media (max-width:820px){
-  .topbar .right .chip{font-size:11px;padding:3px 7px}
-  .hero .sub{font-size:13px}
-}
 .qbody.single{justify-content:center}
 
 /* ===== 分段切换（单题 / 套卷） ===== */
@@ -396,7 +525,7 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#cfe4ff;border-radius:2px}
 .seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:3px;gap:2px}
 .seg span{padding:8px 18px;border-radius:8px;font-size:13.5px;color:var(--mut);cursor:pointer;transition:.15s;white-space:nowrap}
 .seg span:hover{color:var(--txt)}
-.seg span.on{background:rgba(168,139,255,.16);color:#d9cbff;font-weight:600;box-shadow:inset 0 0 0 1px rgba(168,139,255,.24)}
+.seg span.on{background:rgba(46,112,87,.16);color:#245e49;font-weight:600;box-shadow:inset 0 0 0 1px rgba(46,112,87,.24)}
 
 /* ===== 套卷列表 ===== */
 .plist{display:flex;flex-direction:column}
@@ -408,46 +537,46 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#cfe4ff;border-radius:2px}
 .pacts{display:flex;gap:6px;flex:0 0 auto}
 .pgrid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:14px}
 .pcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;transition:.15s}
-.pcard:hover{border-color:rgba(168,139,255,.34);background:var(--card2);transform:translateY(-1px)}
+.pcard:hover{border-color:rgba(46,112,87,.34);background:var(--card2);transform:translateY(-1px)}
 
 /* ===== 套卷答题条 ===== */
 .exambar{position:sticky;top:0;z-index:18;display:flex;align-items:center;gap:10px;padding:14px 0 12px;
-  background:linear-gradient(to bottom,rgba(17,17,20,.96) 70%,rgba(17,17,20,0));margin-bottom:6px}
+  background:linear-gradient(to bottom,rgba(245,245,239,.96) 70%,rgba(245,245,239,0));margin-bottom:6px}
 .exclock{font-size:14px;color:var(--amber);letter-spacing:.03em}
 .examtabs{display:flex;gap:6px;overflow-x:auto;padding:8px 0 12px;border-bottom:1px solid var(--line);margin-bottom:14px}
 .examtabs::-webkit-scrollbar{display:none}
 .etab{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:9px;
   border:1px solid var(--line);color:var(--mut);font-size:13px;cursor:pointer;background:var(--card)}
 .etab:hover{border-color:var(--line2);color:var(--txt)}
-.etab.on{background:rgba(168,139,255,.14);border-color:rgba(168,139,255,.32);color:#d9cbff}
+.etab.on{background:rgba(46,112,87,.14);border-color:rgba(46,112,87,.32);color:#245e49}
 .etab i{font-style:normal;font-size:11.5px;color:var(--dim);font-variant-numeric:tabular-nums}
-.etab.on i{color:#b6a4ea}
+.etab.on i{color:#32674f}
 
 /* ===== 答题卡 ===== */
 .cardgrid-in{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:7px}
 .ccell{position:relative;display:flex;align-items:center;justify-content:center;height:34px;border-radius:8px;
   border:1px solid var(--line2);background:var(--card2);color:var(--mut);font-size:12.5px;font-variant-numeric:tabular-nums;
   cursor:pointer;transition:.12s;user-select:none}
-.ccell:hover{border-color:var(--acc);color:#d9cbff}
-.ccell.on{background:rgba(168,139,255,.2);border-color:rgba(168,139,255,.45);color:#e2d7ff;font-weight:600}
-.ccell.cur{box-shadow:0 0 0 2px rgba(240,176,96,.5)}
-.ccell.ok{background:rgba(67,209,158,.18);border-color:rgba(67,209,158,.42);color:#8ce8c1}
-.ccell.bad{background:rgba(255,107,122,.16);border-color:rgba(255,107,122,.4);color:#ff9aa5}
+.ccell:hover{border-color:var(--acc);color:#245e49}
+.ccell.on{background:rgba(46,112,87,.2);border-color:rgba(46,112,87,.45);color:#245e49;font-weight:600}
+.ccell.cur{box-shadow:0 0 0 2px rgba(175,111,45,.5)}
+.ccell.ok{background:rgba(28,132,88,.18);border-color:rgba(28,132,88,.42);color:#146849}
+.ccell.bad{background:rgba(164,52,67,.16);border-color:rgba(164,52,67,.4);color:#a33542}
 .ccell.blank{background:var(--card);color:var(--dim)}
 .dot-done{position:absolute;top:3px;left:3px;width:5px;height:5px;border-radius:99px;display:block}
 .dot-done.ok{background:var(--ok)}
 .dot-done.bad{background:var(--bad)}
-.chip.done{color:#cbb6ff;border-color:rgba(168,139,255,.3);background:rgba(168,139,255,.09);font-size:11.5px}
+.chip.done{color:#245e49;border-color:rgba(46,112,87,.3);background:rgba(46,112,87,.09);font-size:11.5px}
 
 /* ===== 套卷写作/翻译输入 ===== */
 .exwrite{width:100%;min-height:190px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;
   color:var(--txt);padding:12px 14px;font-family:var(--serif);font-size:14.5px;line-height:1.85;resize:vertical}
-.exwrite:focus{outline:none;border-color:rgba(168,139,255,.45)}
+.exwrite:focus{outline:none;border-color:rgba(46,112,87,.45)}
 
 /* ===== 单词本 ===== */
 .winput{background:var(--bg2);border:1px solid var(--line);border-radius:8px;color:var(--txt);
   padding:7px 11px;font-size:13px;font-family:inherit;min-width:180px}
-.winput:focus{outline:none;border-color:rgba(168,139,255,.45)}
+.winput:focus{outline:none;border-color:rgba(46,112,87,.45)}
 .wlist{display:flex;flex-direction:column}
 .wrow{display:flex;gap:12px;padding:13px 18px;border-bottom:1px solid var(--line);align-items:flex-start}
 .wrow:last-child{border-bottom:0}
@@ -458,31 +587,31 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#cfe4ff;border-radius:2px}
 .wh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .wh b{font-size:15px;font-family:var(--serif);letter-spacing:.01em}
 .wacts{display:flex;gap:4px;flex-wrap:wrap;flex:0 0 auto}
-.btn.ghost.acc{color:#d9cbff;border-color:rgba(168,139,255,.35);background:rgba(168,139,255,.1)}
+.btn.ghost.acc{color:#245e49;border-color:rgba(46,112,87,.35);background:rgba(46,112,87,.1)}
 .btn.ybtn{background:#e0b400;color:#231c00;border-color:transparent;font-weight:650}
-.btn.rbtn{background:var(--bad);color:#2a0a0e;border-color:transparent;font-weight:650}
+.btn.rbtn{background:var(--bad);color:#fff;border-color:transparent;font-weight:650}
 .wbig{font-size:20px;font-family:var(--serif)}
 
 /* ===== 划词浮动条 / 释义面板 ===== */
-#wbar{position:fixed;z-index:120;display:none;gap:2px;background:#232330;border:1px solid #3b3b49;
+#wbar{position:fixed;z-index:120;display:none;gap:2px;background:#233a30;border:1px solid #ced5c9;
   border-radius:9px;padding:3px;box-shadow:0 10px 30px rgba(0,0,0,.45);
   touch-action:manipulation;-webkit-user-select:none;user-select:none}
 #wbar.on{display:flex}
-#wbar button{background:transparent;border:0;color:#ded9ee;font-size:12.5px;padding:6px 11px;border-radius:6px;cursor:pointer}
-#wbar button:hover{background:rgba(168,139,255,.22);color:#fff}
+#wbar button{background:transparent;border:0;color:#f6fbf4;font-size:12.5px;padding:6px 11px;border-radius:6px;cursor:pointer}
+#wbar button:hover{background:rgba(46,112,87,.22);color:#fff}
 #wpanel{position:fixed;z-index:121;left:50%;transform:translateX(-50%);bottom:22px;width:min(540px,94vw);
-  display:none;background:#20202a;border:1px solid #3b3b49;border-radius:14px;padding:14px 16px;
+  display:none;background:#fffefa;border:1px solid #ced5c9;border-radius:14px;padding:14px 16px;
   box-shadow:0 18px 50px rgba(0,0,0,.5)}
 #wpanel.on{display:block}
 /* 常驻「查」按钮（触摸设备） */
 #wdock{position:fixed;right:13px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:118;
   width:48px;height:48px;border-radius:24px;display:none;flex-direction:column;align-items:center;justify-content:center;
-  gap:1px;background:rgba(38,38,54,.94);border:1px solid #4a4a62;color:#d9cbff;cursor:pointer;
+  gap:1px;background:#245e49;border:1px solid #305b48;color:#fff;cursor:pointer;
   box-shadow:0 10px 26px rgba(0,0,0,.5);backdrop-filter:blur(6px);touch-action:manipulation;
   -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 #wdock b{font-size:15px;font-weight:650;line-height:1.1}
-#wdock small{font-size:9px;color:#9a9ab0;letter-spacing:.02em}
-#wdock:active{transform:scale(.94);background:rgba(168,139,255,.3)}
+#wdock small{font-size:9px;color:#d3e9db;letter-spacing:.02em}
+#wdock:active{transform:scale(.94);background:#194c39}
 @media (max-width:820px){ #wdock{display:flex} }
 
 @media (max-width:820px){
@@ -511,11 +640,11 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#cfe4ff;border-radius:2px}
 }
 
 /* ===== 微信提示条 / 恢复弹窗 ===== */
-.wxhint{display:flex;align-items:center;gap:12px;padding:9px 16px;background:#3a2f12;
-  border-bottom:1px solid #5a4a1c;color:#f0d9a8;font-size:12.5px;line-height:1.6;position:sticky;top:0;z-index:60}
-.wxhint b{color:#ffd479}
-.wxhint.tap{background:#12263a;border-bottom-color:#1d4a6b;color:#c3ddf3}
-.wxhint.tap b{color:#7fd1ff}
+.wxhint{display:flex;align-items:center;gap:12px;padding:9px 16px;background:#f9efd9;
+  border-bottom:1px solid #eedbb9;color:#65481f;font-size:12.5px;line-height:1.6;position:sticky;top:0;z-index:60}
+.wxhint b{color:#68420f}
+.wxhint.tap{background:#e9f2ee;border-bottom-color:#d4e3db;color:#35584a}
+.wxhint.tap b{color:#245e49}
 .taprow{display:flex;align-items:flex-start;gap:8px;margin-top:12px;font-size:12.5px;line-height:1.6;
   color:var(--txt);cursor:pointer}
 .taprow input{margin-top:2px;flex:0 0 auto}
@@ -533,15 +662,6 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#cfe4ff;border-radius:2px}
     max-height:66vh;overflow:auto;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
   .winput{font-size:16px}
   .modalcard{width:94vw;max-height:78vh;padding-bottom:calc(16px + env(safe-area-inset-bottom))}
-}
-
-/* ===== 脑库页架构图：手机上竖排，防止 1fr 被内容撑破 ===== */
-.arch{display:grid;grid-template-columns:1fr 54px 1fr;gap:0;align-items:center}
-.arch>*{min-width:0}
-.arch>.arrow{text-align:center;color:var(--acc);font-size:20px}
-@media (max-width:820px){
-  .arch{grid-template-columns:1fr;gap:10px}
-  .arch>.arrow{transform:rotate(90deg);font-size:18px}
 }
 
 /* 页面级横向溢出兜底：宽表格在 .card.pad0 内部自己滚，不要让整页跟着横滚 */
@@ -1435,12 +1555,12 @@ window.glossPhrase = glossPhrase;
   }
 
   const KIND = {
-    L: { n: '听力', full: '听力理解', color: '#f0b060' },
-    C: { n: '选词', full: '选词填空', color: '#7fd1ff' },
-    M: { n: '匹配', full: '长篇匹配', color: '#9be08a' },
-    R: { n: '阅读', full: '仔细阅读', color: '#a88bff' },
-    W: { n: '写作', full: '短文写作', color: '#ff9ec4' },
-    T: { n: '翻译', full: '段落翻译', color: '#ffcf6b' },
+    L: { n: '听力', full: '听力理解', color: '#8e581b' },
+    C: { n: '选词', full: '选词填空', color: '#286d87' },
+    M: { n: '匹配', full: '长篇匹配', color: '#36683b' },
+    R: { n: '阅读', full: '仔细阅读', color: '#655292' },
+    W: { n: '写作', full: '短文写作', color: '#a13f69' },
+    T: { n: '翻译', full: '段落翻译', color: '#8c640c' },
   };
 
   const CAUSES = [
@@ -1744,167 +1864,166 @@ window.glossPhrase = glossPhrase;
     write: '<path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M14 6l4 4"/>',
     words: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v18H6.5A2.5 2.5 0 0 0 4 23V5.5z"/><path d="M8 8h8M8 12h6"/>',
     paper: '<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 12h6M10 16h6"/>',
+    arrow: '<path d="M4 12h15m-6-6 6 6-6 6"/>',
+    chevron: '<path d="m9 6 6 6-6 6"/>',
+    search: '<circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    download: '<path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/>',
   };
   function svg(p, cls) {
-    return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
+    return '<svg aria-hidden="true" focusable="false" class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
   }
 
   /* ================= 框架 ================= */
   const NAV = [
-    ['desk', '工作台', 'desk', ''],
-    ['train', '训练', 'train', ''],
-    ['brain', '考点地图', 'brain', String(PTS.length)],
-    ['wrong', '错题本', 'wrong', ''],
-    ['words', '单词本', 'words', ''],
-    ['stats', '数据', 'stats', ''],
-    ['write', '写作翻译', 'write', ''],
+    ['desk', '工作台', 'desk'],
+    ['train', '训练', 'train'],
+    ['brain', '考点地图', 'brain'],
+    ['wrong', '错题本', 'wrong'],
+    ['words', '单词本', 'words'],
+    ['stats', '学习数据', 'stats'],
+    ['write', '写作翻译', 'write'],
+    ['vault', 'Obsidian 脑库', 'vault'],
   ];
 
+  function navButton([key, label, icon], mobile) {
+    const page = view === 'run' || view === 'paperReview' ? 'train' : view;
+    const active = page === key;
+    return '<button type="button" class="' + (mobile ? 'mobile-tab' : 'nav-item') + (active ? ' on' : '') + '"' +
+      (active ? ' aria-current="page"' : '') + ' onclick="DESK.go(\'' + key + '\')">' +
+      (mobile ? '' : svg(IC[icon])) + '<span>' + label + '</span></button>';
+  }
+
   function rail() {
-    const wn = Object.keys(S.wrong).length;
     return '<aside class="rail">' +
-      '<div class="brand"><div class="logo">' + svg('<path d="M12 3 2 9l10 6 10-6-10-6z" stroke="#3a2408" stroke-width="1.6"/><path d="M6 12v4c0 1.7 2.7 3 6 3s6-1.3 6-3v-4" stroke="#3a2408" stroke-width="1.6"/>') + '</div>' +
-      '<div><b>四级训练工作台</b><span>CET-4 Desk</span></div></div>' +
-      NAV.map(([k, n, ic, cnt]) => {
-        const c = k === 'wrong' ? (wn || '') : k === 'words' ? ((S.words || []).length || '') : cnt;
-        return '<div class="nav-item ' + (view === k || (k === 'train' && view === 'run') ? 'on' : '') + '" onclick="DESK.go(\'' + k + '\')">' +
-          svg(IC[ic]) + '<span>' + n + '</span>' + (c ? '<span class="k">' + c + '</span>' : '') + '</div>';
-      }).join('') +
-      '<div class="nav-sep">Super brain</div>' +
-      '<div class="nav-item" onclick="DESK.go(\'vault\')">' + svg(IC.vault) + '<span>Obsidian 脑库</span><span class="k">' + (VAULT.total || 0) + '</span></div>' +
-      '<div class="rail-foot">训练在前台，沉淀在脑库。<br><b>' + QS.length + '</b> 题 · <b>' + (Object.keys(PP).length) + '</b> 套卷 · <b>' + PTS.length + '</b> 考点</div>' +
-      '</aside>';
+      '<button type="button" class="brand" onclick="DESK.go(\'desk\')"><span class="logo">' +
+      svg(IC.words) + '</span><span><b>四级训练工作台</b><span class="brand-sub">CET-4 WORKBENCH</span></span></button>' +
+      '<nav class="rail-nav" aria-label="工作台导航"><div class="nav-sep">学习空间</div>' +
+      NAV.slice(0, -1).map(item => navButton(item, false)).join('') +
+      '<div class="nav-sep">学习资料</div>' + navButton(NAV[NAV.length - 1], false) + '</nav>' +
+      '<div class="rail-foot"><span class="rail-foot-dot" aria-hidden="true"></span>离线题库' +
+      '<div>' + Object.keys(PP).length + ' 套真题 · ' + PTS.length + ' 个考点</div></div></aside>';
   }
 
   function mobileNav() {
-    return '<div class="mobilenav">' + NAV.map(([k, n]) =>
-      '<span class="chip click ' + (view === k ? 'acc' : '') + '" onclick="DESK.go(\'' + k + '\')">' + n + '</span>').join('') +
-      '<span class="chip click ' + (view === 'vault' ? 'acc' : '') + '" onclick="DESK.go(\'vault\')">脑库</span></div>';
+    const items = [...NAV.slice(0, 2), NAV[NAV.length - 1], ...NAV.slice(2, -1)];
+    return '<nav class="mobilenav" aria-label="工作台导航">' + items.map(item => navButton(item, true)).join('') + '</nav>';
   }
 
   function topbar(crumb) {
-    const acc = overallAcc();
-    return '<div class="topbar"><div class="crumb">' + crumb + '</div><div class="right">' +
-      '<span class="chip click" onclick="DESK.search()" title="查词 / 译句">查词</span>' +
-      '<span class="chip hide-sm">连续 ' + streak() + ' 天</span>' +
-      '<span class="chip">今日 ' + ((S.days[today()] || {}).n || 0) + ' 题</span>' +
-      (acc != null ? '<span class="chip acc hide-sm">总正确率 ' + Math.round(acc * 100) + '%</span>' : '') +
-      '<span class="chip click" onclick="DESK.runDiag()" title="划词与存储自检">自检</span>' +
-      '</div></div>';
+    return '<header class="topbar"><div class="crumb">' + crumb + '</div><div class="right">' +
+      '<button type="button" class="btn sm utility" onclick="DESK.search()" title="查词 / 译句">' + svg(IC.search) + '查词</button>' +
+      '<button type="button" class="btn sm utility" onclick="DESK.runDiag()" title="划词与存储自检">自检</button>' +
+      '</div></header>';
   }
 
   /* ================= 工作台 ================= */
   function viewDesk() {
     const day = S.days[today()] || { n: 0, r: 0 };
     const acc7 = acc7days();
-    const wp = weakPoints(3);
+    const wrong = Object.keys(S.wrong).length;
     const preview = previewSet();
     const recent = S.runs.slice(-5).reverse();
+    const papers = Object.keys(S.papers || {}).sort((a, b) => (S.papers[b].ts || 0) - (S.papers[a].ts || 0)).slice(0, 3);
 
-    let h = '<div class="wrap"><div class="hero">' +
-      '<div class="tagline">Training desk · 训练前台</div>' +
-      '<h1>四级训练工作台</h1>' +
-      '<div class="sub">在这里做题、判分、归因；每道题的答案依据与错因，都会变成 Obsidian 脑库里的一个节点。</div>' +
-      '<div class="acts">' +
-      '<button class="btn pri lg" onclick="DESK.go(\'train\')">开始训练 →</button>' +
-      '<button class="btn lg ghost" onclick="DESK.quickWrong()">错题重练' + (Object.keys(S.wrong).length ? '（' + Object.keys(S.wrong).length + '）' : '') + '</button>' +
-      '<button class="btn lg ghost" onclick="DESK.go(\'brain\')">看考点地图</button>' +
-      '</div>' +
-      '<div class="ghoststat">脑库已收录<br><b>' + (VAULT.total || 0) + '</b> 篇笔记<br><span style="font-size:11px">' + (VAULT.detail || '') + '</span></div>' +
-      '</div>';
+    let h = '<div class="wrap desk-home"><section class="hero" aria-labelledby="desk-title">' +
+      '<div class="hero-art" aria-hidden="true"><span class="hero-sheet hero-sheet-back"></span>' +
+      '<span class="hero-sheet hero-sheet-front"></span><span class="hero-orbit"></span></div>' +
+      '<div class="hero-copy"><div class="hero-meta"><span></span>大学英语四级</div>' +
+      '<h1 id="desk-title">四级训练工作台</h1>' +
+      '<p>按考点刷真题，按考试节奏做模考。</p><div class="acts">' +
+      '<button class="btn lg hero-primary" onclick="DESK.startSetup(\'smart\',10)">开始训练' + svg(IC.arrow) + '</button>' +
+      '<button class="btn lg hero-secondary" onclick="DESK.openPapers()">套卷模考</button>' +
+      '</div></div></section>';
 
-    h += '<div class="stats">' +
-      statCard('今日训练', day.n, '题', day.n ? '对 ' + day.r + ' 题 · ' + Math.round(day.r / day.n * 100) + '%' : '还没开始') +
-      statCard('近 7 天正确率', acc7 == null ? '—' : Math.round(acc7 * 100), acc7 == null ? '' : '%', acc7 == null ? '答几题就有数' : '按作答次数算') +
-      statCard('连续训练', streak(), '天', streak() > 1 ? '保持住' : '今天算第一天') +
-      statCard('脑库节点', VAULT.total || 0, '篇', '题 / 考点 / 材料 三层互链') +
-      '</div>';
+    h += '<div class="stats desk-stats">' +
+      statCard('今日训练', day.n, '题', day.n ? '答对 ' + day.r + ' 题' : '今日还未作答', IC.paper) +
+      statCard('近 7 天正确率', acc7 == null ? '—' : Math.round(acc7 * 100), acc7 == null ? '' : '%', acc7 == null ? '暂无作答记录' : '每题取最近一次', IC.target) +
+      statCard('连续训练', streak(), '天', '', IC.stats) +
+      statCard('待重练错题', wrong, '题', '', IC.wrong, 'DESK.quickWrong()') + '</div>';
 
-    // 今日一组
-    h += '<div class="cols"><div>';
-    h += '<h2>今日这一组</h2><div class="card pad0"><div style="padding:16px 18px 12px"><div class="row">' +
-      '<div class="grow"><b style="font-size:14.5px">' + preview.title + '</b><div class="small">' + preview.desc + '</div></div>' +
-      '<button class="btn pri sm" onclick="DESK.startSetup(\'smart\',10)">就用这组</button></div></div>' +
-      '<div style="border-top:1px solid var(--line)">' + preview.list + '</div></div>';
+    h += '<div class="desk-grid"><div class="desk-stack">' +
+      '<section class="card desk-panel"><div class="desk-panel-head">' +
+      '<div class="grow"><h2>今日推荐</h2><p>' + preview.title + '</p></div>' +
+      '<button class="btn pri" onclick="DESK.startSetup(\'smart\',10)">练这组' + svg(IC.arrow) + '</button></div>' +
+      '<div class="desk-panel-note small">' + preview.desc + '</div>' +
+      '<div class="desk-questions">' + preview.list + '</div></section>';
 
-    // 最近训练
-    h += '<h2>最近训练</h2>';
-    if (!recent.length) {
-      h += '<div class="card"><div class="empty"><b>还没有训练记录</b>做完一组，这里会出现你的正确率、用时和薄弱考点。</div></div>';
-    } else {
-      h += '<div class="card pad0" style="overflow:hidden"><table class="t"><thead><tr><th>时间</th><th>方式</th><th class="num">题量</th><th class="num">正确率</th><th class="num">用时</th></tr></thead><tbody>' +
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>最近训练</h2>' +
+      '<button class="btn sm ghost" onclick="DESK.go(\'stats\')">查看数据' + svg(IC.arrow) + '</button></div>';
+    if (recent.length) {
+      h += '<div class="desk-table"><table class="t"><thead><tr><th>时间</th><th>方式</th><th class="num">题量</th><th class="num">正确率</th><th class="num">用时</th></tr></thead><tbody>' +
         recent.map(r => {
           const acc = r.n ? r.right / r.n : null;
           return '<tr><td class="dim mono">' + r.date + ' ' + pad(r.hh) + ':' + pad(r.mm) + '</td><td>' + esc(r.modeName) + '</td><td class="num mono">' + r.n + '</td>' +
             '<td class="num mono" style="color:' + (acc === null ? 'var(--dim)' : acc >= 0.7 ? 'var(--ok)' : 'var(--bad)') + '">' + (acc === null ? '—' : Math.round(acc * 100) + '%') + '</td>' +
             '<td class="num mono dim">' + fmtDur(r.dur) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
-    }
-    // 套卷：最近做过的
-    const pk = Object.keys(S.papers || {}).sort((a, b) => (S.papers[b].ts || 0) - (S.papers[a].ts || 0)).slice(0, 3);
-    h += '<h2>套卷模考</h2>';
-    if (!pk.length) {
-      h += '<div class="card"><div class="empty" style="padding:20px"><b>还没做过整卷</b>' +
-        Object.keys(PP).length + ' 套真题 + ' + Object.keys(MOCKS).length + ' 套模考，整卷计时、交卷给分、逐题解析。</div>' +
-        '<div style="margin-top:12px"><button class="btn pri sm" onclick="DESK.openPapers()">挑一套开始</button></div></div>';
     } else {
-      h += '<div class="card pad0"><table class="t"><thead><tr><th>卷</th><th class="num">客观题</th><th class="num">估算分</th><th class="num">日期</th><th></th></tr></thead><tbody>' +
-        pk.map(k => {
-          const r = S.papers[k];
-          const P = PAPER[k] || {};
-          return '<tr><td>' + esc(P.label || k) + '</td>' +
-            '<td class="num mono">' + r.right + '/' + r.total + '</td>' +
-            '<td class="num mono">' + (r.score || '—') + '</td>' +
-            '<td class="num dim mono">' + r.date + '</td>' +
-            '<td><button class="btn sm ghost" onclick="DESK.startPaper(\'' + k + '\')">再做</button></td></tr>';
-        }).join('') + '</tbody></table></div>' +
-        '<div style="margin-top:10px"><button class="btn sm ghost" onclick="DESK.openPapers()">全部套卷 →</button></div>';
+      h += '<div class="desk-panel-note small">完成一组后，可在这里查看正确率和用时。</div>';
     }
-    h += '</div>';
+    h += '</section>';
 
-    // 右侧：薄弱考点
-    h += '<div><h2>该补的考点</h2><div class="card">';
-    if (!wp.length) {
-      h += '<div class="small">先做一组题，我按你的错题算出最该补的三个考点。</div>' +
-        '<div class="sep"></div><div class="small dim">还没数据时，先按真题分布推荐：仔细阅读 → 长篇匹配 → 选词填空。</div>';
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>套卷记录</h2>' +
+      '<button class="btn sm ghost" onclick="DESK.openPapers()">全部套卷' + svg(IC.arrow) + '</button></div>';
+    if (papers.length) {
+      h += '<div class="desk-table"><table class="t"><thead><tr><th>试卷</th><th class="num">客观题</th><th class="num">估算分</th><th class="num">日期</th><th></th></tr></thead><tbody>' +
+        papers.map(key => {
+          const r = S.papers[key];
+          const paper = PAPER[key] || {};
+          return '<tr><td>' + esc(paper.label || key) + '</td><td class="num mono">' + r.right + '/' + r.total + '</td>' +
+            '<td class="num mono">' + (r.score || '—') + '</td><td class="num dim mono">' + r.date + '</td>' +
+            '<td><button class="btn sm ghost" onclick="DESK.startPaper(\'' + key + '\')">再做</button></td></tr>';
+        }).join('') + '</tbody></table></div>';
     } else {
-      h += wp.map((x, i) => {
-        const p = PMAP[x.id] || { name: x.id };
-        const m = mastery(x.id);
-        return '<div style="padding:9px 0;' + (i ? 'border-top:1px solid var(--line)' : '') + '">' +
-          '<div class="row"><div class="grow"><b style="font-size:13.5px">' + esc(p.name) + '</b> <span class="dim" style="font-size:11.5px">' + x.id + '</span></div>' +
-          '<span class="mono" style="font-size:12.5px;color:' + (m < 0.5 ? 'var(--bad)' : 'var(--amber)') + '">' + Math.round((m || 0) * 100) + '%</span></div>' +
-          '<div class="bar" style="margin-top:6px"><i style="width:' + Math.round((m || 0) * 100) + '%;background:' + (m < 0.5 ? 'var(--bad)' : 'var(--amber)') + '"></i></div>' +
-          '<div class="row" style="margin-top:6px"><span class="small dim">练过 ' + x.seen + ' 次</span>' +
-          '<button class="btn sm ghost" style="margin-left:auto" onclick="DESK.startPoint(\'' + x.id + '\')">专攻 →</button></div></div>';
-      }).join('');
+      h += '<div class="desk-panel-note small">' + Object.keys(PP).length + ' 套真题与 ' + Object.keys(MOCKS).length + ' 套模考。交卷后可逐题复盘。</div>';
     }
-    h += '</div>';
+    h += '</section></div><div class="desk-stack">';
 
-    h += '<h2>训练方式</h2><div class="card"><div class="list">' +
-      '<div class="li" onclick="DESK.openPapers()"><div class="grow"><b style="font-weight:600">套卷模考</b>' +
-      '<div class="small" style="margin-top:1px">20 套真题整卷 + 4 套自建模考，计时做、交卷判分</div></div><span class="dim">→</span></div>' +
-      modeRow('智能组卷', '按薄弱考点抽题，阅读/听力/匹配/选词混排', 'smart') +
-      modeRow('弱项专攻', '只打你最不稳的考点', 'weak') +
-      modeRow('整块专项', '一次只练一个模块', 'module') +
-      modeRow('没做过的题', '优先抽你没答过的真题', 'new') +
-      '</div></div>';
+    const weak = weakPoints(3);
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>薄弱考点</h2>' +
+      '<button class="btn sm ghost" onclick="DESK.go(\'brain\')">考点地图' + svg(IC.arrow) + '</button></div>';
+    if (weak.length) {
+      h += '<div class="desk-weak-list">' + weak.map(item => {
+        const point = PMAP[item.id] || { name: item.id };
+        const rate = Math.round((mastery(item.id) || 0) * 100);
+        return '<div class="desk-weak"><div class="row"><strong class="grow">' + esc(point.name) + '</strong><span class="mono">' + rate + '%</span></div>' +
+          '<div class="bar"><i style="width:' + rate + '%"></i></div><div class="row"><span class="small grow">练过 ' + item.seen + ' 次</span>' +
+          '<button class="btn sm ghost" onclick="DESK.startPoint(\'' + item.id + '\')">专攻</button></div></div>';
+      }).join('') + '</div>';
+    } else {
+      h += '<div class="desk-panel-note small">完成练习后，这里会列出优先复习的考点。</div>';
+    }
+    h += '</section>';
 
-    h += '<h2>沉淀</h2><div class="card"><div class="small">做完一组 → 生成 <b>复盘 md</b> → 丢进 Obsidian 的 <b>04-复盘</b>。' +
-      '每条错题都会带 <code>[[' + '考点]]</code> 和 <code>[[' + '题目]]</code> 双链，图谱自动长出新的连接。</div>' +
-      '<div style="margin-top:10px"><button class="btn sm ghost" onclick="DESK.go(\'vault\')">怎么接脑库 →</button></div></div>';
+    h += '<section class="card desk-vault"><div class="desk-vault-icon">' + svg(IC.vault) + '</div>' +
+      '<h2>Obsidian 脑库</h2><p>导出 Markdown 复盘，放进 <code>04-复盘/</code>，串起真题和考点。</p>' +
+      '<button class="btn sm ghost" onclick="DESK.go(\'vault\')">导出与导入说明' + svg(IC.arrow) + '</button></section>';
 
-    h += '</div></div></div>';
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>其他训练方式</h2></div><div class="desk-modes">' +
+      modeRow('弱项专攻', '集中练正确率偏低的考点', 'weak') +
+      modeRow('整块专项', '按听力、阅读等模块练习', 'module') +
+      modeRow('没做过的题', '优先覆盖还没作答的真题', 'new') +
+      '</div></section></div></div></div>';
     return h;
   }
 
-  function statCard(lb, v, unit, ft) {
-    return '<div class="stat"><div class="lb">' + lb + '</div><div class="vv">' + v + (unit ? '<small>' + unit + '</small>' : '') + '</div><div class="ft">' + esc(ft || '') + '</div></div>';
+  function statCard(label, value, unit, detail, icon, action) {
+    const tag = action ? 'button' : 'div';
+    return '<' + tag + ' class="stat' + (action ? ' stat-action' : '') + '"' +
+      (action ? ' type="button" onclick="' + action + '"' : '') + '>' +
+      '<span class="stat-head"><span class="lb">' + label + '</span>' +
+      (icon ? '<span class="stat-icon">' + svg(icon) + '</span>' : '') + '</span>' +
+      '<span class="vv">' + value + (unit ? '<small>' + unit + '</small>' : '') + '</span>' +
+      (detail ? '<span class="ft">' + esc(detail) + '</span>' : '') +
+      (action ? '<span class="stat-arrow">' + svg(IC.arrow) + '</span>' : '') + '</' + tag + '>';
   }
+
   function modeRow(name, desc, mode) {
-    return '<div class="li" onclick="DESK.startSetup(\'' + mode + '\',10)"><div class="grow"><b style="font-weight:600">' + name + '</b>' +
-      '<div class="small" style="margin-top:1px">' + desc + '</div></div><span class="dim">→</span></div>';
+    return '<button type="button" class="desk-mode" onclick="DESK.startSetup(\'' + mode + '\',10)">' +
+      '<span class="grow"><strong>' + name + '</strong><span class="small">' + desc + '</span></span>' + svg(IC.chevron) + '</button>';
   }
+
   function acc7days() {
     let s = 0, r = 0;
     const now = Date.now();
@@ -1931,13 +2050,12 @@ window.glossPhrase = glossPhrase;
     return {
       title: '智能组卷 · 10 题',
       desc: '听力 3 · 选词 2 · 匹配 2 · 阅读 3，优先抽你没做过的、以及错过的考点',
-      list: list.map((q, i) => '<div class="li" onclick="DESK.previewOne(\'' + q.id + '\')">' +
-        '<span class="idx">' + pad(i + 1) + '</span>' +
+      list: list.map(q => '<button type="button" class="desk-question" onclick="DESK.previewOne(\'' + q.id + '\')">' +
         '<span class="chip" style="flex:0 0 auto">' + KIND[q.k].n + '</span>' +
         '<span class="grow" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(cut(
           q.k === 'C' ? ctxOf(q) : q.st || ('第 ' + q.n + ' 题 · ' + q.ty + ' · ' + (q.o[0] || '')), 62)) + '</span>' +
         (S.qs[q.id] ? '<span class="chip done" style="flex:0 0 auto">做过 · 上次' + (S.qs[q.id].ok ? '对' : '错') + '</span>' : '') +
-        '<span class="dim" style="font-size:11.5px">' + (q.pt[0] || '') + '</span></div>').join(''),
+        '<span class="question-point dim">' + (q.pt[0] || '') + '</span>' + svg(IC.chevron) + '</button>').join(''),
     };
   }
 
@@ -2316,7 +2434,7 @@ window.glossPhrase = glossPhrase;
     let h = '<div class="wrap"><div class="scorehero">' +
       ring(acc) +
       '<div class="grow"><div class="small dim">' + esc(P.label) + ' · 已交卷</div>' +
-      '<div style="font-size:22px;font-weight:650;margin:2px 0 6px">估算 <span style="color:#a88bff">' + score + '</span> / 710' +
+      '<div style="font-size:22px;font-weight:650;margin:2px 0 6px">估算 <span style="color:#655292">' + score + '</span> / 710' +
       (self.w || self.t ? '' : '<span class="small dim" style="font-size:12px;font-weight:400"> · 主观题未自评</span>') + '</div>' +
       '<div class="small">客观题 ' + right + ' / ' + obj.length + ' 对' + (blank ? '（' + blank + ' 题空着）' : '') +
       ' · 客观得分 ' + Math.round((sess.objGot || 0) * 10) / 10 + ' / ' + Math.round((sess.objMax || 0) * 10) / 10 +
@@ -2540,7 +2658,7 @@ window.glossPhrase = glossPhrase;
         const pickL = wq ? sess.ans[wq.id] : undefined;
         const mine = pickL !== undefined ? ((u.bank.find(b => b.l === pickL) || {}).w || '') : '';
         const ok = wq ? pickL === wq.a : false;
-        const color = (jd && pickL !== undefined) ? 'border-bottom-color:' + (ok ? 'var(--ok)' : 'var(--bad)') + ';color:' + (ok ? '#a9f0d3' : '#ffc3c9') : '';
+        const color = (jd && pickL !== undefined) ? 'border-bottom-color:' + (ok ? 'var(--ok)' : 'var(--bad)') + ';color:' + (ok ? 'var(--ok)' : 'var(--bad)') : '';
         const tapAttr = ' onclick="DESK.pickBlank(' + (+n) + ')"';
         const cls = 'blank' + (same ? ' cur' : '') + (mine ? ' filled' : '');
         return '<span class="' + cls + '" data-n="' + (+n) + '"' + tapAttr +
@@ -2788,7 +2906,7 @@ window.glossPhrase = glossPhrase;
       const html = ws.map(tok => {
         const k = tok.toLowerCase().replace(/[^a-z'-]/g, '');
         const k5 = k.slice(0, 5);
-        if (k.length > 2 && freq[k5] === 1) return '<b style="color:#ffd9a3">' + esc(tok) + '</b>';
+        if (k.length > 2 && freq[k5] === 1) return '<b style="color:var(--amber)">' + esc(tok) + '</b>';
         return esc(tok);
       }).join('');
       return '<div class="dist-item"><span class="lb" style="color:' + (l === q.a ? 'var(--ok)' : 'var(--mut)') + '">' + l + '</span>' +
@@ -3145,9 +3263,9 @@ window.glossPhrase = glossPhrase;
   function ring(acc) {
     const R = 44, C = 2 * Math.PI * R;
     const on = Math.max(0, Math.min(1, acc)) * C;
-    const col = acc >= 0.8 ? '#43d19e' : acc >= 0.6 ? '#f0b060' : '#ff6b7a';
+    const col = acc >= 0.8 ? '#157153' : acc >= 0.6 ? '#8e581b' : '#a83745';
     return '<div class="ring"><svg width="104" height="104" viewBox="0 0 104 104">' +
-      '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="#2b2b34" stroke-width="8"/>' +
+      '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="#e1e3da" stroke-width="8"/>' +
       '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="' + col + '" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + on + ' ' + C + '"/>' +
       '</svg><div class="num"><b style="color:' + col + '">' + Math.round(acc * 100) + '%</b><span>正确率</span></div></div>';
   }
@@ -3167,7 +3285,7 @@ window.glossPhrase = glossPhrase;
       '<div class="row wrap" style="gap:12px;margin:2px 0 8px">' +
       [['L', '听力'], ['R', '仔细阅读'], ['D', '干扰项'], ['C', '选词填空'], ['M', '长篇匹配'], ['W', '写作'], ['T', '翻译']].map(([k, n]) =>
         '<span class="small dim" style="display:inline-flex;align-items:center;gap:5px"><i style="width:7px;height:7px;border-radius:99px;background:' +
-        ({ L: '#f0b060', R: '#a88bff', D: '#ff8f6b', C: '#7fd1ff', M: '#9be08a', W: '#ff9ec4', T: '#ffcf6b' })[k] + ';display:inline-block"></i>' + n + '</span>').join('') +
+        ({ L: '#8e581b', R: '#655292', D: '#a34b35', C: '#286d87', M: '#36683b', W: '#a13f69', T: '#8c640c' })[k] + ';display:inline-block"></i>' + n + '</span>').join('') +
       '<span class="small dim" style="margin-left:6px">· 半透明 = 还没练过</span></div>' +
       graphSVG() + '</div>';
 
@@ -3187,7 +3305,7 @@ window.glossPhrase = glossPhrase;
         const pct = m == null ? 0 : Math.round(m * 100);
         h += '<div class="pcard" onclick="DESK.openPoint(\'' + p.id + '\')">' +
           '<div class="id">' + p.id + '</div><b>' + esc(p.name) + '</b>' +
-          '<div class="mt"><div class="bar"><i style="width:' + pct + '%;background:' + (m == null ? '#3a3a45' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></div>' +
+          '<div class="mt"><div class="bar"><i style="width:' + pct + '%;background:' + (m == null ? '#d4dacd' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></div>' +
           '<span class="mono">' + (m == null ? '未练' : pct + '%') + '</span></div>' +
           '<div class="small dim" style="margin-top:6px">' + p.n + ' 题 · 我练过 ' + st.s + ' 次</div>' +
           '</div>';
@@ -3204,7 +3322,7 @@ window.glossPhrase = glossPhrase;
   /* 考点共现网络：同题共现 + 同篇材料共现 */
   function graphSVG() {
     const W = 1040, H = 430;
-    const MODC = { L: '#f0b060', C: '#7fd1ff', M: '#9be08a', R: '#a88bff', D: '#ff8f6b', W: '#ff9ec4', T: '#ffcf6b' };
+    const MODC = { L: '#8e581b', C: '#286d87', M: '#36683b', R: '#655292', D: '#a34b35', W: '#a13f69', T: '#8c640c' };
     const nodes = PTS.map(p => ({
       id: p.id, name: p.name, mod: p.id[0], n: p.n,
       m: mastery(p.id), x: 0, y: 0, vx: 0, vy: 0,
@@ -3310,16 +3428,16 @@ window.glossPhrase = glossPhrase;
       const k = e.w / maxW;
       const op = 0.07 + k * 0.33;
       return '<line x1="' + a.x.toFixed(1) + '" y1="' + a.y.toFixed(1) + '" x2="' + b.x.toFixed(1) + '" y2="' + b.y.toFixed(1) +
-        '" stroke="#b9a6ff" stroke-opacity="' + op.toFixed(2) + '" stroke-width="' + (0.5 + k * 1.8).toFixed(1) + '"/>';
+        '" stroke="#8a77ab" stroke-opacity="' + op.toFixed(2) + '" stroke-width="' + (0.5 + k * 1.8).toFixed(1) + '"/>';
     }).join('');
 
     const dots = nodes.map(n => {
       const r = 4.4 + Math.min(4.5, Math.log(1 + n.n) * 1.0);
-      const col = n.m == null ? MODC[n.mod] : n.m >= 0.8 ? '#43d19e' : n.m >= 0.6 ? '#f0b060' : '#ff6b7a';
+      const col = n.m == null ? MODC[n.mod] : n.m >= 0.8 ? '#157153' : n.m >= 0.6 ? '#8e581b' : '#a83745';
       const fillOp = n.m == null ? 0.42 : 0.9;
       return '<g style="cursor:pointer" onclick="DESK.openPoint(\'' + n.id + '\')"><title>' + esc(n.id + ' ' + n.name) + ' · ' + n.n + ' 题 · ' + (n.m == null ? '未练' : Math.round(n.m * 100) + '%') + '</title>' +
-        '<circle cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + col + '" fill-opacity="' + fillOp + '" stroke="#0d0d10" stroke-width="1.1"/>' +
-        '<text x="' + (n.x + r + 3).toFixed(1) + '" y="' + (n.y + 3).toFixed(1) + '" font-size="9.5" fill="#8d8a99" font-family="ui-monospace,monospace">' + n.id + '</text></g>';
+        '<circle cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + col + '" fill-opacity="' + fillOp + '" stroke="#f5f5ef" stroke-width="1.1"/>' +
+        '<text x="' + (n.x + r + 3).toFixed(1) + '" y="' + (n.y + 3).toFixed(1) + '" font-size="9.5" fill="#535954" font-family="ui-monospace,monospace">' + n.id + '</text></g>';
     }).join('');
 
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">' + lines + glabels + dots + '</svg>';
@@ -4407,43 +4525,25 @@ window.glossPhrase = glossPhrase;
       ['05–09', '模考、报告、知识、思路、疑点', byDir.rest || 0],
     ];
 
-    let h = '<div class="wrap"><div style="margin-top:22px"><h1>脑库连接</h1>' +
-      '<div class="small" style="margin-top:6px">这个网页是<b>训练前台</b>，Obsidian 是<b>超级大脑</b>。前台负责做题和判分，大脑负责把答案依据、错因、考点织成一张网。</div></div>';
+    let h = '<div class="wrap vault-page"><div class="vault-page-head"><span class="desk-vault-icon">' + svg(IC.vault) + '</span>' +
+      '<div><h1>Obsidian 脑库</h1><p>下载 Markdown，按下方路径导入四级英语库。笔记里的双链可跳到对应的真题和考点。</p></div></div>';
 
-    // 架构图
-    h += '<div class="card" style="margin-top:18px;padding:22px 24px">' +
-      '<div class="arch">' +
-      '<div style="border:1px solid rgba(168,139,255,.35);background:rgba(168,139,255,.07);border-radius:12px;padding:16px 18px">' +
-      '<div class="small dim" style="letter-spacing:.12em">FRONT · 前台</div>' +
-      '<b style="font-size:15px">四级训练工作台</b>' +
-      '<div class="small" style="margin-top:6px">抽题 · 作答 · 判分 · 归因<br>' + Object.keys(S.qs).length + ' 次作答记录存在本机</div></div>' +
-      '<div class="arrow">→</div>' +
-      '<div style="border:1px solid rgba(240,176,96,.35);background:rgba(240,176,96,.06);border-radius:12px;padding:16px 18px">' +
-      '<div class="small dim" style="letter-spacing:.12em">BRAIN · 大脑</div>' +
-      '<b style="font-size:15px">Obsidian 四级脑库</b>' +
-      '<div class="small" style="margin-top:6px">' + (VAULT.total || 0) + ' 篇笔记 · 真题 ↔ 考点 ↔ 材料<br>图谱里每个节点都是一道题或一条规律</div></div>' +
-      '</div>' +
-      '<div class="small dim" style="margin-top:14px">中间的箭头只有一条路：<b>导出的复盘 md</b>。前台不直接改你的库，你确认后才放进去——库是你的，不被程序乱写。</div>' +
-      '</div>';
+    const exports = [
+      ['本次训练复盘', '本次作答的正确率、错题、错因和依据句。', '04-复盘/', 'exportSession'],
+      ['错题本快照', '按考点整理的全部错题和错因统计。', '04-复盘/00-错题本.md', 'exportWrong'],
+      ['考点诊断', '每个考点的正确率、样本数和优先复习项。', '06-报告/', 'exportPoints'],
+    ];
+    h += '<div class="vault-section-head"><h2>下载 Markdown</h2>' +
+      '<button class="btn sm ghost" onclick="DESK.exportAll()">全部下载</button></div><div class="vault-exports">' +
+      exports.map(([title, description, destination, action]) =>
+        '<section class="card vault-export"><h3>' + title + '</h3><p class="small">' + description + '</p>' +
+        '<div class="vault-path"><span>' + (action === 'exportWrong' ? '改名后覆盖' : '放入') + '</span> <code>' + destination + '</code></div>' +
+        '<button class="btn pri sm" onclick="DESK.' + action + '()">下载 .md' + svg(IC.download) + '</button></section>').join('') + '</div>';
 
-    h += '<h2>库里现在有什么</h2><div class="card pad0"><table class="t"><thead><tr><th>目录</th><th>内容</th><th class="num">笔记</th></tr></thead><tbody>' +
+    h += '<h2>脑库目录</h2><div class="card pad0"><table class="t"><thead><tr><th>目录</th><th>内容</th><th class="num">笔记</th></tr></thead><tbody>' +
       rows.map(r => '<tr><td class="mono">' + r[0] + '</td><td class="dim">' + r[1] + '</td><td class="num mono">' + r[2] + '</td></tr>').join('') +
       '<tr><td class="mono">合计</td><td></td><td class="num mono" style="color:var(--acc)">' + (VAULT.total || 0) + '</td></tr>' +
       '</tbody></table></div>';
-
-    h += '<h2>把这次训练写进大脑</h2><div class="modes">' +
-      '<div class="mode" onclick="DESK.exportSession()"><div class="ic">SESSION</div><b>本次训练复盘</b>' +
-      '<p>本次题量、正确率、每道错题的我选/答案/错因/依据句，带 <code>[[考点]]</code> 与 <code>[[题目]]</code> 双链。</p>' +
-      '<div class="small dim" style="margin-top:8px">→ 放到 <code>04-复盘/</code></div></div>' +
-      '<div class="mode" onclick="DESK.exportWrong()"><div class="ic">WRONG BOOK</div><b>错题本快照</b>' +
-      '<p>按考点分组的全部错题，附错因统计。适合每周日导一次，替换旧快照。</p>' +
-      '<div class="small dim" style="margin-top:8px">→ 覆盖 <code>04-复盘/00-错题本.md</code></div></div>' +
-      '<div class="mode" onclick="DESK.exportPoints()"><div class="ic">DIAGNOSIS</div><b>考点诊断</b>' +
-      '<p>43 个考点的实测正确率、样本数、最该补的三个，带考点双链。</p>' +
-      '<div class="small dim" style="margin-top:8px">→ 放到 <code>06-报告/</code></div></div>' +
-      '<div class="mode" onclick="DESK.exportAll()"><div class="ic">ALL</div><b>三份一起导</b>' +
-      '<p>依次下载复盘、错题本、考点诊断。三个文件拖进库里即可。</p></div>' +
-      '</div>';
 
     h += '<h2>双链规则</h2><div class="card"><table class="t"><thead><tr><th>前台里的东西</th><th>库里的笔记名</th><th>例子</th></tr></thead><tbody>' +
       '<tr><td>一道题</td><td><code>卷号-题号 题型</code></td><td class="mono dim">2025_12_1-46 推断题</td></tr>' +
@@ -4536,10 +4636,10 @@ window.glossPhrase = glossPhrase;
     if (iss.length) {
       h += '<div class="sec-block"><div class="sec-h">逐处可改（' + rep.issues.length + ' 处，列最重的 ' + iss.length + ' 处）</div>' +
         iss.map(i => '<div class="dist-item"><span class="lb" style="color:' + (i.sev >= 3 ? 'var(--bad)' : 'var(--amber)') + '">' + i.sev + '</span>' +
-          '<span class="tx"><span style="color:#ffd9a3">' + esc(i.text || '') + '</span> → ' + esc(i.msg || '') + '</span></div>').join('') + '</div>';
+          '<span class="tx"><span style="color:var(--amber)">' + esc(i.text || '') + '</span> → ' + esc(i.msg || '') + '</span></div>').join('') + '</div>';
     }
     if (rep.comments && rep.comments.length) {
-      h += '<div class="sec-block"><div class="sec-h">总评</div><ul style="margin:0;padding-left:18px;font-size:12.8px;line-height:1.9;color:#c4bfd0">' +
+      h += '<div class="sec-block"><div class="sec-h">总评</div><ul style="margin:0;padding-left:18px;font-size:12.8px;line-height:1.9;color:var(--mut)">' +
         rep.comments.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div>';
     }
     h += '<div class="sec-block"><button class="btn sm ghost" onclick="DESK.exportEssay()">导出作文 + 批改</button></div>';
@@ -4736,7 +4836,8 @@ window.glossPhrase = glossPhrase;
     else if (view === 'write') body = viewWrite();
     else body = viewDesk();
 
-    const crumb = '<span onclick="DESK.go(\'desk\')" style="cursor:pointer">四级工作台</span> / <b>' + (crumbs[view] || '') + '</b>' +
+    const crumb = (view === 'desk' ? '' : '<button class="crumb-home" type="button" onclick="DESK.go(\'desk\')">四级工作台</button> / ') +
+      '<b>' + (crumbs[view] || '') + '</b>' +
       (view === 'run' && sess ? ' <span class="chip" style="margin-left:6px">' + esc(modeName(sess)) + '</span>' : '');
 
     const wxTip = (isWX() && !S.wxTip)
@@ -4750,11 +4851,17 @@ window.glossPhrase = glossPhrase;
         '<button class="btn sm pri" onclick="DESK.turnOnTap()">打开</button>' +
         '<button class="btn sm ghost" onclick="DESK.dismissTap()">不用</button></div>'
       : '';
-    /* 常驻「查」按钮：不靠横幅、不靠长按，微信里也一定看得见。
-       始终输出，由 CSS 在窄屏显示 —— 不依赖触摸能力探测。 */
-    const dock = '<div id="wdock" onclick="DESK.search()" title="查词 / 译句"><b>查</b><small>单词</small></div>';
+    /* 窄屏保留练习中的随手查词入口。首页和脑库页使用顶栏的查词按钮。 */
+    const dock = view === 'desk' || view === 'vault' ? '' :
+      '<button type="button" id="wdock" onclick="DESK.search()" aria-label="查词 / 译句"><b>查</b><small>单词</small></button>';
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
       '<main class="main">' + topbar(crumb) + mobileNav() + body + '</main></div>' + dock;
+    const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
+    if (currentTab) {
+      const nav = currentTab.parentElement;
+      const edge = currentTab.offsetLeft + currentTab.offsetWidth;
+      if (edge > nav.clientWidth) nav.scrollLeft = edge - nav.clientWidth + 16;
+    }
     const wb = document.getElementById('wbar');
     if (wb) wb.classList.remove('on');
     const clock = document.getElementById('clock');
@@ -4767,7 +4874,13 @@ window.glossPhrase = glossPhrase;
     setMode(m) { setup.mode = m; if (m === 'module' && !setup.kind) setup.kind = 'R'; render(); },
     setKind(k) { setup.kind = k; render(); },
     setSize(n) { setup.size = n; render(); },
-    startSetup(mode, size) { setup.mode = mode; setup.size = size; go('train'); },
+    startSetup(mode, size) {
+      setup.mode = mode;
+      setup.size = size;
+      if (mode === 'module' && !setup.kind) setup.kind = 'R';
+      trainTab = 'single';
+      go('train');
+    },
     startNow() {
       const s = buildSession(setup.mode, setup.size, { kind: setup.kind || 'R' });
       if (!s) return toast('题库里抽不到题，换个方式试试');

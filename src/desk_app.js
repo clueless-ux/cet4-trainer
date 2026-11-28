@@ -26,12 +26,12 @@
   }
 
   const KIND = {
-    L: { n: '听力', full: '听力理解', color: '#f0b060' },
-    C: { n: '选词', full: '选词填空', color: '#7fd1ff' },
-    M: { n: '匹配', full: '长篇匹配', color: '#9be08a' },
-    R: { n: '阅读', full: '仔细阅读', color: '#a88bff' },
-    W: { n: '写作', full: '短文写作', color: '#ff9ec4' },
-    T: { n: '翻译', full: '段落翻译', color: '#ffcf6b' },
+    L: { n: '听力', full: '听力理解', color: '#8e581b' },
+    C: { n: '选词', full: '选词填空', color: '#286d87' },
+    M: { n: '匹配', full: '长篇匹配', color: '#36683b' },
+    R: { n: '阅读', full: '仔细阅读', color: '#655292' },
+    W: { n: '写作', full: '短文写作', color: '#a13f69' },
+    T: { n: '翻译', full: '段落翻译', color: '#8c640c' },
   };
 
   const CAUSES = [
@@ -335,167 +335,166 @@
     write: '<path d="M4 20h4l10-10-4-4L4 16v4z"/><path d="M14 6l4 4"/>',
     words: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v18H6.5A2.5 2.5 0 0 0 4 23V5.5z"/><path d="M8 8h8M8 12h6"/>',
     paper: '<path d="M7 3h8l4 4v14H7z"/><path d="M15 3v4h4"/><path d="M10 12h6M10 16h6"/>',
+    arrow: '<path d="M4 12h15m-6-6 6 6-6 6"/>',
+    chevron: '<path d="m9 6 6 6-6 6"/>',
+    search: '<circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    download: '<path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/>',
   };
   function svg(p, cls) {
-    return '<svg class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
+    return '<svg aria-hidden="true" focusable="false" class="' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>';
   }
 
   /* ================= 框架 ================= */
   const NAV = [
-    ['desk', '工作台', 'desk', ''],
-    ['train', '训练', 'train', ''],
-    ['brain', '考点地图', 'brain', String(PTS.length)],
-    ['wrong', '错题本', 'wrong', ''],
-    ['words', '单词本', 'words', ''],
-    ['stats', '数据', 'stats', ''],
-    ['write', '写作翻译', 'write', ''],
+    ['desk', '工作台', 'desk'],
+    ['train', '训练', 'train'],
+    ['brain', '考点地图', 'brain'],
+    ['wrong', '错题本', 'wrong'],
+    ['words', '单词本', 'words'],
+    ['stats', '学习数据', 'stats'],
+    ['write', '写作翻译', 'write'],
+    ['vault', 'Obsidian 脑库', 'vault'],
   ];
 
+  function navButton([key, label, icon], mobile) {
+    const page = view === 'run' || view === 'paperReview' ? 'train' : view;
+    const active = page === key;
+    return '<button type="button" class="' + (mobile ? 'mobile-tab' : 'nav-item') + (active ? ' on' : '') + '"' +
+      (active ? ' aria-current="page"' : '') + ' onclick="DESK.go(\'' + key + '\')">' +
+      (mobile ? '' : svg(IC[icon])) + '<span>' + label + '</span></button>';
+  }
+
   function rail() {
-    const wn = Object.keys(S.wrong).length;
     return '<aside class="rail">' +
-      '<div class="brand"><div class="logo">' + svg('<path d="M12 3 2 9l10 6 10-6-10-6z" stroke="#3a2408" stroke-width="1.6"/><path d="M6 12v4c0 1.7 2.7 3 6 3s6-1.3 6-3v-4" stroke="#3a2408" stroke-width="1.6"/>') + '</div>' +
-      '<div><b>四级训练工作台</b><span>CET-4 Desk</span></div></div>' +
-      NAV.map(([k, n, ic, cnt]) => {
-        const c = k === 'wrong' ? (wn || '') : k === 'words' ? ((S.words || []).length || '') : cnt;
-        return '<div class="nav-item ' + (view === k || (k === 'train' && view === 'run') ? 'on' : '') + '" onclick="DESK.go(\'' + k + '\')">' +
-          svg(IC[ic]) + '<span>' + n + '</span>' + (c ? '<span class="k">' + c + '</span>' : '') + '</div>';
-      }).join('') +
-      '<div class="nav-sep">Super brain</div>' +
-      '<div class="nav-item" onclick="DESK.go(\'vault\')">' + svg(IC.vault) + '<span>Obsidian 脑库</span><span class="k">' + (VAULT.total || 0) + '</span></div>' +
-      '<div class="rail-foot">训练在前台，沉淀在脑库。<br><b>' + QS.length + '</b> 题 · <b>' + (Object.keys(PP).length) + '</b> 套卷 · <b>' + PTS.length + '</b> 考点</div>' +
-      '</aside>';
+      '<button type="button" class="brand" onclick="DESK.go(\'desk\')"><span class="logo">' +
+      svg(IC.words) + '</span><span><b>四级训练工作台</b><span class="brand-sub">CET-4 WORKBENCH</span></span></button>' +
+      '<nav class="rail-nav" aria-label="工作台导航"><div class="nav-sep">学习空间</div>' +
+      NAV.slice(0, -1).map(item => navButton(item, false)).join('') +
+      '<div class="nav-sep">学习资料</div>' + navButton(NAV[NAV.length - 1], false) + '</nav>' +
+      '<div class="rail-foot"><span class="rail-foot-dot" aria-hidden="true"></span>离线题库' +
+      '<div>' + Object.keys(PP).length + ' 套真题 · ' + PTS.length + ' 个考点</div></div></aside>';
   }
 
   function mobileNav() {
-    return '<div class="mobilenav">' + NAV.map(([k, n]) =>
-      '<span class="chip click ' + (view === k ? 'acc' : '') + '" onclick="DESK.go(\'' + k + '\')">' + n + '</span>').join('') +
-      '<span class="chip click ' + (view === 'vault' ? 'acc' : '') + '" onclick="DESK.go(\'vault\')">脑库</span></div>';
+    const items = [...NAV.slice(0, 2), NAV[NAV.length - 1], ...NAV.slice(2, -1)];
+    return '<nav class="mobilenav" aria-label="工作台导航">' + items.map(item => navButton(item, true)).join('') + '</nav>';
   }
 
   function topbar(crumb) {
-    const acc = overallAcc();
-    return '<div class="topbar"><div class="crumb">' + crumb + '</div><div class="right">' +
-      '<span class="chip click" onclick="DESK.search()" title="查词 / 译句">查词</span>' +
-      '<span class="chip hide-sm">连续 ' + streak() + ' 天</span>' +
-      '<span class="chip">今日 ' + ((S.days[today()] || {}).n || 0) + ' 题</span>' +
-      (acc != null ? '<span class="chip acc hide-sm">总正确率 ' + Math.round(acc * 100) + '%</span>' : '') +
-      '<span class="chip click" onclick="DESK.runDiag()" title="划词与存储自检">自检</span>' +
-      '</div></div>';
+    return '<header class="topbar"><div class="crumb">' + crumb + '</div><div class="right">' +
+      '<button type="button" class="btn sm utility" onclick="DESK.search()" title="查词 / 译句">' + svg(IC.search) + '查词</button>' +
+      '<button type="button" class="btn sm utility" onclick="DESK.runDiag()" title="划词与存储自检">自检</button>' +
+      '</div></header>';
   }
 
   /* ================= 工作台 ================= */
   function viewDesk() {
     const day = S.days[today()] || { n: 0, r: 0 };
     const acc7 = acc7days();
-    const wp = weakPoints(3);
+    const wrong = Object.keys(S.wrong).length;
     const preview = previewSet();
     const recent = S.runs.slice(-5).reverse();
+    const papers = Object.keys(S.papers || {}).sort((a, b) => (S.papers[b].ts || 0) - (S.papers[a].ts || 0)).slice(0, 3);
 
-    let h = '<div class="wrap"><div class="hero">' +
-      '<div class="tagline">Training desk · 训练前台</div>' +
-      '<h1>四级训练工作台</h1>' +
-      '<div class="sub">在这里做题、判分、归因；每道题的答案依据与错因，都会变成 Obsidian 脑库里的一个节点。</div>' +
-      '<div class="acts">' +
-      '<button class="btn pri lg" onclick="DESK.go(\'train\')">开始训练 →</button>' +
-      '<button class="btn lg ghost" onclick="DESK.quickWrong()">错题重练' + (Object.keys(S.wrong).length ? '（' + Object.keys(S.wrong).length + '）' : '') + '</button>' +
-      '<button class="btn lg ghost" onclick="DESK.go(\'brain\')">看考点地图</button>' +
-      '</div>' +
-      '<div class="ghoststat">脑库已收录<br><b>' + (VAULT.total || 0) + '</b> 篇笔记<br><span style="font-size:11px">' + (VAULT.detail || '') + '</span></div>' +
-      '</div>';
+    let h = '<div class="wrap desk-home"><section class="hero" aria-labelledby="desk-title">' +
+      '<div class="hero-art" aria-hidden="true"><span class="hero-sheet hero-sheet-back"></span>' +
+      '<span class="hero-sheet hero-sheet-front"></span><span class="hero-orbit"></span></div>' +
+      '<div class="hero-copy"><div class="hero-meta"><span></span>大学英语四级</div>' +
+      '<h1 id="desk-title">四级训练工作台</h1>' +
+      '<p>按考点刷真题，按考试节奏做模考。</p><div class="acts">' +
+      '<button class="btn lg hero-primary" onclick="DESK.startSetup(\'smart\',10)">开始训练' + svg(IC.arrow) + '</button>' +
+      '<button class="btn lg hero-secondary" onclick="DESK.openPapers()">套卷模考</button>' +
+      '</div></div></section>';
 
-    h += '<div class="stats">' +
-      statCard('今日训练', day.n, '题', day.n ? '对 ' + day.r + ' 题 · ' + Math.round(day.r / day.n * 100) + '%' : '还没开始') +
-      statCard('近 7 天正确率', acc7 == null ? '—' : Math.round(acc7 * 100), acc7 == null ? '' : '%', acc7 == null ? '答几题就有数' : '按作答次数算') +
-      statCard('连续训练', streak(), '天', streak() > 1 ? '保持住' : '今天算第一天') +
-      statCard('脑库节点', VAULT.total || 0, '篇', '题 / 考点 / 材料 三层互链') +
-      '</div>';
+    h += '<div class="stats desk-stats">' +
+      statCard('今日训练', day.n, '题', day.n ? '答对 ' + day.r + ' 题' : '今日还未作答', IC.paper) +
+      statCard('近 7 天正确率', acc7 == null ? '—' : Math.round(acc7 * 100), acc7 == null ? '' : '%', acc7 == null ? '暂无作答记录' : '每题取最近一次', IC.target) +
+      statCard('连续训练', streak(), '天', '', IC.stats) +
+      statCard('待重练错题', wrong, '题', '', IC.wrong, 'DESK.quickWrong()') + '</div>';
 
-    // 今日一组
-    h += '<div class="cols"><div>';
-    h += '<h2>今日这一组</h2><div class="card pad0"><div style="padding:16px 18px 12px"><div class="row">' +
-      '<div class="grow"><b style="font-size:14.5px">' + preview.title + '</b><div class="small">' + preview.desc + '</div></div>' +
-      '<button class="btn pri sm" onclick="DESK.startSetup(\'smart\',10)">就用这组</button></div></div>' +
-      '<div style="border-top:1px solid var(--line)">' + preview.list + '</div></div>';
+    h += '<div class="desk-grid"><div class="desk-stack">' +
+      '<section class="card desk-panel"><div class="desk-panel-head">' +
+      '<div class="grow"><h2>今日推荐</h2><p>' + preview.title + '</p></div>' +
+      '<button class="btn pri" onclick="DESK.startSetup(\'smart\',10)">练这组' + svg(IC.arrow) + '</button></div>' +
+      '<div class="desk-panel-note small">' + preview.desc + '</div>' +
+      '<div class="desk-questions">' + preview.list + '</div></section>';
 
-    // 最近训练
-    h += '<h2>最近训练</h2>';
-    if (!recent.length) {
-      h += '<div class="card"><div class="empty"><b>还没有训练记录</b>做完一组，这里会出现你的正确率、用时和薄弱考点。</div></div>';
-    } else {
-      h += '<div class="card pad0" style="overflow:hidden"><table class="t"><thead><tr><th>时间</th><th>方式</th><th class="num">题量</th><th class="num">正确率</th><th class="num">用时</th></tr></thead><tbody>' +
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>最近训练</h2>' +
+      '<button class="btn sm ghost" onclick="DESK.go(\'stats\')">查看数据' + svg(IC.arrow) + '</button></div>';
+    if (recent.length) {
+      h += '<div class="desk-table"><table class="t"><thead><tr><th>时间</th><th>方式</th><th class="num">题量</th><th class="num">正确率</th><th class="num">用时</th></tr></thead><tbody>' +
         recent.map(r => {
           const acc = r.n ? r.right / r.n : null;
           return '<tr><td class="dim mono">' + r.date + ' ' + pad(r.hh) + ':' + pad(r.mm) + '</td><td>' + esc(r.modeName) + '</td><td class="num mono">' + r.n + '</td>' +
             '<td class="num mono" style="color:' + (acc === null ? 'var(--dim)' : acc >= 0.7 ? 'var(--ok)' : 'var(--bad)') + '">' + (acc === null ? '—' : Math.round(acc * 100) + '%') + '</td>' +
             '<td class="num mono dim">' + fmtDur(r.dur) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
-    }
-    // 套卷：最近做过的
-    const pk = Object.keys(S.papers || {}).sort((a, b) => (S.papers[b].ts || 0) - (S.papers[a].ts || 0)).slice(0, 3);
-    h += '<h2>套卷模考</h2>';
-    if (!pk.length) {
-      h += '<div class="card"><div class="empty" style="padding:20px"><b>还没做过整卷</b>' +
-        Object.keys(PP).length + ' 套真题 + ' + Object.keys(MOCKS).length + ' 套模考，整卷计时、交卷给分、逐题解析。</div>' +
-        '<div style="margin-top:12px"><button class="btn pri sm" onclick="DESK.openPapers()">挑一套开始</button></div></div>';
     } else {
-      h += '<div class="card pad0"><table class="t"><thead><tr><th>卷</th><th class="num">客观题</th><th class="num">估算分</th><th class="num">日期</th><th></th></tr></thead><tbody>' +
-        pk.map(k => {
-          const r = S.papers[k];
-          const P = PAPER[k] || {};
-          return '<tr><td>' + esc(P.label || k) + '</td>' +
-            '<td class="num mono">' + r.right + '/' + r.total + '</td>' +
-            '<td class="num mono">' + (r.score || '—') + '</td>' +
-            '<td class="num dim mono">' + r.date + '</td>' +
-            '<td><button class="btn sm ghost" onclick="DESK.startPaper(\'' + k + '\')">再做</button></td></tr>';
-        }).join('') + '</tbody></table></div>' +
-        '<div style="margin-top:10px"><button class="btn sm ghost" onclick="DESK.openPapers()">全部套卷 →</button></div>';
+      h += '<div class="desk-panel-note small">完成一组后，可在这里查看正确率和用时。</div>';
     }
-    h += '</div>';
+    h += '</section>';
 
-    // 右侧：薄弱考点
-    h += '<div><h2>该补的考点</h2><div class="card">';
-    if (!wp.length) {
-      h += '<div class="small">先做一组题，我按你的错题算出最该补的三个考点。</div>' +
-        '<div class="sep"></div><div class="small dim">还没数据时，先按真题分布推荐：仔细阅读 → 长篇匹配 → 选词填空。</div>';
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>套卷记录</h2>' +
+      '<button class="btn sm ghost" onclick="DESK.openPapers()">全部套卷' + svg(IC.arrow) + '</button></div>';
+    if (papers.length) {
+      h += '<div class="desk-table"><table class="t"><thead><tr><th>试卷</th><th class="num">客观题</th><th class="num">估算分</th><th class="num">日期</th><th></th></tr></thead><tbody>' +
+        papers.map(key => {
+          const r = S.papers[key];
+          const paper = PAPER[key] || {};
+          return '<tr><td>' + esc(paper.label || key) + '</td><td class="num mono">' + r.right + '/' + r.total + '</td>' +
+            '<td class="num mono">' + (r.score || '—') + '</td><td class="num dim mono">' + r.date + '</td>' +
+            '<td><button class="btn sm ghost" onclick="DESK.startPaper(\'' + key + '\')">再做</button></td></tr>';
+        }).join('') + '</tbody></table></div>';
     } else {
-      h += wp.map((x, i) => {
-        const p = PMAP[x.id] || { name: x.id };
-        const m = mastery(x.id);
-        return '<div style="padding:9px 0;' + (i ? 'border-top:1px solid var(--line)' : '') + '">' +
-          '<div class="row"><div class="grow"><b style="font-size:13.5px">' + esc(p.name) + '</b> <span class="dim" style="font-size:11.5px">' + x.id + '</span></div>' +
-          '<span class="mono" style="font-size:12.5px;color:' + (m < 0.5 ? 'var(--bad)' : 'var(--amber)') + '">' + Math.round((m || 0) * 100) + '%</span></div>' +
-          '<div class="bar" style="margin-top:6px"><i style="width:' + Math.round((m || 0) * 100) + '%;background:' + (m < 0.5 ? 'var(--bad)' : 'var(--amber)') + '"></i></div>' +
-          '<div class="row" style="margin-top:6px"><span class="small dim">练过 ' + x.seen + ' 次</span>' +
-          '<button class="btn sm ghost" style="margin-left:auto" onclick="DESK.startPoint(\'' + x.id + '\')">专攻 →</button></div></div>';
-      }).join('');
+      h += '<div class="desk-panel-note small">' + Object.keys(PP).length + ' 套真题与 ' + Object.keys(MOCKS).length + ' 套模考。交卷后可逐题复盘。</div>';
     }
-    h += '</div>';
+    h += '</section></div><div class="desk-stack">';
 
-    h += '<h2>训练方式</h2><div class="card"><div class="list">' +
-      '<div class="li" onclick="DESK.openPapers()"><div class="grow"><b style="font-weight:600">套卷模考</b>' +
-      '<div class="small" style="margin-top:1px">20 套真题整卷 + 4 套自建模考，计时做、交卷判分</div></div><span class="dim">→</span></div>' +
-      modeRow('智能组卷', '按薄弱考点抽题，阅读/听力/匹配/选词混排', 'smart') +
-      modeRow('弱项专攻', '只打你最不稳的考点', 'weak') +
-      modeRow('整块专项', '一次只练一个模块', 'module') +
-      modeRow('没做过的题', '优先抽你没答过的真题', 'new') +
-      '</div></div>';
+    const weak = weakPoints(3);
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>薄弱考点</h2>' +
+      '<button class="btn sm ghost" onclick="DESK.go(\'brain\')">考点地图' + svg(IC.arrow) + '</button></div>';
+    if (weak.length) {
+      h += '<div class="desk-weak-list">' + weak.map(item => {
+        const point = PMAP[item.id] || { name: item.id };
+        const rate = Math.round((mastery(item.id) || 0) * 100);
+        return '<div class="desk-weak"><div class="row"><strong class="grow">' + esc(point.name) + '</strong><span class="mono">' + rate + '%</span></div>' +
+          '<div class="bar"><i style="width:' + rate + '%"></i></div><div class="row"><span class="small grow">练过 ' + item.seen + ' 次</span>' +
+          '<button class="btn sm ghost" onclick="DESK.startPoint(\'' + item.id + '\')">专攻</button></div></div>';
+      }).join('') + '</div>';
+    } else {
+      h += '<div class="desk-panel-note small">完成练习后，这里会列出优先复习的考点。</div>';
+    }
+    h += '</section>';
 
-    h += '<h2>沉淀</h2><div class="card"><div class="small">做完一组 → 生成 <b>复盘 md</b> → 丢进 Obsidian 的 <b>04-复盘</b>。' +
-      '每条错题都会带 <code>[[' + '考点]]</code> 和 <code>[[' + '题目]]</code> 双链，图谱自动长出新的连接。</div>' +
-      '<div style="margin-top:10px"><button class="btn sm ghost" onclick="DESK.go(\'vault\')">怎么接脑库 →</button></div></div>';
+    h += '<section class="card desk-vault"><div class="desk-vault-icon">' + svg(IC.vault) + '</div>' +
+      '<h2>Obsidian 脑库</h2><p>导出 Markdown 复盘，放进 <code>04-复盘/</code>，串起真题和考点。</p>' +
+      '<button class="btn sm ghost" onclick="DESK.go(\'vault\')">导出与导入说明' + svg(IC.arrow) + '</button></section>';
 
-    h += '</div></div></div>';
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>其他训练方式</h2></div><div class="desk-modes">' +
+      modeRow('弱项专攻', '集中练正确率偏低的考点', 'weak') +
+      modeRow('整块专项', '按听力、阅读等模块练习', 'module') +
+      modeRow('没做过的题', '优先覆盖还没作答的真题', 'new') +
+      '</div></section></div></div></div>';
     return h;
   }
 
-  function statCard(lb, v, unit, ft) {
-    return '<div class="stat"><div class="lb">' + lb + '</div><div class="vv">' + v + (unit ? '<small>' + unit + '</small>' : '') + '</div><div class="ft">' + esc(ft || '') + '</div></div>';
+  function statCard(label, value, unit, detail, icon, action) {
+    const tag = action ? 'button' : 'div';
+    return '<' + tag + ' class="stat' + (action ? ' stat-action' : '') + '"' +
+      (action ? ' type="button" onclick="' + action + '"' : '') + '>' +
+      '<span class="stat-head"><span class="lb">' + label + '</span>' +
+      (icon ? '<span class="stat-icon">' + svg(icon) + '</span>' : '') + '</span>' +
+      '<span class="vv">' + value + (unit ? '<small>' + unit + '</small>' : '') + '</span>' +
+      (detail ? '<span class="ft">' + esc(detail) + '</span>' : '') +
+      (action ? '<span class="stat-arrow">' + svg(IC.arrow) + '</span>' : '') + '</' + tag + '>';
   }
+
   function modeRow(name, desc, mode) {
-    return '<div class="li" onclick="DESK.startSetup(\'' + mode + '\',10)"><div class="grow"><b style="font-weight:600">' + name + '</b>' +
-      '<div class="small" style="margin-top:1px">' + desc + '</div></div><span class="dim">→</span></div>';
+    return '<button type="button" class="desk-mode" onclick="DESK.startSetup(\'' + mode + '\',10)">' +
+      '<span class="grow"><strong>' + name + '</strong><span class="small">' + desc + '</span></span>' + svg(IC.chevron) + '</button>';
   }
+
   function acc7days() {
     let s = 0, r = 0;
     const now = Date.now();
@@ -522,13 +521,12 @@
     return {
       title: '智能组卷 · 10 题',
       desc: '听力 3 · 选词 2 · 匹配 2 · 阅读 3，优先抽你没做过的、以及错过的考点',
-      list: list.map((q, i) => '<div class="li" onclick="DESK.previewOne(\'' + q.id + '\')">' +
-        '<span class="idx">' + pad(i + 1) + '</span>' +
+      list: list.map(q => '<button type="button" class="desk-question" onclick="DESK.previewOne(\'' + q.id + '\')">' +
         '<span class="chip" style="flex:0 0 auto">' + KIND[q.k].n + '</span>' +
         '<span class="grow" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(cut(
           q.k === 'C' ? ctxOf(q) : q.st || ('第 ' + q.n + ' 题 · ' + q.ty + ' · ' + (q.o[0] || '')), 62)) + '</span>' +
         (S.qs[q.id] ? '<span class="chip done" style="flex:0 0 auto">做过 · 上次' + (S.qs[q.id].ok ? '对' : '错') + '</span>' : '') +
-        '<span class="dim" style="font-size:11.5px">' + (q.pt[0] || '') + '</span></div>').join(''),
+        '<span class="question-point dim">' + (q.pt[0] || '') + '</span>' + svg(IC.chevron) + '</button>').join(''),
     };
   }
 
@@ -907,7 +905,7 @@
     let h = '<div class="wrap"><div class="scorehero">' +
       ring(acc) +
       '<div class="grow"><div class="small dim">' + esc(P.label) + ' · 已交卷</div>' +
-      '<div style="font-size:22px;font-weight:650;margin:2px 0 6px">估算 <span style="color:#a88bff">' + score + '</span> / 710' +
+      '<div style="font-size:22px;font-weight:650;margin:2px 0 6px">估算 <span style="color:#655292">' + score + '</span> / 710' +
       (self.w || self.t ? '' : '<span class="small dim" style="font-size:12px;font-weight:400"> · 主观题未自评</span>') + '</div>' +
       '<div class="small">客观题 ' + right + ' / ' + obj.length + ' 对' + (blank ? '（' + blank + ' 题空着）' : '') +
       ' · 客观得分 ' + Math.round((sess.objGot || 0) * 10) / 10 + ' / ' + Math.round((sess.objMax || 0) * 10) / 10 +
@@ -1131,7 +1129,7 @@
         const pickL = wq ? sess.ans[wq.id] : undefined;
         const mine = pickL !== undefined ? ((u.bank.find(b => b.l === pickL) || {}).w || '') : '';
         const ok = wq ? pickL === wq.a : false;
-        const color = (jd && pickL !== undefined) ? 'border-bottom-color:' + (ok ? 'var(--ok)' : 'var(--bad)') + ';color:' + (ok ? '#a9f0d3' : '#ffc3c9') : '';
+        const color = (jd && pickL !== undefined) ? 'border-bottom-color:' + (ok ? 'var(--ok)' : 'var(--bad)') + ';color:' + (ok ? 'var(--ok)' : 'var(--bad)') : '';
         const tapAttr = ' onclick="DESK.pickBlank(' + (+n) + ')"';
         const cls = 'blank' + (same ? ' cur' : '') + (mine ? ' filled' : '');
         return '<span class="' + cls + '" data-n="' + (+n) + '"' + tapAttr +
@@ -1379,7 +1377,7 @@
       const html = ws.map(tok => {
         const k = tok.toLowerCase().replace(/[^a-z'-]/g, '');
         const k5 = k.slice(0, 5);
-        if (k.length > 2 && freq[k5] === 1) return '<b style="color:#ffd9a3">' + esc(tok) + '</b>';
+        if (k.length > 2 && freq[k5] === 1) return '<b style="color:var(--amber)">' + esc(tok) + '</b>';
         return esc(tok);
       }).join('');
       return '<div class="dist-item"><span class="lb" style="color:' + (l === q.a ? 'var(--ok)' : 'var(--mut)') + '">' + l + '</span>' +
@@ -1736,9 +1734,9 @@
   function ring(acc) {
     const R = 44, C = 2 * Math.PI * R;
     const on = Math.max(0, Math.min(1, acc)) * C;
-    const col = acc >= 0.8 ? '#43d19e' : acc >= 0.6 ? '#f0b060' : '#ff6b7a';
+    const col = acc >= 0.8 ? '#157153' : acc >= 0.6 ? '#8e581b' : '#a83745';
     return '<div class="ring"><svg width="104" height="104" viewBox="0 0 104 104">' +
-      '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="#2b2b34" stroke-width="8"/>' +
+      '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="#e1e3da" stroke-width="8"/>' +
       '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="' + col + '" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + on + ' ' + C + '"/>' +
       '</svg><div class="num"><b style="color:' + col + '">' + Math.round(acc * 100) + '%</b><span>正确率</span></div></div>';
   }
@@ -1758,7 +1756,7 @@
       '<div class="row wrap" style="gap:12px;margin:2px 0 8px">' +
       [['L', '听力'], ['R', '仔细阅读'], ['D', '干扰项'], ['C', '选词填空'], ['M', '长篇匹配'], ['W', '写作'], ['T', '翻译']].map(([k, n]) =>
         '<span class="small dim" style="display:inline-flex;align-items:center;gap:5px"><i style="width:7px;height:7px;border-radius:99px;background:' +
-        ({ L: '#f0b060', R: '#a88bff', D: '#ff8f6b', C: '#7fd1ff', M: '#9be08a', W: '#ff9ec4', T: '#ffcf6b' })[k] + ';display:inline-block"></i>' + n + '</span>').join('') +
+        ({ L: '#8e581b', R: '#655292', D: '#a34b35', C: '#286d87', M: '#36683b', W: '#a13f69', T: '#8c640c' })[k] + ';display:inline-block"></i>' + n + '</span>').join('') +
       '<span class="small dim" style="margin-left:6px">· 半透明 = 还没练过</span></div>' +
       graphSVG() + '</div>';
 
@@ -1778,7 +1776,7 @@
         const pct = m == null ? 0 : Math.round(m * 100);
         h += '<div class="pcard" onclick="DESK.openPoint(\'' + p.id + '\')">' +
           '<div class="id">' + p.id + '</div><b>' + esc(p.name) + '</b>' +
-          '<div class="mt"><div class="bar"><i style="width:' + pct + '%;background:' + (m == null ? '#3a3a45' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></div>' +
+          '<div class="mt"><div class="bar"><i style="width:' + pct + '%;background:' + (m == null ? '#d4dacd' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></div>' +
           '<span class="mono">' + (m == null ? '未练' : pct + '%') + '</span></div>' +
           '<div class="small dim" style="margin-top:6px">' + p.n + ' 题 · 我练过 ' + st.s + ' 次</div>' +
           '</div>';
@@ -1795,7 +1793,7 @@
   /* 考点共现网络：同题共现 + 同篇材料共现 */
   function graphSVG() {
     const W = 1040, H = 430;
-    const MODC = { L: '#f0b060', C: '#7fd1ff', M: '#9be08a', R: '#a88bff', D: '#ff8f6b', W: '#ff9ec4', T: '#ffcf6b' };
+    const MODC = { L: '#8e581b', C: '#286d87', M: '#36683b', R: '#655292', D: '#a34b35', W: '#a13f69', T: '#8c640c' };
     const nodes = PTS.map(p => ({
       id: p.id, name: p.name, mod: p.id[0], n: p.n,
       m: mastery(p.id), x: 0, y: 0, vx: 0, vy: 0,
@@ -1901,16 +1899,16 @@
       const k = e.w / maxW;
       const op = 0.07 + k * 0.33;
       return '<line x1="' + a.x.toFixed(1) + '" y1="' + a.y.toFixed(1) + '" x2="' + b.x.toFixed(1) + '" y2="' + b.y.toFixed(1) +
-        '" stroke="#b9a6ff" stroke-opacity="' + op.toFixed(2) + '" stroke-width="' + (0.5 + k * 1.8).toFixed(1) + '"/>';
+        '" stroke="#8a77ab" stroke-opacity="' + op.toFixed(2) + '" stroke-width="' + (0.5 + k * 1.8).toFixed(1) + '"/>';
     }).join('');
 
     const dots = nodes.map(n => {
       const r = 4.4 + Math.min(4.5, Math.log(1 + n.n) * 1.0);
-      const col = n.m == null ? MODC[n.mod] : n.m >= 0.8 ? '#43d19e' : n.m >= 0.6 ? '#f0b060' : '#ff6b7a';
+      const col = n.m == null ? MODC[n.mod] : n.m >= 0.8 ? '#157153' : n.m >= 0.6 ? '#8e581b' : '#a83745';
       const fillOp = n.m == null ? 0.42 : 0.9;
       return '<g style="cursor:pointer" onclick="DESK.openPoint(\'' + n.id + '\')"><title>' + esc(n.id + ' ' + n.name) + ' · ' + n.n + ' 题 · ' + (n.m == null ? '未练' : Math.round(n.m * 100) + '%') + '</title>' +
-        '<circle cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + col + '" fill-opacity="' + fillOp + '" stroke="#0d0d10" stroke-width="1.1"/>' +
-        '<text x="' + (n.x + r + 3).toFixed(1) + '" y="' + (n.y + 3).toFixed(1) + '" font-size="9.5" fill="#8d8a99" font-family="ui-monospace,monospace">' + n.id + '</text></g>';
+        '<circle cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + col + '" fill-opacity="' + fillOp + '" stroke="#f5f5ef" stroke-width="1.1"/>' +
+        '<text x="' + (n.x + r + 3).toFixed(1) + '" y="' + (n.y + 3).toFixed(1) + '" font-size="9.5" fill="#535954" font-family="ui-monospace,monospace">' + n.id + '</text></g>';
     }).join('');
 
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">' + lines + glabels + dots + '</svg>';
@@ -2998,43 +2996,25 @@
       ['05–09', '模考、报告、知识、思路、疑点', byDir.rest || 0],
     ];
 
-    let h = '<div class="wrap"><div style="margin-top:22px"><h1>脑库连接</h1>' +
-      '<div class="small" style="margin-top:6px">这个网页是<b>训练前台</b>，Obsidian 是<b>超级大脑</b>。前台负责做题和判分，大脑负责把答案依据、错因、考点织成一张网。</div></div>';
+    let h = '<div class="wrap vault-page"><div class="vault-page-head"><span class="desk-vault-icon">' + svg(IC.vault) + '</span>' +
+      '<div><h1>Obsidian 脑库</h1><p>下载 Markdown，按下方路径导入四级英语库。笔记里的双链可跳到对应的真题和考点。</p></div></div>';
 
-    // 架构图
-    h += '<div class="card" style="margin-top:18px;padding:22px 24px">' +
-      '<div class="arch">' +
-      '<div style="border:1px solid rgba(168,139,255,.35);background:rgba(168,139,255,.07);border-radius:12px;padding:16px 18px">' +
-      '<div class="small dim" style="letter-spacing:.12em">FRONT · 前台</div>' +
-      '<b style="font-size:15px">四级训练工作台</b>' +
-      '<div class="small" style="margin-top:6px">抽题 · 作答 · 判分 · 归因<br>' + Object.keys(S.qs).length + ' 次作答记录存在本机</div></div>' +
-      '<div class="arrow">→</div>' +
-      '<div style="border:1px solid rgba(240,176,96,.35);background:rgba(240,176,96,.06);border-radius:12px;padding:16px 18px">' +
-      '<div class="small dim" style="letter-spacing:.12em">BRAIN · 大脑</div>' +
-      '<b style="font-size:15px">Obsidian 四级脑库</b>' +
-      '<div class="small" style="margin-top:6px">' + (VAULT.total || 0) + ' 篇笔记 · 真题 ↔ 考点 ↔ 材料<br>图谱里每个节点都是一道题或一条规律</div></div>' +
-      '</div>' +
-      '<div class="small dim" style="margin-top:14px">中间的箭头只有一条路：<b>导出的复盘 md</b>。前台不直接改你的库，你确认后才放进去——库是你的，不被程序乱写。</div>' +
-      '</div>';
+    const exports = [
+      ['本次训练复盘', '本次作答的正确率、错题、错因和依据句。', '04-复盘/', 'exportSession'],
+      ['错题本快照', '按考点整理的全部错题和错因统计。', '04-复盘/00-错题本.md', 'exportWrong'],
+      ['考点诊断', '每个考点的正确率、样本数和优先复习项。', '06-报告/', 'exportPoints'],
+    ];
+    h += '<div class="vault-section-head"><h2>下载 Markdown</h2>' +
+      '<button class="btn sm ghost" onclick="DESK.exportAll()">全部下载</button></div><div class="vault-exports">' +
+      exports.map(([title, description, destination, action]) =>
+        '<section class="card vault-export"><h3>' + title + '</h3><p class="small">' + description + '</p>' +
+        '<div class="vault-path"><span>' + (action === 'exportWrong' ? '改名后覆盖' : '放入') + '</span> <code>' + destination + '</code></div>' +
+        '<button class="btn pri sm" onclick="DESK.' + action + '()">下载 .md' + svg(IC.download) + '</button></section>').join('') + '</div>';
 
-    h += '<h2>库里现在有什么</h2><div class="card pad0"><table class="t"><thead><tr><th>目录</th><th>内容</th><th class="num">笔记</th></tr></thead><tbody>' +
+    h += '<h2>脑库目录</h2><div class="card pad0"><table class="t"><thead><tr><th>目录</th><th>内容</th><th class="num">笔记</th></tr></thead><tbody>' +
       rows.map(r => '<tr><td class="mono">' + r[0] + '</td><td class="dim">' + r[1] + '</td><td class="num mono">' + r[2] + '</td></tr>').join('') +
       '<tr><td class="mono">合计</td><td></td><td class="num mono" style="color:var(--acc)">' + (VAULT.total || 0) + '</td></tr>' +
       '</tbody></table></div>';
-
-    h += '<h2>把这次训练写进大脑</h2><div class="modes">' +
-      '<div class="mode" onclick="DESK.exportSession()"><div class="ic">SESSION</div><b>本次训练复盘</b>' +
-      '<p>本次题量、正确率、每道错题的我选/答案/错因/依据句，带 <code>[[考点]]</code> 与 <code>[[题目]]</code> 双链。</p>' +
-      '<div class="small dim" style="margin-top:8px">→ 放到 <code>04-复盘/</code></div></div>' +
-      '<div class="mode" onclick="DESK.exportWrong()"><div class="ic">WRONG BOOK</div><b>错题本快照</b>' +
-      '<p>按考点分组的全部错题，附错因统计。适合每周日导一次，替换旧快照。</p>' +
-      '<div class="small dim" style="margin-top:8px">→ 覆盖 <code>04-复盘/00-错题本.md</code></div></div>' +
-      '<div class="mode" onclick="DESK.exportPoints()"><div class="ic">DIAGNOSIS</div><b>考点诊断</b>' +
-      '<p>43 个考点的实测正确率、样本数、最该补的三个，带考点双链。</p>' +
-      '<div class="small dim" style="margin-top:8px">→ 放到 <code>06-报告/</code></div></div>' +
-      '<div class="mode" onclick="DESK.exportAll()"><div class="ic">ALL</div><b>三份一起导</b>' +
-      '<p>依次下载复盘、错题本、考点诊断。三个文件拖进库里即可。</p></div>' +
-      '</div>';
 
     h += '<h2>双链规则</h2><div class="card"><table class="t"><thead><tr><th>前台里的东西</th><th>库里的笔记名</th><th>例子</th></tr></thead><tbody>' +
       '<tr><td>一道题</td><td><code>卷号-题号 题型</code></td><td class="mono dim">2025_12_1-46 推断题</td></tr>' +
@@ -3127,10 +3107,10 @@
     if (iss.length) {
       h += '<div class="sec-block"><div class="sec-h">逐处可改（' + rep.issues.length + ' 处，列最重的 ' + iss.length + ' 处）</div>' +
         iss.map(i => '<div class="dist-item"><span class="lb" style="color:' + (i.sev >= 3 ? 'var(--bad)' : 'var(--amber)') + '">' + i.sev + '</span>' +
-          '<span class="tx"><span style="color:#ffd9a3">' + esc(i.text || '') + '</span> → ' + esc(i.msg || '') + '</span></div>').join('') + '</div>';
+          '<span class="tx"><span style="color:var(--amber)">' + esc(i.text || '') + '</span> → ' + esc(i.msg || '') + '</span></div>').join('') + '</div>';
     }
     if (rep.comments && rep.comments.length) {
-      h += '<div class="sec-block"><div class="sec-h">总评</div><ul style="margin:0;padding-left:18px;font-size:12.8px;line-height:1.9;color:#c4bfd0">' +
+      h += '<div class="sec-block"><div class="sec-h">总评</div><ul style="margin:0;padding-left:18px;font-size:12.8px;line-height:1.9;color:var(--mut)">' +
         rep.comments.map(c => '<li>' + esc(c) + '</li>').join('') + '</ul></div>';
     }
     h += '<div class="sec-block"><button class="btn sm ghost" onclick="DESK.exportEssay()">导出作文 + 批改</button></div>';
@@ -3327,7 +3307,8 @@
     else if (view === 'write') body = viewWrite();
     else body = viewDesk();
 
-    const crumb = '<span onclick="DESK.go(\'desk\')" style="cursor:pointer">四级工作台</span> / <b>' + (crumbs[view] || '') + '</b>' +
+    const crumb = (view === 'desk' ? '' : '<button class="crumb-home" type="button" onclick="DESK.go(\'desk\')">四级工作台</button> / ') +
+      '<b>' + (crumbs[view] || '') + '</b>' +
       (view === 'run' && sess ? ' <span class="chip" style="margin-left:6px">' + esc(modeName(sess)) + '</span>' : '');
 
     const wxTip = (isWX() && !S.wxTip)
@@ -3341,11 +3322,17 @@
         '<button class="btn sm pri" onclick="DESK.turnOnTap()">打开</button>' +
         '<button class="btn sm ghost" onclick="DESK.dismissTap()">不用</button></div>'
       : '';
-    /* 常驻「查」按钮：不靠横幅、不靠长按，微信里也一定看得见。
-       始终输出，由 CSS 在窄屏显示 —— 不依赖触摸能力探测。 */
-    const dock = '<div id="wdock" onclick="DESK.search()" title="查词 / 译句"><b>查</b><small>单词</small></div>';
+    /* 窄屏保留练习中的随手查词入口。首页和脑库页使用顶栏的查词按钮。 */
+    const dock = view === 'desk' || view === 'vault' ? '' :
+      '<button type="button" id="wdock" onclick="DESK.search()" aria-label="查词 / 译句"><b>查</b><small>单词</small></button>';
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
       '<main class="main">' + topbar(crumb) + mobileNav() + body + '</main></div>' + dock;
+    const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
+    if (currentTab) {
+      const nav = currentTab.parentElement;
+      const edge = currentTab.offsetLeft + currentTab.offsetWidth;
+      if (edge > nav.clientWidth) nav.scrollLeft = edge - nav.clientWidth + 16;
+    }
     const wb = document.getElementById('wbar');
     if (wb) wb.classList.remove('on');
     const clock = document.getElementById('clock');
@@ -3358,7 +3345,13 @@
     setMode(m) { setup.mode = m; if (m === 'module' && !setup.kind) setup.kind = 'R'; render(); },
     setKind(k) { setup.kind = k; render(); },
     setSize(n) { setup.size = n; render(); },
-    startSetup(mode, size) { setup.mode = mode; setup.size = size; go('train'); },
+    startSetup(mode, size) {
+      setup.mode = mode;
+      setup.size = size;
+      if (mode === 'module' && !setup.kind) setup.kind = 'R';
+      trainTab = 'single';
+      go('train');
+    },
     startNow() {
       const s = buildSession(setup.mode, setup.size, { kind: setup.kind || 'R' });
       if (!s) return toast('题库里抽不到题，换个方式试试');
