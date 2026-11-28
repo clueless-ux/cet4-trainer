@@ -1,0 +1,2740 @@
+{
+  "2025_12_1": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "A terrified cat has survived a 5 mile round trip, under the engine cover of a car on a school run. The black cat was found curled up under the engine cover of David King's car when he decided to do an oil check after dropping his grandson off at school in Kent.",
+        "King's wife said her husband had come running in and was shouting for me to come have a look. We weren't even sure it was alive, so I gently pushed it with a stick to check it was breathing and saw it was a terrified little cat.",
+        "It reversed even further into the engine and was stuck. I tried to reach it, but it was too far down, and there wasn't any way I could get it out. Anyway I could get it out. Following a rescue by UK charity, Cat's Protection, the four-year-old Cat was later reunited with its owner, Mr.",
+        "King's neighbor."
+      ],
+      "prompts": [
+        [
+          1,
+          "Where was the Black Cat found?"
+        ],
+        [
+          2,
+          "What do we learn about the cat at the end of the news report?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "In less than a month, the Special Olympics Spring Games will make a return to Fayetteville. The games are coming back for the first time in five years. The event will take place at Methodist University.",
+        "Event organizer Benjamin Coalsić says he's excited that athletes will get a chance to come back and demonstrate their abilities. Organizers expect about 100 athletes will come out to compete in Fayetteville.",
+        "They will have a variety of events to choose from, including running, throwing and jumping. There will also be a fun tent for children. Kowalzick said it's rewarding to see athletes with special needs triumph in the games.",
+        "For anyone who wants to help make this year's games a massive success, There are still opportunities to volunteer for Fayetteville's Special Olympics. Organizers encourage them to visit the game's website to sign up."
+      ],
+      "prompts": [
+        [
+          3,
+          "What will Fayetteville witness in less than a month?"
+        ],
+        [
+          4,
+          "What did Benjamin Cololzick say is rewarding to see?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "A German supermarket has been ordered to destroy its chocolate rabbits after it lost a court battle with the Swiss chocolate manufacturer. The Swiss firm had argued its gold-wrapped chocolate rabbit deserved copyright protection from a similar product sold by the budget supermarket.",
+        "Switzerland's highest court agreed and overturned a ruling last year by the country's commercial Court that had sided with the supermarket. It ordered that all the imitation rabbits be destroyed, but suggested the chocolate needn't be wasted.",
+        "It could be melted for use in other products. It said even though there are some differences between the two products, there was still the possibility of confusion for consumers. The Swiss manufacturer's rabbit has a red bow and bell, while the German supermarkets has a green bow and bell.",
+        "The color of the wrapper is similar, as are the illustrations of the features. The Chocolate Company has been to court before to protect its popular chocolate treat. Last year, a German federal court said the shade of the gold wrapping was also protected."
+      ],
+      "prompts": [
+        [
+          5,
+          "What has the German supermarket been ordered to do?"
+        ],
+        [
+          6,
+          "What did Switzerland's highest court suggest about the chocolate in question?"
+        ],
+        [
+          7,
+          "Why did Switzerland's highest court overturn the commercial court's ruling?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "When Can you please hand me that book over there? It has instructions for making a winter bean salad. My sister's boyfriend is coming over for dinner. He's vegetarian, so I need to make a lot of vegetable dishes.",
+        "He only eats vegetables, no meat? That doesn't sound like a very balanced diet. How can he get enough protein? What does he do to strengthen his muscles and all that? Apparently that's no problem. He's explained this to me when we first met.",
+        "He eats a variety of different vegetables and nuts, especially those with high amounts of protein. It sounds a bit difficult, but he's done his research, I suppose. What's his reasoning for being vegetarian?",
+        "Is it his religion, health condition, or lifestyle? He's an animal activist. He's always been very sensitive and sympathizes with animals. He's even written to his state senator about the torture of dolphins in sea parks.",
+        "He He says that keeping animals in zoos and parks causes them great distress. That's a little gloomy, but I can understand that to a point. Not all zoos and animal parks have the most favorable conditions, but without them it just wouldn't be feasible to learn about animals and their environments.",
+        "Besides, I don't think I could ever give up a good hot dog at a baseball game. Honestly I agree, but just don't let him hear you say that. He's the spokesperson for his local animal rights group."
+      ],
+      "prompts": [
+        [
+          8,
+          "What does the man request the woman to do?"
+        ],
+        [
+          9,
+          "What does the woman say about eating vegetables only?"
+        ],
+        [
+          10,
+          "Why does the boyfriend of the man's sister choose to be a vegetarian?"
+        ],
+        [
+          11,
+          "On what point does the man agree with the woman at the end of the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Did you see that television program on air travel last night? Yes, the part about overcoming jet lag was interesting. I was surprised that the expert recommended not eating for the entire journey and avoiding sleeping on the plane.",
+        "I was too, as I read an article on the subject in the past that suggested the opposite. It claimed that it was important not to miss meals, and that taking a nap on the plane was the best way to adjust to a new time zone.",
+        "Well, the expert on the show did cite research supporting her recommendations, so I guess I'll give it a try next time I fly a long distance. Jetlag is a big problem for me, and has been for the last few years, even though I never suffered from it before.",
+        "Well, she did say that Jetlag often becomes more of a problem after 40. So I guess I'm lucky that I can still adjust to different time zones well. My problem is I'm afraid to fly. Oh, I didn't know that.",
+        "Actually, my mother is terrified of airplanes to the points where she can't even fly, so our family vacations were always by car or train. I'm not as bad as that. I just get anxious before I fly and feel nervous the whole time we're in the air.",
+        "Which is why I was hoping the television program would cover that topic, more than it did. Yeah, that segment was too brief. Especially as so many people have that problem, she said 20% of people are afraid to fly.",
+        "Actually it was a quarter of people, so the problem really is widespread and deserves attention."
+      ],
+      "prompts": [
+        [
+          12,
+          "What part of the TV programme does the man say was interesting?"
+        ],
+        [
+          13,
+          "What does the man say he will do next time he flies along distance?"
+        ],
+        [
+          14,
+          "Why does the woman think she is lucky?"
+        ],
+        [
+          15,
+          "Why does the woman think the problem of being afraid to fly deserves attention?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "The most common question I'm asked always centres around how to get started in user experience design, to which my response is always that nothing can substitute real world experience. Building the skills required of a user experience designer takes time, patience and commitment.",
+        "Higher education is a great way to equip yourself with some core skills, but it will not prepare you for actual challenges you'll face with clients work. In other words, being proficient with a design tool and a few methods doesn't make you a user experience designer.",
+        "There simply isn't a one size fits all process. Being effective requires adaptability, something you don't really learn in school much less in a six month training camp. It's gained through experience on the job and learning what's appropriate given the needs of the project.",
+        "I found my way to user experience through graphic design and slowly over many different roles and experiences that led me to become a user experience designer. It took time and commitment to continue to pursue roles within teams that I knew could teach and challenge me.",
+        "That's not to say that I think my path is the only one. But once again, nothing can substitute real-world experience. You can start anywhere as long as you know your end goal and you commit to actively pursuing opportunities to learn and grow along the way."
+      ],
+      "prompts": [
+        [
+          16,
+          "What does the speaker think is the best way to get started in user experience design?"
+        ],
+        [
+          17,
+          "What does the speaker say being effective requires?"
+        ],
+        [
+          18,
+          "What can people do as long as they know their end goal and strive for it?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "When planning for this year, our principal asked what needed to change to engage students more in their learning. I responded in a whisper, flexible seating, thinking about our then current classroom.",
+        "It had rows of desks with blue chairs and name plates, reminding each student where they should be sitting. This began a journey to transform our practice and challenge the ways of learning for a group of Year 6 students used to sitting in desks and rows for years.",
+        "Focal seating has been defined as moveable furniture to create an engaging learning environment. It is a shift in practice from being teacher-focused to student-focused learning.",
+        "For us, flexible seating has meant removing most of the traditional chairs and desks and introducing a variety of different seating options to promote student engagement. the use of rows and their minimal adaptations to U-shape, were traditionally intended to maximize on-task behavior and reduce distraction from the teacher.",
+        "Teachers tend to still use this format because of either the need to control students or the belief that the teacher is the most important person in the room. Now, our students have a range of different seating options, including a floor desk, couches, stools, bean bags and the traditional desk and chair.",
+        "From our experience so far, flexible seating enhances student ownership of space and engagement and learning while reducing rates of student disengagement and disciplinary actions. It is a win for all concerned."
+      ],
+      "prompts": [
+        [
+          19,
+          "Why did the school principal ask what needed to change?"
+        ],
+        [
+          20,
+          "What has flexible seating meant at the speaker's school?"
+        ],
+        [
+          21,
+          "What has flexible seating brought about at the speaker's school?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "Dozens of British students arriving for their first day of school on Tuesday were sent home over their shoes. About 30 students were turned away from Tavarom High School in Norfolk, England. Head teacher Dr Roger Harris confirmed that this was due to a change in the school's uniform policy.",
+        "Harris, who became Head teacher this year, said he notified parents of the updated rules in an email in June. The price of school uniforms can spark panic among families struggling with the high cost of living.",
+        "Nearly all British schools have uniforms. They cost parents an average of £337 per year for each secondary school child. According to the new rules, students of Taveroom are required to wear smart black shoes appropriate for the workplace.",
+        "Harris held that strengthened rules around school uniforms improved student outcomes and behaviour. But for some parents, the school's restrictions are an unnecessary burden. As annual inflation climbs over 10%, many households are on tight budgets.",
+        "Private rental prices in Britain rose 3.2% over the 12 months to July 2022. The largest jump since 2016. Soring energy bills have made things worse. You send a May mum of a tavern student said that she had to ask her parents for 65 pounds to buy her child the correct pair of shoes.",
+        "May said that the school's uniform policy show the lack of regard for parents dealing with the high cost of living."
+      ],
+      "prompts": [
+        [
+          22,
+          "Why were dozens of British students sent home on Tuesday?"
+        ],
+        [
+          23,
+          "What can the price of school uniforms spark among families in financial difficulty?"
+        ],
+        [
+          24,
+          "What did the head teacher think of the school's new uniform rules?"
+        ],
+        [
+          25,
+          "What did Lucinda May have to do to buy her child the correct pair of shoes?"
+        ]
+      ]
+    }
+  ],
+  "2025_12_2": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "Customs and Border Protection officials are seen arise in people illegally bringing eggs from Mexico into border states such as Texas. The U.S. average price for a dozen large eggs last month hit $4.25.",
+        "That's more than double their $1.78 price in December 2023. Meanwhile, 30 eggs in Mexico sell for just $3.40. bringing eggs into the US, risk finds of up to $10,000, but officials say they usually seize and destroy the eggs.",
+        "They also impose a $300 penalty. The Department of Agriculture banned eggs from Mexico in 2012. This was due to the risk of bird flu. Officials said most people arriving at international borders with eggs are truthful about their They simply don't know bringing eggs is not allowed.",
+        "Generally, the items are declared during the first inspection. Then the person can abandon the eggs without consequence. A customs and border protection spokesperson said. Even so, there have been a very small number of cases recently when authorities discovered eggs during further inspections."
+      ],
+      "prompts": [
+        [
+          1,
+          "What do we learn from the news report about the egg price in the US?"
+        ],
+        [
+          2,
+          "What does the news report say about most people arriving at American borders with"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "Nettie's House, a restaurant in America, has been hit with criticism after announcing on their website that children under the age of 10 are no longer welcome. Among the reasons given for the decision, the restaurant cited noise levels, lack of space for high chairs, cleaning up crazy messes, and the liability of kids running around the restaurant.",
+        "They decided that it was time to take control. The decision wasn't made lightly, but some recent events pushed them to implement this new policy. Responding to the post, one person commented that it is messed up beyond another level.",
+        "Children are children. are tired and don't have time to cook. Not welcoming children under ten is a complete slap in the face to families. He felt so disappointed in the establishment. There are others, however, who showed support for the restaurant's decision.",
+        "They said it has the right to implement any rules it wants."
+      ],
+      "prompts": [
+        [
+          3,
+          "What do we learn from the news report about the restaurant Netty's house?"
+        ],
+        [
+          4,
+          "What do supporters say in response to the restaurant's new policy?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "Security officers were searching a suburb in Australia where an adult snake was believed to be wandering after the discovery of a huge freshly shed snake skin. The skin was found at a construction site, and the government wrote to residents to warn them.",
+        "They were told to observe and, if possible, photograph the animal. If it was moving, watch where it went. It was recommended not to make contact with the animal. The type of snake was determined to be one of the world's largest snake species.",
+        "It is not poisonous, but can still attack and kill its victims. This type of snake is classified as a threat to humans, especially small children, as well as pets. They may carry viruses that are fatal to native snakes, which do not have resistance.",
+        "If officers found the snake, they would employ a licensed snake catcher to catch it and transport it to a specialist animal doctor, the government said. If caught, the snake would be examined to determine where it came from.",
+        "How long it had been in the area, what it had been eating, whether it was carrying any diseases of concern, and whether it had produced babies."
+      ],
+      "prompts": [
+        [
+          6,
+          "Where does the report say the discovery was made?"
+        ],
+        [
+          7,
+          "What did the government say would be done if security officers found what they they were searching for."
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "Poor Hannah. What happened? Didn't you hear? She won a TV competition and became a millionaire overnight. No way, that's incredible. Are you kidding? No, I'm serious. I swear it. She went on a TV show where they quiz on general knowledge and she won first prize.",
+        "Wow, that's so lucky of her. How much did she win? I'm not sure of the exact figure, but it's a few million euros. Maybe five million euros after tax. I can't believe it. You're really not joking, are you?",
+        "Honestly, look at my face. Our friend Hannah won a ton of money. Then why were you saying poor Hannah? Well, it turns out that she's spent it all already. Five million euros? How is that even possible?",
+        "She bought a house for herself and her husband, a house for her parents, and then a house for each of her four brothers and sisters. And then she bought her husband a ridiculously expensive sports car.",
+        "Are they all happy? Because that's what matters, isn't it? I know for a fact, Hannah isn't. You see, she was planning to quit the job she hates, and retire early. But now that she ran out of money, she can't.",
+        "Basically, she miscalculated how fast she was burning through the money. And she's now full of regret. Why don't they sell that flashy new car? She wants to, but her husband refuses to get rid of it. He says the car is the best thing that has ever happened to him, and if she sells it, he will divorce her."
+      ],
+      "prompts": [
+        [
+          9,
+          "What do we learn about Hannah from the conversation?"
+        ],
+        [
+          10,
+          "What does the man think really matters to people?"
+        ],
+        [
+          11,
+          "What does Hannah's husband say he'll do if she sells the new car?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "If you have time right now, I think we need to sit down and discuss what exactly we are going to do for Jake's education next year. I've been thinking it over and I'd like to send him to Westwood Elementary.",
+        "You mean that boarding school? I thought we agreed that we would not be sending him away at such a young age. I admit that their academic record is very strong with many outstanding awards for achievements in science and math, but he is just not mature enough to live on his own at this point.",
+        "What about enrolling him in Lakeview School? They do have a great outdoor campus where he could finally learn all those outdoor sports you have been wanting him to try. With so much greenery and fresh air, I think his current breeding problems would probably disappear.",
+        "They did just open though, so I don't think I feel comfortable having our son in the first class of a brand new school. Yeah, the classrooms would probably smell like paint, making the air in the school all stuffy.",
+        "What about our local school then? They have a wonderful arts program that would really challenge Jake in terms of creativity and imagination. Being practically next door, one of us could take him to school every day before going to work.",
+        "I don't know, they have a reputation of being overly strict with the students, not to mention the overwhelming amount of homework they assign, which would lead to a lot of pressure for Jake and me. What if we sent him to the place near your mother's house?"
+      ],
+      "prompts": [
+        [
+          12,
+          "What does the man say about Jake?"
+        ],
+        [
+          13,
+          "Why does the woman feel uncomfortable about sending Jake to Lakeview school?"
+        ],
+        [
+          14,
+          "What does the man say about their local school?"
+        ],
+        [
+          15,
+          "What does the woman suggest at the end of the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "Analytical decision making is a decision making approach where a manager makes important business decisions only with solid data. This style contrasts with more instinctive leadership styles, where managers make many decisions using instinct or opinion.",
+        "While analytical decision makers benefit from a deliberate, thoughtful approach, this style also has some shortcomings. A key flaw with analytical decision making is that it takes time. While this approach is beneficial when you have the time and the decision is important, it is problematic when time is crucial.",
+        "Analytical decision makers struggle with deadlines and a sense of urgency with decisions. In situations where you need more timely action, decisions based on some information and instinct may work better.",
+        "The desire to be right is a major driver of analytical decision making. Leaders who use this style don't want to make mistakes. This commitment's one right way of thinking or doing things hinders the manager's flexibility.",
+        "In flexibility causes you to ignore or avoid listening to the thoughts and ideas of others. You only want to utilize hard data or facts. Despite its restrictions, analytical decision making does have several key strengths.",
+        "By relying on facts and data, you minimize your potential for a wrong decision. You also get away from the habit of making guesses or following instincts. Database technology enables business leaders to look to hard evidence in analyzing target markets and promotional strategies rather than making assumptions or guesses on what works."
+      ],
+      "prompts": [
+        [
+          17,
+          "What does a leader tend to do when they are committed to analytical decision-making?"
+        ],
+        [
+          18,
+          "What is a key strength of analytical decision-making?"
+        ],
+        [
+          16,
+          "What is the secret to living past 100?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Playing the piano is among the things the world's oldest person believes has contributed to her long life. Branya Smorera is now 115 years and 320 days old. That means she's been alive longer than any other living individual.",
+        "Rhañez was born in the United States on April 4, 1907, but her family moved to Spain, where they were originally from, when she was a young child. She has lived there ever since. The 115-year-old is active on social media, regularly sharing aspects of her life.",
+        "She also shares some of her secrets to living so long. These include playing the piano from a young age. Unfortunately, she had to give up the practice seven years ago, at 108. Her other secrets for living a long life?",
+        "She led an active lifestyle until her later years, but has never followed a specific diet. Many people ask me what diet I follow to live so many years, Brannes wrote. I have always eaten little, but everything, and I have never followed any plan.",
+        "But she does eat yogurt every day, which, she said, has an infinite number of positive properties for the body. She has also said that the secret to a long life is knowing how to choose what to forget.",
+        "Life would be impossible if we remembered everything, she said."
+      ],
+      "prompts": [
+        [
+          19,
+          "What do we learn about Branya Smorera?"
+        ],
+        [
+          20,
+          "What is one of Branya Smorera's secrets to living a long life?"
+        ],
+        [
+          21,
+          "What does Branya Smorera think also contributes to a long life?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "It's the first day of school and your teacher tells you to find a seat in the classroom. Where do you sit? Does it matter? Yes, it does matter where you sit in your classroom, so choose and choose carefully.",
+        "These reports that where you sit in the classroom can impact your ability to learn, and the way your teacher perceives you. Guess what else? Your grade. Then what is the best seat in the classroom?",
+        "In one study, students who sat in the front and center of the classroom received a higher grade average and scored higher on tests than those sitting towards the back of the classroom. Get this. sitting in the middle of the classroom also outscored students sitting behind them.",
+        "This study gathered that students had a clearer vision of the blackboard and were able to focus more attention on the instructor. By sitting front and centre, students were able to hear better too. The instructors said that they also formed a better connection with the students who sat in front.",
+        "Perhaps the connection is made because of eye contact and visibility and more interaction. But when you sit in the front row, you may be called on more by your teacher, mainly due to the fact that you are easier to see.",
+        "So, for students who are not prepared, and for those who are extremely shy, the attention could cause some unwanted stress."
+      ],
+      "prompts": [
+        [
+          22,
+          "What is of great importance to students according to the speaker?"
+        ],
+        [
+          23,
+          "What did one study find about students seated in the middle of the classroom?"
+        ],
+        [
+          24,
+          "What can eye contact, visibility, and more interaction probably bring about?"
+        ],
+        [
+          25,
+          "What do we learn about extremely shy students sitting in the front row of the"
+        ]
+      ]
+    }
+  ],
+  "2025_06_1": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "Everything changed for 7-year-old Tariq when he slapped some butter on an ear of corn. He knew it tasted good, but butter made it better. His passion for produce got him a position as South Dakota's official corn ambassador.",
+        "Tereek's profession of love for his favorite vegetable earned him the name the corn kid. This was after his online interview attracted millions of views and was made into a song. South Dakota is one of the top corn producers in America.",
+        "The corn provides nourishment across the globe. Tariq said not everyone has to like corn, but everyone should definitely try it, especially with butter. Tariq and his family were invited to South Dakota to attend the honorary ceremony at the state's corn palace.",
+        "Officials wanted to highlight South Dakota's two largest industries, tourism and agriculture. Tariq couldn't believe his eyes when he saw the palace made of corn."
+      ],
+      "prompts": [
+        [
+          2,
+          "Why were Tareek and his family invited to South Dakota?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "Two arrests were announced Thursday. The arrests were in connection with a string of male thefts from US Post Services collection boxes in Marion County and for the possession of a stolen postal key according to the Department of Justice.",
+        "Jordan Jax and Tarred Goodman, both 23, were arrested after evidence gathered in an investigation showed the pair stole mail on multiple occasions using a postal Key according to a news release. Jax and Goodman stole mail for around four months.",
+        "Investigators reviewed videos of the collection boxes. The video showed the two men loading the stolen mail into Jax's vehicle. Investigators were also able to recover the key that was used to open the collection boxes.",
+        "Jax and Goodman each face up to five years in federal prison in the mail thefts and up to 10 years for possession of the postal key."
+      ],
+      "prompts": [
+        [
+          4,
+          "What do Jordan Jacks and Tarett Goodman face?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "Can fast fashion be sustainable? Researchers think yes. Identifying why the fast fashion business model creates waste and determining whether regulators can establish incentives for consumers and manufacturers are steps to reduce waste.",
+        "Recently, the clothing industry has come under attack for creating a waste problem with serious environmental consequences. In the absence of environmentally and economically feasible recycling options, fast-fashion manufacturers pump out low-quality clothes produced in high volumes that are worn only a few times and then discarded.",
+        "The researchers put forth policy contributions, ranging from sustainable disposal of leftover stock to production tax to incentivize both manufacturers and consumers to be more waste conscious.",
+        "In order to devise effective policies to curb the environmental impact of the clothing industry, it is important to identify the source of the problem in the supply chain. Manufacturers, consumers, and regulatory bodies can then take an informed approach to recognize the environmental impact of fast fashion.",
+        "And to design an ecosystem to reduce waste, incentivize innovation, and create new business models to manage waste."
+      ],
+      "prompts": [
+        [
+          6,
+          "Why do the researchers put forth such policies as production tax?"
+        ],
+        [
+          7,
+          "What should be done first to eliminate the harm caused by the clothing industry?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "Hey Mary, you seem to be very much annoyed. What happened? Rush hour in this city is killing me. Ah yes, rush hour is terrible, especially in the morning between eight and nine. But what else can you expect in a city this big?",
+        "Well I think the local government could help improve things. I mean, getting rid of rush hour may be impossible. But it could be made more tolerable, don't you think? Erm, but I'm not sure how. Well, for example, the subway system could have air conditioning.",
+        "I know many cities in the world have air conditioning in their subway. So why can't we? It gets so hot in the summer, I can hardly breathe down there. And add to that the rush hour crowds, with strangers packed close together in the subway carriages.",
+        "The whole thing is just horrible. Ah yes, you are completely right. The trains here are too old. The government should definitely invest in new ones with air conditioning. I guess I'm fortunate I take the bus instead.",
+        "Oh that's much better. Yeah, it's more convenient. Bus number 36 goes straight from my house to the office. It's a 30 minute ride and I don't have to make any changes. That sounds nice. I tell you, my current commute is killing me.",
+        "Maybe I should move closer to the office. Well, I know a great housing agent. I found the flat I'm living in now through him and I love it. Hmm, could you send me his number please? Sure thing. tell him exactly what you are looking for and I'm sure he will find something good."
+      ],
+      "prompts": [
+        [
+          8,
+          "Why is the woman complaining?"
+        ],
+        [
+          9,
+          "What does the woman suggest doing?"
+        ],
+        [
+          10,
+          "What do we learn about the man from the conversation?"
+        ],
+        [
+          11,
+          "What does the woman ask the man to do at the end of the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Did you hear about Johnny? No, why? Is he okay? He had some plastic surgery done. Do you remember he had a scar on his face? Yes, of course. He always had that. I've known him since primary school, and I always remember him having that on his cheek.",
+        "Well, he had it fixed. What do you mean? You can't fix a scar. You know what I mean. He had an operation done on it. Plastic surgery in order to cover it and make it less noticeable. Oh, well, that's ridiculous, isn't it?",
+        "It was noticeable, sure, but it wasn't an ugly scar. It never occurred to me that he should have it taken care of like that. I agree. I can understand some scars and physical defects can be ugly and distracting, but not jonnies.",
+        "In fact, I thought it added character, like it gave him a certain uniqueness. He must have felt differently though, he must have felt self-conscious, and insecure perhaps. No, no, that's not the reason.",
+        "He was totally fine with his scar. As you said, he had had it for most of his life. Then why did he have the operation? Because his girlfriend wanted him to. That's so superficial and selfish of her. If Johnny's girlfriend doesn't like him for who he is, then she does not deserve to be his girlfriend.",
+        "You're right. So he is insane to give in to her like that. But when I told him, he said he loves her and would just do what she wants him to. What a fool he is."
+      ],
+      "prompts": [
+        [
+          12,
+          "What does the man say about Johnny?"
+        ],
+        [
+          13,
+          "What does the woman find puzzling?"
+        ],
+        [
+          14,
+          "What did the man think of Johnny's scar?"
+        ],
+        [
+          15,
+          "How could we describe the speaker's attitude towards Johnny's girlfriend?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "Patige one. Talking is unique to humans. An animal might make ten different sounds, but an adult human knows more than 20,000 words. Additionally, we're the only animal that expresses thoughts in full sentences. don't think language was invented.",
+        "Instead, they think it evolved. How did talking evolve? There are two main theories. The first theory is that language started with people making different sounds, mostly imitating the things around them, like animal calls, nature sounds, and the sounds of tools.",
+        "Perhaps they made the sound of wind to comment on the weather, or imitated the sound of a bird to tell a friend that there was a bird nearby, then over hundreds of thousands of years those sounds turned into words that people began to learn as part of their language.",
+        "At some point people started stringing the words together to form sentences. The other main theory, which is more recent, is that people started off by gesturing, pointing at things with their hands and imitating actions using their bodies.",
+        "Eventually these gestures turned into a full sign language. This theory guesses that after developing sign languages, people eventually started making sounds along with their gestures. At some point, they switched to mostly making sounds that became words instead of just using their bodies.",
+        "The reason they switched to making sounds, the theory goes, is that talking out loud lets you communicate with someone even when you can't see them."
+      ],
+      "prompts": [
+        [
+          16,
+          "How did language come into being, according to researchers?"
+        ],
+        [
+          17,
+          "How did language start? According to the first theory."
+        ],
+        [
+          18,
+          "Why did people switch from gesturing to making sounds according to the more recent theory?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Is it a good idea to display luxury brands and other signals of status? It depends on the situation.",
+        "Studies have shown that people who appear to be wealthy tend to be considered more intelligent, disciplined, and competent than those who do not. new research found that people believe someone who shows off their social status cares more about benefiting themselves than helping others. This means people are less willing to collaborate with them.",
+        "Modesty may be key when cooperation is essential, but the researchers also found that in some cases status signaling has advantages. Experiments showed that participants were less likely to choose someone who signals their wealth or status to join a group seeking cooperative members.",
+        "But, participants were more likely to choose that person when they were looking for a competitive team member. These findings suggest that people should change how they present themselves depending on their social goal.",
+        "This is the era of social media. People can easily share their wealth and status to large audiences, but they need to consider the consequences. Posting about luxury purchases and expensive vacations online may help you to persuade others and frighten competitors.",
+        "But it could also signal to potential friends or future employers that you are unlikely to think about the needs of others. This makes things tricky for people who may want to impress others while also demonstrating that they are a team player."
+      ],
+      "prompts": [
+        [
+          20,
+          "When were participants more likely to choose someone who signaled their wealth or status?"
+        ],
+        [
+          21,
+          "What should people do when sharing their wealth and status online?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "Human fascination with animals goes back as far as humans do. Of the oldest cave paintings discovered, some are up to 40,000 years old, and there are more images of animals than humans. At some point, humans began to capture and hold animals.",
+        "The first known collections were held by royalty and were not open to the public. In Egypt, researchers have found buildings from around 3500 BC containing the remains of animals, including elephants which were not native to Egypt.",
+        "But life wasn't easy for these animals. They probably had short lives, and the remains show evidence of severe injuries. The first public exhibit of animals may have been created by Egypt's Queen Hatshepsut around 1480 BC.",
+        "Researchers think the zoo was started with animals brought home from a far off land known as Punt. It's unclear why the queen built the zoo, but it might have been to show off her wealth and power. Early zoos are found all over the world.",
+        "In China, Emperor Wen Wang is said to have built a garden of intelligence around 1060 BC. It included deer, birds and many fish. In England, King Henry I set up a collection of animals in about 1110 as part of the Royal Estate.",
+        "His collection included tigers and Lions. This collection eventually moved to the Tower of London in 1235. The collection stayed at that location for 600 years."
+      ],
+      "prompts": [
+        [
+          22,
+          "What can we see in the oldest cave paintings?"
+        ],
+        [
+          23,
+          "What do we learn about the first known collections of animals?"
+        ],
+        [
+          24,
+          "What might be the reason the Egyptian queen created the zoo?"
+        ],
+        [
+          25,
+          "What do we learn about King Henry the Firsts, Collection of Animals in England?"
+        ]
+      ]
+    }
+  ],
+  "2025_06_2": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "A Florida teenager and an Atlanta woman won the overall Men's and Women's Divisions Saturday at the annual 7-mile bridge run. Vaklav Bursa, 15 of Big Pine Key, Florida, finished first overall. He completed the race in 41 minutes and one second, and claimed the top spot in the men's division.",
+        "Bursa won third place in the 2022 race. He is a student at Marathon High School. Joanna Stevens, 28 of Atlanta, completed the course in 41 minutes and 12 seconds. She won the Women's Division title and placed second overall.",
+        "The race drew competitors from 41 U.S. states. There were also runners from other countries, including Canada, the U.K., and Switzerland. The run closed the span between the middle and lower keys to traffic for three hours Saturday.",
+        "The April contest is one of the most popular running events in the Southeastern United States. The race field filled within minutes after online registration opened in January."
+      ],
+      "prompts": [
+        [
+          1,
+          "What does the news reports say about Vaclav Bursa and Joanna Stevens?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "What do we learn about the April contest? British astronaut Tim Peake is stepping down permanently from his role as a European astronaut. He's going to take up a full-time position as ambassador for science and space instead.",
+        "Work he's been doing since 2019. The former British Army Air Corps helicopter pilot was selected as a European Space Agency astronaut in 2009. He flew to the space station for a six-month tour in 2015.",
+        "The tour saw him control a robot on Earth remotely from orbit. He also helped dock to spacecraft. Tim said, being an astronaut has been the most extraordinary experience. I've had the privilege of working with an exceptional team of individuals during the past 13 years with the agency.",
+        "It has been incredibly exciting and rewarding. By assuming the role of an ambassador for human flights to space, I'll continue to support the European and the UK space agencies."
+      ],
+      "prompts": [
+        [
+          4,
+          "What does Tim Peak say about his work with the European Space Agency?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "European Space Agency. An Azda store in Wales is now home to five cats after they wandered in and made themselves comfortable. The supermarket is known for its loyal customers, but now has a different kind of visitor that has appeared over the last year.",
+        "Regular shoppers at the supermarket are familiar with the site of several cats, settling down in the shop aisles. The unusual situation started about 12 months ago, when one cat routinely started visiting the store.",
+        "Several newspapers reported that puzzled customers posted on Facebook groups to try to find out if the cat was lost. But its owner assured the concerned customers it was very much loved and fed at home.",
+        "It just enjoyed visiting the shop. Staff did their best to discourage the pet from hanging around, but instead of leaving and never coming back, it invited its friends around. There are now at least 5 different cats who come almost on a daily basis.",
+        "They visit the store so much that staff have been forced to put up signs, asking their customers not to feed them."
+      ],
+      "prompts": [
+        [
+          6,
+          "What did some customers think when they saw the first cat routinely appear in the store?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "I've been thinking about moving off campus next semester. Hmmm, I don't know if that's a good idea, as your mother and I would worry about you living all by yourself in an apartment so far from home. And then there's the expense too.",
+        "I'm not sure we can afford it. Well, I wouldn't be alone, actually. Three of my friends from the dormitory would share the place with me. And with four of us, it wouldn't cost any more than living in the dorm.",
+        "Are you sure about that? Rents in big cities are high, and then there's the cost of electricity and gas. Have you factored those in? We've budgeted for those, and for internet and transportation. And, if we move far enough from the city center, the rent is low enough for us to afford all of it.",
+        "What's about the commute to and from campus? It sounds like you'll be wasting several hours every day on the road instead of studying. It's about an hour to campus, but there's no reason I can't study on the bus.",
+        "After all, I did that during high school and my commute was even longer than… That's true, but I'm not sure why you want to leave campus and go through all that trouble when the cost is the same.",
+        "For a lot of reasons, we'd have a kitchen so we could cook ourselves, and we'd each have our own bedroom where we could study, instead of going to the library. We'd just have more space and privacy. I'm not convinced that the benefits are greater than the disadvantages, but I'll discuss"
+      ],
+      "prompts": [
+        [
+          8,
+          "What has the woman been thinking of doing next semester?"
+        ],
+        [
+          9,
+          "What does the man suggest the woman take into consideration?"
+        ],
+        [
+          10,
+          "What does the woman say she did during high school?"
+        ],
+        [
+          11,
+          "What does the man say he'll do at the end of the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Good morning. I'm looking for a present for my nephew, Lawrence. Do you have anything in mind? I'm not sure. Do you know what boys aged around 10 typically like? For that age group, our biggest seller this year has been this action figure.",
+        "It's called Bobo Man and it's incredibly popular. Does it do anything? Not by itself. It has no batteries if that's what you mean. There's a Bobo Man cartoon popular amongst young children you see and this toy is the lead character from the show.",
+        "Oh, I understand now. I've never heard of it. But I do know little Lawrence loves cartoons. Do you have any other popular toys? Perhaps something educational. Yes, of course. Right over here we have dozens of puzzles for children of all ages.",
+        "They are fun, great for exercising the mind, and can be played either alone or in groups. I like this sort of idea. Lawrence has a sister, who is slightly older. So maybe a game that they can play together would be good.",
+        "What do you think of battleships then? It's a total classic. It has been around since the 1930s. Oh yeah, we had one of those when growing up. Of course you did. Everyone did, and kids enjoy it just as much today as you and I did when we were young.",
+        "Some games just never get old. I suppose you are right. I have fond memories, playing battleships when it was raining outside, and we had to stay indoors. That's decided then. How much? 19 pounds and 90 pence please.",
+        "There you are. Have a nice day. Thank you. You too."
+      ],
+      "prompts": [
+        [
+          12,
+          "What is the woman doing?"
+        ],
+        [
+          13,
+          "How does the man describe Bobo Man, the action figure?"
+        ],
+        [
+          14,
+          "What kind of game does the woman think would be good for Lawrence?"
+        ],
+        [
+          15,
+          "What do we learn from the conversation about the game Battleships?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "We assume that if we offer our customers more choices, then they'll be more likely to buy our products. But here's the paradox of choice. If a person is presented with too many choices, they are actually less likely to buy.",
+        "In 2012, psychologists published a study about jams. On a regular day, at a local food market, people would find a display table were 24 different kinds of jams. Then, on another day, at that same food market, people were given only 6 different types of jam choices.",
+        "Guess which display table led to more sales? The study found that, while the bigger display table created more interest, people were almost 10 times less likely to purchase a jar of jam than in the case of the smaller display.",
+        "Customer satisfaction takes a hit as well. In the study, the bigger display of jams leads to lower customer satisfaction than the smaller display. In an extensive study published in 2015, researchers analyzed a total of 99 choice studies and specifically looked at those cases in which reducing choices helped to boost sales.",
+        "They found four rules that motivate consumers to buy. When people want to make a quick and easy choice, when the product is complex, when it's difficult to compare alternatives, and when consumers don't have clear preferences.",
+        "So as you can see, when it comes to choices, less is more."
+      ],
+      "prompts": [
+        [
+          16,
+          "What do we learn from the passage about the paradox of choice?"
+        ],
+        [
+          17,
+          "What did the psychologist want to find out in their 2012 study about JAMS?"
+        ],
+        [
+          18,
+          "What is the finding of an extensive study published in 2015?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "The New Year has come and gone, and many may have already forgotten what they had resolved to do on January 1st. But if that resolution was to volunteer more, now is the best time to start. Volunteering can drop after the holiday season, and by February, some organizations lack the volunteers they had in surplus just a month ago.",
+        "According to one survey, only 26% of Americans volunteer, despite reports that many Americans view volunteering as worthwhile. Why such a disconnect? Most people cite time and conflicting work schedules as major barriers.",
+        "But employees and employers would actually benefit if companies made employee volunteering part of the job. Researchers have found donating our time and talent to others can lower blood pressure, boost happiness, and improve mental and physical health.",
+        "Employees have also linked employee volunteer programs with more productive employees. With so much emphasis on employee wellness these days, company volunteer programs could be the perfect 2025 resolution.",
+        "But for volunteering to benefit employees and the workplace, the entire organization needs to be involved. By allowing employees to donate their time during work hours, the workplace becomes an outlet for personal fulfillment without affecting personal time.",
+        "In one survey, 89% of employees perceived companies that sponsored volunteer activities as creating a better working environment. And 75% said volunteering was critical to their well-being."
+      ],
+      "prompts": [
+        [
+          19,
+          "What do many Americans think of volunteering?"
+        ],
+        [
+          20,
+          "How could companies ensure both employees and employers benefit from volunteering?"
+        ],
+        [
+          21,
+          "What did 75% of employees say about volunteering in a survey?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "The vast majority of the UK's 200,000 tons of retail sector's annual food waste comes from supermarkets, but it's a problem that impacts independent luxury food suppliers too. The scale is small. It's estimated at less than 1% of the UK's food waste total.",
+        "But the quality from these suppliers is high. Everything from specialist cheeses to sort after coffee beans gets thrown away every day in the current food system. This is where French entrepreneur Sophie Andre comes in.",
+        "In 2016 she moved to London and began by setting up a business delivering luxury handmade food across the city. Food delivery seems to be a big thing here,\" she says. So, I started delivering products by bicycle.",
+        "Talking with local producers, I learned that a small part of the production is sometimes wasted due to problems with size or shape. But the quality of the products remains unchanged. Unlike many food waste projects that have sprung up in recent years, the idea is not simply to redistribute waste food but to provide a high-quality product.",
+        "Andre's company, Alicia, offers breakfast and snacks specifically aimed at business meetings and events. One sourced, Alicia uses waste products to create simple, natural, straightforward meals and snacks.",
+        "Perhaps, unlike other waste food, the supply is regular. Suppliers will always have a certain amount of surplus. So, the menus remain regular too. Andre believes this benefits both her business and her customers."
+      ],
+      "prompts": [
+        [
+          23,
+          "What does Sophie Andres business do in London?"
+        ],
+        [
+          24,
+          "In what way does Sophie Andres business differ from many food waste projects."
+        ]
+      ]
+    }
+  ],
+  "2024_12_1": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "The City of Fayetteville is making a special effort to recognize its bus drivers ahead of the newly proclaimed transit driver appreciation day happening Saturday. As part of the event, the City is celebrating its longest serving driver on the force.",
+        "That driver is Sherry Christian. Christian has been a driver for 25 years. The Fayetteville native believes driving a school bus allows her to give back to her community. She says that the best part of the job is watching the children who ride her bus grow up.",
+        "Transit Driver Appreciation Day has been celebrated across the country as far back as 2009. However, this week, the city of Fayetteville issued a proclamation for the day to take place March 18th. Officials said they want bus drivers to know how important they are to Fayetteville, serving almost 1.6 million riders a year."
+      ],
+      "prompts": [
+        [
+          1,
+          "What do we learn about Sherry Christian?"
+        ],
+        [
+          2,
+          "What did city officials of Fayetteville want bus drivers to be aware of."
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "The Wilton School Board has proposed a 5.99% spending increase. If approved, it would be the largest jump in at least 8 budget cycles. The 5.99% request more than doubles the highest previous year over year increase in the last 8 years, which was 2.99% for the 2021-2022 school year.",
+        "The biggest driver of the $91.8 million proposed budget remains teacher salaries. These account for 64% of the total request at $59 million. The $59 million is up from the $56.7 million budgeted for the current school year.",
+        "There are some factors that could affect the budget moving forward. One of those is total enrollment. The district will have a total enrollment of 3,742 students. Most all of these students will be in kindergarten through high school, but 66 will be in pre-kinder garden and other programs.",
+        "This represents 47 fewer students than the current year. Fewer students mean less federal and state funding."
+      ],
+      "prompts": [
+        [
+          3,
+          "What does the news report say the Wilton School Board has done?"
+        ],
+        [
+          4,
+          "What will a decline in the total enrollment lead to?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "A rare thunder snow event has taken place in Scotland, and alarmed locals contacted police thinking they had heard bombs going off. The phenomenon happens when thunder and lightning mix with a heavy snowstorm, sometimes causing loud claps that can be confused with explosions.",
+        "One person described it as a loud boom, similar to a plane crash. Another person was woken up in the middle of the night by what he thought was early construction work starting. The noise was powerful enough to shake buildings and set off car alarms.",
+        "The police were flooded with many calls from the public, and they sent out a message asking people to remain calm. The police assured everyone that it was just thunder and lightning rather than some military exercise.",
+        "The weather was the coldest it had been for the season, so people were warned to be careful when traveling outside. In particular, dangerous conditions such as icy roads or wet ground could cause difficulty for drivers.",
+        "The rail service also announced potential disruptions to trains due to the deep snow. Some roads were also closed because of the severe weather."
+      ],
+      "prompts": [
+        [
+          6,
+          "What did the police do when they received the local residence phone calls?"
+        ],
+        [
+          7,
+          "What were people advised to do when traveling outside?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "I'm going to the city centre to buy a new phone today. Didn't you buy a new phone just two months ago? It was three months ago, and I already know what you're going to say. You're thinking I shouldn't replace my phone this soon.",
+        "No, actually, I was wondering how you could possibly afford a new phone. But now that you mention it, I do think getting another phone so soon is wasteful, regardless of the cost. Maybe you're right, but the thing is, everyone at the office has a nice expensive phone and I'm a little embarrassed by mine.",
+        "I just got a credit card, so I thought I might as well buy a new phone. I don't think buying a phone on credit is a good idea. Look, you've only been working for five months now. People understand that you are a recent graduate, and I doubt anyone cares about your phone other than yourself.",
+        "Maybe you're right, but the credit card has a very good special offer, where I don't pay any interest for six months. I'll be able to pay for the phone well before that period is over. I still think it's a bad idea to use a credit card for something you don't need.",
+        "One of my colleagues bought a lot of things on credit during her first year of work and it became a bad habit and she accumulated a lot of debt. Well, I can see how that might happen to someone, and I'm sure she regrets it, but I know it won't happen to me."
+      ],
+      "prompts": [
+        [
+          8,
+          "What does the woman say she was actually wondering about?"
+        ],
+        [
+          9,
+          "Why is the man a little embarrassed by the phone he's using now?"
+        ],
+        [
+          10,
+          "What does the man say about the credit card he just got?"
+        ],
+        [
+          11,
+          "What do we learn about one of the woman's colleagues?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Welcome to The Morning Show. Our guest today is a popular blog writer and a major figure in the tiny home community. Welcome, Bob Jones. Hi Mary. Hi Bob. You're an advocate of the tiny home movement. A lot of people don't know about this movement.",
+        "Can you tell our audience what it's about? Well, it's mainly about increasing home ownership and protecting the environment. Of course, those are great goals. But I've seen your blog and you write about houses that are as small as 20 square meters.",
+        "That's not a realistic size for families. I do talk about very small homes, but there's no set definition of a tiny home, and other people include homes that are much larger, say 60 square metres. And you'd be surprised.",
+        "Many families of four are happy living in houses that are under 30 square metres. But I think most of us want spacious homes. The average new house in this area is 150 square meters, and that's what people dream of owning.",
+        "Yes, but I think that dream needs to change, considering the cost of housing. Housing costs are high, but do people really save that much by having a smaller home? Many people who can only afford to rent a larger home are able to buy a tiny home.",
+        "In this city, the average home costs $200,000, and a tiny home costs just $50,000. Those are huge savings. So tiny homes might not be for everyone, but they're a good option for many. You mentioned the environment earlier.",
+        "How does this benefit the planet? Well, if people have smaller homes, they use less land and fewer resources to build them."
+      ],
+      "prompts": [
+        [
+          12,
+          "What does the tiny home movement mainly advocate?"
+        ],
+        [
+          13,
+          "What does the woman say about houses as small as 20 square meters?"
+        ],
+        [
+          14,
+          "What does the man think about the dream of owning a 150 square meter house?"
+        ],
+        [
+          15,
+          "What does the man say about tiny homes?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "Kids need time every day to run, jump, stretch and play. These experiences have been shown to build children's confidence and pleasure in physical activities, develop their motor skills and even improve emotional well-being.",
+        "To begin with, children seem to have a natural desire to overcome challenges and take risks. Taking healthy risks through physical movement builds children's confidence and ability to solve problems and persist through frustration.",
+        "Secondly, movement activities build children's big body skills, such as coordination and balance, as well as the fine motor skills they need for tasks like writing, tying their shoes or throwing and catching a ball.",
+        "Thirdly, according to the American Psychological Association, regular physical activity and especially outdoor activity, reduces children's stress and depression and improves their ability to focus and learn.",
+        "Regular exercise can significantly improve self-regulation and decrease disciplinary consequences for negative behaviour. Physical activity provides a positive outlet for frustration, anxiety or anger and can become a healthy coping skill throughout life.",
+        "Finally, we know that physical activity is important for our physical and mental health and cultivating the habit of physical activity starts early. Children are more likely to develop a lifelong love of physical activity from frequent positive early experiences.",
+        "Not every child enjoys competitive sports or playing with balls and that's okay. There are plenty of other options such as imaginative play, non-competitive games and gardening or nature experiences."
+      ],
+      "prompts": [
+        [
+          16,
+          "What do children seem to have a natural desire to do?"
+        ],
+        [
+          17,
+          "According to the American Psychological Association, what does regular physical activity"
+        ],
+        [
+          18,
+          "What does the passage say about cultivating the habit of physical activity?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "A new study finds that job seekers are even willing to explore jobs with lower salaries, when companies are more diverse. It finds that sharing information about diversity makes job postings more attractive to job seekers, even when pay is lower.",
+        "To conduct the study, the team partnered with an online job listings platform, which emails postings relevant to individuals and their job search criteria. For the course of the 11-week study, the platform emailed job listings to some 180,000 users placed in one of two conditions.",
+        "In the baseline condition, participants saw emails in the normal format with no information on diversity. In the diversity condition, participants saw a diversity score for each listing, information about the race, gender, education, and language skills of a company's workforce, compared to others in the same sector and location.",
+        "Information was then gathered on whether the email was opened and which job listings were clicked on by each user. Participants in the diversity condition tended to click on job listings from companies with slightly higher diversity scores than those in the baseline condition.",
+        "That is, participants seem to be paying attention to information about diversity and using this when deciding weather to click on the listing. And the team also found that participants were willing to look at listings with lower salaries if they came from companies with a higher diversity score."
+      ],
+      "prompts": [
+        [
+          19,
+          "When are job seekers willing to explore jobs with lower salaries according to a new study?"
+        ],
+        [
+          20,
+          "What did participants see in the baseline condition of the study?"
+        ],
+        [
+          21,
+          "What does the passage say participants seem to be paying attention to?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "A new study from Oregon State University found that dogs tend to match their behavior with their children in their family. The findings are important because there is a growing body of evidence that dogs can help children in many ways.",
+        "These include helping with social development, increasing physical activity, managing anxiety or serving as a source of attachment in the face of changing family structures. Yet very little research has focused on how dogs perceive and socially engage with children.",
+        "The great news is that this study suggests dogs are paying a lot of attention to the kids that they live with, said Monique Udel, the lead author of the study. One interesting thing we have observed is that dogs are matching children's behaviour, less frequently than what we have seen between dogs and adults.",
+        "This suggests that while dogs may view children as social companions, there are also some differences that we need to understand better. While research has found dogs can have a lot of positive impacts on a child's life, there are also risks associated with a dog-child relationship.",
+        "For example, other studies have found dogs are more likely to bite children versus adults. We still have a lot to learn about the dog-child relationship, who Dell said, but research does show that kids are very capable of training dogs."
+      ],
+      "prompts": [
+        [
+          22,
+          "What does the passage say about the findings of a new study from Oregon State University?"
+        ],
+        [
+          23,
+          "What does a growing body of evidence show according to the passage?"
+        ],
+        [
+          24,
+          "What did Monique Udel say their study suggests?"
+        ],
+        [
+          25,
+          "What does research show kids are very specific to children?"
+        ],
+        [
+          25,
+          "What does research show kids are very capable of doing?"
+        ]
+      ]
+    }
+  ],
+  "2024_12_2": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "Across the US, families are looking to the winter with fear, as energy costs soar. A number of factors are creating a bad situation. energy consumption is up, but supplies have been reduced. The Energy Department projects heating bills will jump 28% this winter, for those who rely on natural gas.",
+        "Natural gas is used by nearly half of U.S. households for heat. Heating oil is projected to be 27% higher and electricity 10% higher. That comes against inflation rates that accelerated last month, with consumer prices growing 6%.",
+        "That's the fastest pace in four decades. The pain will be especially acute in parts of the country that heavily rely on heating oil to keep homes warm. It's projected to cost more than $2,300 to heat a typical home with heating oil this winter.",
+        "Last month, the federal government added $1 billion in funding to low-income home energy assistance program, bringing the total to $4.8 billion. But that represents a reduction from last year's energy assistance package of over $8 billion."
+      ],
+      "prompts": [
+        [
+          1,
+          "Why are families across the US looking to this winter with fear?"
+        ],
+        [
+          2,
+          "What did the federal government do last month?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "Many Americans think they make healthy food choices, but they may be viewing their diet too optimistically. That's the main finding of a new study by researchers at the U.S. Department of Agriculture in Stonewill, Mississippi.",
+        "The study aimed to identify disconnects between how healthily Americans think they eat and how they actually do. For the study, the researchers asked participants to rate their diet as excellent, very good, good, fair or poor.",
+        "Folks also completed 24-hour food questionnaires. Then, the researchers compared answers to see how well responses to the two exercises matched up. Of more than 9,700 people, roughly 85% were off-base when asked to rate the quality of their diet, and almost all overestimated how healthy it was.",
+        "Those who rated their diet as poor tended to be far more accurate. Their rating matched that of the researchers more than nine times out of ten."
+      ],
+      "prompts": [
+        [
+          3,
+          "What is the main finding of a new study about many Americans?"
+        ],
+        [
+          4,
+          "Who tended to rate their diet more accurately in the survey?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "It was a heartwarming moment that dozens of Indian rescuers rallied together to use a crane in order to save an elephant trapped at the bottom of a 20-foot well. The massive rescue effort took place last week close to an army camp.",
+        "The elephant wandered out of the jungle and fell into the well. The army officers heard a noise coming from the well and realized an elephant was trapped deep inside. The officers then threw in some food for the creature and called the local forest department for help.",
+        "Video of the rescue operation shows how the team used a crane to lift up the huge animal out of the well and onto the back of a truck. It was then taken to an examining room for evaluation of any injuries.",
+        "The elephant was kept under close supervision for a few days before it was successfully released back into the wild."
+      ],
+      "prompts": [
+        [
+          5,
+          "Why did the army officers call the local forest department?"
+        ],
+        [
+          7,
+          "What does the news report say happened finally?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "I need to stop at the bank to withdraw some cash. Why not just pay with your phone? Well actually I've stopped using online payments for the past three months now. Stopped paying online? Oh, you must be worried that online payments aren't secure.",
+        "No, they are safe. But paying online is too convenient and I spent too much money on things I didn't need. Oh, impulse purchases can be an issue for me too. I've definitely bought clothes and shoes I didn't need because they were on sale and paying with my phone was so easy.",
+        "But I've found that if I review my spending every night that keeps me from spending too much.",
+        "I tried that strategy but it just didn't work because I'd be busy studying all day and then when I was tired and hungry I'd use my phone to order food like burgers and other junk instead of going to the canteen where I could get a healthier meal for half the price. Well, what do you do now then?",
+        "It seems like you'd have the same problems with cash. I go to the bank once a week, and the rest of the time I keep my bank card at home so I can't get more cash out. And I also have a notebook where I record my expenses.",
+        "But what prevents you from just going to the bank and getting more money if you want to buy something? The first month I did withdraw extra cash twice, but I felt guilty about it, and after that I refused to spend more than what I had budgeted, and by now it's just a habit."
+      ],
+      "prompts": [
+        [
+          8,
+          "Why has the man stopped paying online for the last three months?"
+        ],
+        [
+          9,
+          "What problem does the woman say she may also have?"
+        ],
+        [
+          10,
+          "What does the man say he could do at the canteen?"
+        ],
+        [
+          11,
+          "What is now just a habit for the man?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Please hear me out. I don't want our son to spend his afternoons doing something he hates, even if it might prepare him for the future. What about getting him to join a sport like soccer? From all the running and training, he could become quite athletic, not to mention the great physical benefits from exercising outside every day.",
+        "Hmm, I don't think he should be doing something so challenging with all his breathing issues. What about playing an indoor sport like Badminton? The environment is easier to control and he can still get a good workout in addition to improving his hand-eye coordination.",
+        "Besides, I could teach him some of the basics from my time as a Badminton player. Hmm, I'm thinking team sports should be the way to go. There's nothing like playing as part of a unit to accomplish a goal like winning a game or even a championship.",
+        "He could try basketball since many of the courts are indoors now and it's a sport that could help him understand team spirit while cooperating with others. Maybe he could even join the school basketball team when he's ready.",
+        "Oh, oh, what about volleyball? It's a team sport and they often have mixed gender teams so he could socialize with both girls and boys. It's not as popular as some sports, which means he has better odds of possibly getting an athletic scholarship in the future.",
+        "I also believe you were a beach volleyball athlete yourself not so long ago. As I've said many times before, beach volleyball and indoor volleyball are completely different."
+      ],
+      "prompts": [
+        [
+          12,
+          "Why is the woman opposed to their son joining a sport like soccer?"
+        ],
+        [
+          13,
+          "What does the man suggest their son try in order to understand team spirit?"
+        ],
+        [
+          14,
+          "What is one of the woman's considerations in choosing a sport for her son?"
+        ],
+        [
+          15,
+          "What does the man say about beach volleyball?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "Liftoff is usually the most environmentally harmful stage of any space mission. With vast quantities of fuel burnt up in a matter of minutes. For instance, SpaceX's Falcon 9 gets through 112 tons of refined fuel, emitting about 336 tons of CO2.",
+        "This is the equivalent produced by your average car driving almost 70 times around the world, as well as greenhouse gases, rocket engines emit particles that destroy ozone. These issues are growing more pressing with the emergence of commercial spaceflight.",
+        "There were 114 space launches in 2020 but there may be up to 1000 per year in future. Sustainable fuels are the top priority to enable greener space travel. Current spacecraft use a variety of fuels but most are based on fossil fuels.",
+        "One potentially greener option is liquid hydrogen and oxygen. Hydrogen can be obtained sustainably by using solar power to break water down into oxygen and hydrogen. Reusable rockets can cut down on some of the waste associated with spaceflight.",
+        "Traditionally, boosters, fuel tanks and other components are treated as expendable, but guiding them back to earth in a controlled manner opens new possibilities. Most components from the Falcon 9 can be reused up to 100 times.",
+        "Truly environmentally friendly space travel is still some way off. But we already have many of the technologies needed to start limiting its impact on our planet."
+      ],
+      "prompts": [
+        [
+          16,
+          "What do we learn from the passage about the liftoff of spacecraft?"
+        ],
+        [
+          17,
+          "What happens traditionally to boosters, fuel tanks, and other components in spaceflight."
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Helping to look after a pet can facilitate numerous aspects of a child's emotional development. Research shows that reading to a loyal and non-judgmental companion, such as a dog or cat, can encourage reluctant readers to read aloud, which will in turn boost their self confidence.",
+        "Having a companion to talk to you about their feelings can also help children feel secure and develop communication skills. A household pet can also cultivate a child's sense of responsibility as their parent explains the necessary processes of keeping their pet happy and healthy.",
+        "As a child matures, they can then take on more of the daily responsibilities, boosting their sense of independence. Pets also provide a fantastic subject for research and learning. Parents can encourage their child to research their favorite pets at the library or during a supervised internet search.",
+        "Taking children along to the pet shop to buy food and supplies will support their cognitive development as their passion for learning flourishes. A child's physical development can benefit greatly from taking pets for walks in the fresh air.",
+        "Even their fine motor skills can be utilized in taking care of a beloved animal. When responsibilities are well-paced and communicated, a child can benefit greatly from involvement in bringing up a happy and healthy pet.",
+        "And of course, if a child doesn't have a pet in their own household, they can still benefit from all of the above when visiting a friend who does."
+      ],
+      "prompts": [
+        [
+          20,
+          "How can parents make pets a fantastic subject for their children's research and learning?"
+        ],
+        [
+          21,
+          "How can children still benefit even when their family doesn't have a pet?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "A new bill in the Ohio legislature would require state public colleges and universities to send prospective students a packet of information. This would include costs of college, grants and scholarships.",
+        "It would also include expected monthly loan payments and projected salary after college. State Representative Adam Matthews is one of the two legislators who proposed the bill. He said it would give prospective students more information about what to expect once they graduate.",
+        "Putting that information in front of them will give them the best opportunity to match their skills and their dreams to what our schools can provide,\" said Matthews. He notes that the state can only regulate public institutions in this way, but he hopes private institutions in Ohio follow the lead of the state and post similar information.",
+        "He believes giving out that this information will help Ohio's colleges and universities to be more competitive. The information will highlight what a great value they have for their very reasonable cost.",
+        "Ohio's schools are already competitive. The state attracts more undergraduate students than it sends to colleges out of state. Many colleges and universities currently provide similar information on their websites.",
+        "This includes tuition, fees, graduation rates and more. students need to search for the information. This bill would require the universities and colleges to send a packet directly to students. what would the new bill in the Ohio legislature require public colleges and universities to do?"
+      ],
+      "prompts": [
+        [
+          22,
+          "What can the state only do according to Adam Matthews?"
+        ],
+        [
+          24,
+          "What do we learn about Ohio schools from the passage?"
+        ],
+        [
+          25,
+          "What is the problem with schools providing information on their websites?"
+        ]
+      ]
+    }
+  ],
+  "2024_06_1": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "Six people had to move away from their home to another place after a fire broke out in a building on Main Street, Saturday. Officials said. Firefighters responded to the three-story building shortly after 1 p.m., for a reported structure fire, according to Norwalk Deputy Fire Chief Adam Markowitz.",
+        "Markowitz said, crews encountered heavy smoke coming from the second floor when they arrived. A team of about 25 firefighters then spent about 25 minutes extinguishing the flames. Officials described the structure as a mixed-use building that features commercial businesses on the first floor and residential on the second and third floors.",
+        "Town records list four apartments in the building. Due to smoke and heat damage, the four apartments were declared uninhabitable, and the six residents had to move to another place, officials said. No injuries were reported in connection with the fire.",
+        "The Norbach Fire Marshal is investigating the cause and origin of the fire."
+      ],
+      "prompts": [
+        [
+          2,
+          "What does the news reports say the Norwalk Fire Marshal is doing?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "A new study has cast doubt on historic research suggesting that the season a season or month of someone's birth is associated with an increased risk of certain mental health conditions. The study looks at symptoms of anxiety and depression among more than 70,000 older adults in Europe.",
+        "A number of past studies have found the link between season of birth and mental health diagnoses. Researchers have suggested that such links could arise from various things. These include nutrient intake, sun exposure, climate and disease exposure varying across the course of the year.",
+        "However, evidence has been mixed. More recent studies have suggested that factors such as social class or economic background have more to do with these diagnoses than month of birth. Overall, the new study found no significant relationship between participants month of birth and symptoms of depression or anxiety.",
+        "There was some variability in some countries. In Poland, depressive symptoms fluctuated a little depending on birth month. In the Czech Republic, the same was true of anxiety symptoms. But on the whole, there was no systematic pattern.",
+        "Question three, what have a number of past studies found about season of birth?"
+      ],
+      "prompts": [
+        [
+          4,
+          "What did the new study find about the relationship between participants' month of birth and symptoms of depression?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "Genetic researchers in China have made a clone of a star police dog. The clone was born in a laboratory in Beijing in December. Tests show that the clone and her mother are almost identical genetically.",
+        "The mother dog helped solve multiple murders and many other crimes. The clone has already performed better than traditionally bred dogs on several tests. If the clone continues to perform as well as expected, it could mean a huge reduction in the training time for police dogs, which usually takes about five years.",
+        "The ultimate goal of scientists is to produce clones of talented police dogs that can be trained in months instead of years. However, this goal is not yet possible due to the current costs of the technology.",
+        "This is not the first time a clone has been made of a star police dog. In South Korea, six clones began working with the police in 2008."
+      ],
+      "prompts": [
+        [
+          5,
+          "What do the researchers' tests show about the cloned dog?"
+        ],
+        [
+          6,
+          "What is the scientist's purpose in cloning police dogs?"
+        ],
+        [
+          7,
+          "Why does the news report say the scientist's goal is not yet possible?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "In one. Tom, did you see the article online about the new TV series based on the book The Three Body Problem? A colleague mentioned the book, but I've been so busy writing my thesis that I haven't been able to read for pleasure in months.",
+        "Well, sounds like if you're going to read anything for fun, this is the book. It's written by a Chinese science fiction writer. I can't remember his name. But he's written three books in all. And the three body problem is the first in the series.",
+        "I don't want to say too much and spoil it for you, but it's definitely got some amazing technological and sociological concepts in it. It does sound like it would suit my taste, but if they are making a TV series based on it now, I don't know if I should read the book or watch the show first.",
+        "I think it's better to read the book first. It's rare for the show or movie to be better than the book. And then you just end up ruining the book for yourself, if the show isn't very good. When is the show supposed to start?",
+        "I'm a bit overwhelmed with the amount of data I still need to collect to finish my thesis. But, I still need to relax sometimes. I can't remember exactly. It's pretty soon, and it's going to be quite long.",
+        "There are 24 episodes. Well, maybe you could download an electronic copy of the book and try to read it before the show starts. That's a good idea, and then maybe we can watch the series together. Thanks for the tip Alice.",
+        "No problem."
+      ],
+      "prompts": [
+        [
+          8,
+          "How did the man get to know about the book The Three-Body Problem?"
+        ],
+        [
+          9,
+          "What does the woman say she can't remember about the book's author?"
+        ],
+        [
+          10,
+          "What does the man have to do to finish his thesis?"
+        ],
+        [
+          11,
+          "What will the man most probably do first after the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Hello, good afternoon. I have an inquiry to make. It's about the vegetarian food festival you are holding on the 19th of August at the Newcastle City Hall. Yes, of course. My name's Philip. How can I help you?",
+        "It says on your website that you are still looking for vendors, and I grow organic vegetables on my farm, as well as doing my own home baking. Would I be able to sell both the vegetables and items baked from them at the festival?",
+        "That's exactly the type of thing we are looking for. We are getting close to the deadline, however. Do you prefer to fill out an application on the web, or to print this out and fill it in by hand and then post it back to us?",
+        "Remember that you will have to have all your certificates to hand when you are filling out the forms as the standards are high and they will be carefully checked before anyone will be able to sell their produce at the event.",
+        "I should be fine with doing it on your website and I already have all my certificates as we run a small farm shop too. But can you give me your details anyway? Please address it to the organic organisation, vendor applications, 112.",
+        "Queens Road, Newcastle, Northumbria. The postcode is NU29, 3LJ. Remember that the closing date is next Tuesday, the 28th of June. That's absolutely wonderful. Thank you so much for your help."
+      ],
+      "prompts": [
+        [
+          12,
+          "Why does the woman call the man?"
+        ],
+        [
+          13,
+          "What is the man still looking for?"
+        ],
+        [
+          14,
+          "What does the man say they are getting close to?"
+        ],
+        [
+          15,
+          "What does the man finally ask the woman to remember?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "Opponents call it illegal camping. What both sides accept is that there has been a boom in the past few months, with increasing numbers of visitors pitching their tents on any bit of land they fancy in the UK.",
+        "In part, this reflects the fact that official campsites have been wholly or partially closed or are overflowing, in a summer when fewer people are going abroad. It is also cheap at a time when many are worried about what the economic future holds.",
+        "But it may also be an expression of a desire for going outdoors, a response to the months of lockdown. Most of the coverage of the boom in wild camping has been negative. Camping in public parks has now been banned for August and the early part of September because campers dump litter, human waste and even their tents on the grassland.",
+        "Similar action has been taken even in Scotland where camping is usually permitted on most of its open land. Clearly there have to be rules. It would make sense that wild campers need to ask for permission to camp from landowners, especially outside Scotland, where the law is far more restrictive.",
+        "It would be common sense for people to use small tent and leave no trace of their visit. They have been attracted by a patch of land that is close to wilderness and it is their responsibility to keep it that way."
+      ],
+      "prompts": [
+        [
+          16,
+          "Why is camping banned for part of the summer in public parks?"
+        ],
+        [
+          18,
+          "What does the speaker suggest campers do?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Imagine boating down the Amazon River, minding your own business, calmly keeping an eye out for alarmingly large snakes. And a curious pink dolphin appears to swim alongside. While this may seem like a mythical creature, pink dolphins do exist in the Amazon region.",
+        "The Amazon River Dolphin is a giant among its species. It can measure up to two meters long and weigh around 204 kilograms. Size isn't the only thing that sets the Amazon River Dolphin apart. Driving in South American rivers and temporary lakes caused by seasonal flooding, this freshwater dolphin is sometimes shockingly pink.",
+        "Although born gray, males of the species are easily identified as they enter adulthood by a decisive pink shade, their unusual coloring is believed to be the result of scar tissue from dolphin fights, whether it play fighting or a serious bid for a mate.",
+        "The deeper the pink, the more attractive the males are believed to be, and the older the male, the more pink he will have. There's also a theory that this color helps the dolphins more readily blend in with their surroundings.",
+        "During heavy rains, rivers along the Amazon rainforest turn a pink shade, and with their pink coloring, male dolphins are harder to detect. The Amazon Wetlands System, fed by the Amazon River, is a crucial place for pink dolphins to breed.",
+        "And since 2018 has been granted internationally protected status."
+      ],
+      "prompts": [
+        [
+          20,
+          "What is the unusual coloring of pink dolphins believed to originate in?"
+        ],
+        [
+          21,
+          "What has become of the Amazon Wetland System since 2018?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "In a new Merrill Lynch age wave survey, a full 70% of the early adults said they've received financial support from their parents in the past year, and 58% said they couldn't afford their current lifestyles without it.",
+        "The most common types of financial support include cell phone plans, food, school costs, and car expenses. Parental financial support of early adults said Ken Dichtwald, CEO of AgeWave, is the new normal.",
+        "But 64% of the young adult surveyed said parents' financial support to children aged 25 to 34 is a bad thing, because it makes those kids dependent. By contrast, only 29% thought supporting men and women aged 18 to 24 is bad.",
+        "The remaining 71% thought that assistance helps the adult children get ahead. Dickwald believes the young women and men surveyed were saying that by 25 young adults ought to be financially independent.",
+        "In fact, the respondents said financial independence defines adulthood. Financial independence is something they were struggling with and challenged by. And it scared them a bit, Dickwald said. One big reason they're struggling is attributed to college loans, of which the average amounts to $37,000.",
+        "Many of the parents have taken on college loans for the kids too, sometimes at the expense of their own finances. In the survey, 60% of early adults define financial success as being debt-free, whether So that's likely or even possible anytime soon, is anyone's guess."
+      ],
+      "prompts": [
+        [
+          23,
+          "Why did most young adults in the survey say financial support to children aged 25 to 34 is a bad thing?"
+        ]
+      ]
+    }
+  ],
+  "2024_06_2": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "A jet-blue airlines flight from West Palm Beach to New York City was forced to turn around and land Sunday morning after the plane struck a bird. The flight from Palm Beach International Airport to LaGuardia Airport turned around just minutes after takeoff following the strike.",
+        "No injuries were reported on the plane, and the flight took off once again seven and a half hours after the first attempt. It was like a split second of panic that resulted in this nervous reaction on the plane, said passenger Brian Healy.",
+        "There was total quiet and then there was relief when the plane came to a stop. An email from JetBlue read, Our team is working to accommodate customers on later flights."
+      ],
+      "prompts": [
+        [
+          1,
+          "What do we learn about the JetBlue Airlines flight from the news report?"
+        ],
+        [
+          2,
+          "How did the passengers feel when the plane came to a stop according to Brian Healy?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "A deadly snake which had finally been tracked down after escaping a zoo has slipped away for the second time. The poisonous snake forced the closure of the attraction last week, when staff noticed the disappearance.",
+        "After six days of desperate searching, he was eventually found and placed in a supposedly secure area. But it seems the animal is no fan of the zoo, because yet again he is out on the loose. The snake is a relative newcomer to the zoo, has already been frustrating its staff.",
+        "The staff believe he squeezed himself out of a gap located around new energy-saving bulbs installed inside the Snake House. He was only found the first time around because staff brought in a special machine to trace him inside a wall opening.",
+        "This kind of snake is one of the most deadly and poisonous in the wild and they can range from 3 to 5 metres in length."
+      ],
+      "prompts": [
+        [
+          4,
+          "How have the zoo staff been feeling about the snake?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "Electric bikes have been the craze in downtown Jacksonville since they were were first introduced earlier this month as a one-year pilot program. But they are leading to safety concerns, mainly at night, when some riders don't follow the rules of the road.",
+        "As the night goes on, groups of riders are often seen traveling in just about every direction in the streets and on pedestrian paths. That is increasing the probability of dangerous accidents. bike riders have to follow all the same rules as you would if you were in an automobile.",
+        "That means no running red lights or traveling in the opposite direction of traffic on one way streets.",
+        "City Council member Anna Kumbur was instrumental in introducing the electric bikes to Jacksonville as a way to bring new life into downtown, and she's aware of the concerns. said people can have fun but both drivers and riders are responsible for paying attention while on the road. And never assume the driver is going to stop or see you."
+      ],
+      "prompts": [
+        [
+          5,
+          "What do we learn from the news report about the introduction of electric bikes into"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "What's the best way to teach children how to save and spend their money? You should make money a regular topic of discussion. It's best to start young, so it's instinctive rather than a scary subject.",
+        "In our family, we talk openly about things like the budget for holidays, how taxes reduce your income and how to shop around for the best deals. Indeed, it's also essential to make money real for children through practical examples.",
+        "Working out how much we save using discount pizza coupons, for example, is much more relevant than abstract sums. We also give our kids pocket money, and the amount they get is linked to chores such as putting the bins out and emptying the dishwasher.",
+        "We do that too, and it's paid according to their age. Two pounds for each year, so they can see some progression. Teaching them to save is important. We opened the savings account when they were young.",
+        "After birthdays and Christmas, they would go to the branch and deposit their gift money. Oh, I hadn't considered doing that. In our house, we have transparent money boxes for them to put small change in, so they can see their savings grow.",
+        "When the time is right, I'll start talking to our children about investing and show them how the money saved for their further education has grown. I am always talking to my elder daughter about the importance of saving into a pension.",
+        "She's just started a part-time job and was thinking of not contributing to her pension. Luckily, I managed to persuade her otherwise. Yes, it's such an important lesson to learn."
+      ],
+      "prompts": [
+        [
+          8,
+          "What should we do with the topic of money, according to the woman?"
+        ],
+        [
+          9,
+          "How does the woman say money can be made real for children?"
+        ],
+        [
+          10,
+          "What is the common practice between the man and the woman?"
+        ],
+        [
+          11,
+          "What is the woman always talking about to her elder daughter?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Welcome to Books in Review. Our guest today is John Banks, the author of the best-selling new book, Rewarding Success. Glad to be here, Jane. Your book has sold 2 million copies. But before we discuss why it's getting so much attention, let's talk about your background.",
+        "You're an economist and spent two decades teaching at universities? I spent 25 years as a professor actually, and then for the last 10 years I've worked as a political consultant, advising politicians at the national level about problems in our country.",
+        "You discussed three of those problems in the book, improving public education, reducing our nation's health care burden, and increasing personal savings. But your ideas about education are the most controversial.",
+        "A lot of people think I'm trying to punish students who aren't doing well, when actually my goal is to give all students more incentive to succeed. I'm not sure I agree with you. Your proposal to pay cash rewards to students who get good grades is a particular problem.",
+        "What about students who don't get good grades? It seems like you're blaming them for not succeeding, when poor performance in school isn't a child's fault. But my proposal is not just to reward students with good grades, but also students who show improvement.",
+        "Okay, another criticism of the plan is the cash rewards themselves. Where will the money come from? If students do better, we'll spend less on schooling, so in the end, the rewards will pay for themselves.",
+        "What about now? How will we fund the rewards in the meantime? Well, by increasing taxes or moving money from other areas of the budget into education."
+      ],
+      "prompts": [
+        [
+          12,
+          "What do we learn about the man?"
+        ],
+        [
+          13,
+          "What does the woman say is the most controversial?"
+        ],
+        [
+          14,
+          "What does the man say is his real goal?"
+        ],
+        [
+          15,
+          "What will be one option for funding the proposed rewards according to the man?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "I met three different people today, and each time when I asked, how are you, the reply was exactly the same. I'm busy. Honestly, I hear the same answer from the vast majority of people I meet. So I started to think, guess what?",
+        "Everybody's busy. I'm busy, you're busy, everybody's busy. So you being busy doesn't make me sympathetic at all, because busy is the state of the world. So I'm launching a campaign to stop people complaining about being busy.",
+        "It may sound harsh, but the truth is, nobody cares. In a busy world, being busy doesn't stand out, nor does it mean productive, creative, accomplished, or professional. Steve Mariboli once said, When someone tells you they are too busy, it's not a reflection of their schedule, it's a reflection of your spot on their schedule.",
+        "Donna Lynn Hope has also remarked, Busy doesn't mean better. I've never envied a busy person, the one who likes to point out their busy lives to others. The reality is, nobody's too busy. It's just about priorities.",
+        "So the next time someone asks you how you are, maybe respond differently. In my experience, the I'm busy response is really covering up the fact that they're not actually accomplishing their real purpose.",
+        "And being busy is the lie they tell themselves about why they can't achieve it."
+      ],
+      "prompts": [
+        [
+          16,
+          "Why is the speaker launching a campaign?"
+        ],
+        [
+          17,
+          "What does the speaker advise us to do?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "More and more people are taking up extreme sports like snowboarding, skateboarding, mountain biking and many more. Why are these sports becoming so popular? One thing that extreme sports do better than perhaps anything else is to help you stop being afraid.",
+        "It may sound strange to say that their main function is to induce fear, but after a time, your fear response to other things in life will be dramatically reduced. After all, if you can jump out of a plane or off a bridge, then you can face anything else easily.",
+        "When doing extreme sports, you have to become more focused. You'll be pushed to your limits, And if you aren't focused, you'll make dangerous mistakes. Learning to be this focused when enjoying extreme sports will help you to be focused at work, keeping you more productive and ultimately more successful.",
+        "It's great to stay fit and healthy, but standard exercise routines and sports only work the same muscles repeatedly. With extreme sports, you'll be working entirely different muscles, and that means you get an all over workout.",
+        "Extreme sports also burn a lot more calories than other sports. Skateboarding, for example, can burn as many as 500 calories per hour. Basketball burns around 300 in the same time.",
+        "When you find that you can overcome the physical or mental challenges involved in extreme sports, you'll feel superhuman and your self-confidence will be at an all-time high."
+      ],
+      "prompts": [
+        [
+          19,
+          "What may sound strange to say about extreme sports?"
+        ],
+        [
+          20,
+          "Why should one be highly focused when doing extreme sports?"
+        ],
+        [
+          21,
+          "How can extreme sports benefit us more than standard exercise routines and"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "Most of us have been in teams or organisations where we've had conflict with the people that we're working with around the ideas or decisions that we're discussing. is natural. We all bring different life and work experiences to the table.",
+        "We all have different personality preferences and tendencies. We're not all going to have the same ideas on how to approach policies, programs or problems. But too often we get caught in this place where conflict is perceived to be negative, something we want to avoid so that we can maintain the harmony of our workplace.",
+        "This could be because some people want to avoid conflict at all costs, after all they still have to work together. But this kind of artificial harmony isn't the answer. Productive conflict is a vital part of teams and organizations that want to push forward and do more.",
+        "Without conflict we're often stuck in this artificial harmony where people don't express potentially innovative ideas for fear that they may start conflict with others. But if you're in a place where you have a basis of trust, conflict can be extremely productive.",
+        "It can lead to increased innovation and greater trust on teams. It may be an uncomfortable process, but good leaders and healthy teams recognise that productive and healthy conflict is an important part of how they function."
+      ],
+      "prompts": [
+        [
+          22,
+          "What does the passage say about conflict in organizations?"
+        ],
+        [
+          23,
+          "Why do some people want to avoid conflict at all costs?"
+        ],
+        [
+          24,
+          "Why is productive conflict important for teams and organizations?"
+        ],
+        [
+          25,
+          "Does productive conflict need as a basis."
+        ]
+      ]
+    }
+  ],
+  "2023_06_2": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "Police have reported a man being bitten by a four foot snake when he lifted his toilet seat on Sunday morning. The snake was not poisonous, so the man did not have to go to the hospital, but his arm was medically treated at the scene.",
+        "The police officer interviewed, told news reporters, the snake didn't belong to the man, and it was unclear how it got into the apartment. The snake was eventually captured by the local animal handlers and taken to an animal hospital afterward.",
+        "It was being treated for an outer skin infection. It was unclear who the owner was. The snake may be taken to a local zoo for care, if the owner does not come forward. Over the years other creatures like frogs and fish have found their way into toilets, but this was the first instance of a snake in recent years."
+      ],
+      "prompts": [
+        [
+          2,
+          "What does the report say was still unclear?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "Every week since last April, Andrea Belcher has been doing something slightly unusual and amusing when she takes out her trash. It all started off when a movie star shared a photo of herself putting her trash bins out in a ball gown.",
+        "This inspired Andrea to get dressed up to take out the trash. She was too embarrassed to do it during the day, so one dark evening she put on her black off the shoulder gown and put her trash bin out.",
+        "Her daughter filmed it and the whole family laughed, but it seemed to go down well. The following weeks she found other outfits in her dressing up box and dressed up as different characters and famous people, sharing her exploits on social media.",
+        "Before long, people started offering up their own fancy dresses for her to wear. And before she knew it, she had done 20 weeks. explaining why she has kept up the videos. Andrea explained how nice it was to have a little bit of fun and craziness that made people smile.",
+        "Besides, it also helps to remind people in the community to put out their trash bins each week."
+      ],
+      "prompts": [
+        [
+          3,
+          "Why has Andrea Belcher kept up her videos?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "No money but still hungry, no problem. Welcome to Frank's Restaurant, where customers are paying for meals and leaving receipts on a board. Anyone who is hungry and wants something to eat can take one, no questions asked, and hand it to the staff for some food.",
+        "The idea for the board of free meals started after a donor came in with $100 for each member of its staff. After two staffers returned their share, there was $700 left over, according to Tara Morris, the owner of the restaurant, so they decided to do something more by creating the board.",
+        "The board of free meals inside the restaurant shows a host of potential meals already paid for by customers, each costing about $10. The board has messages of kindness, like, If you want more kindness in the world, put it here.",
+        "The drive has been going on for two weeks, and Morris said just under 50 customers have picked up a free meal. There have been no reports of anyone taking advantage of the situation. In fact, there are a lot more people giving tickets than receiving.",
+        "It seems people want to help and are driven by helping others."
+      ],
+      "prompts": [
+        [
+          5,
+          "What can people do at Frank's restaurant?"
+        ],
+        [
+          6,
+          "What does the owner of the restaurant say about the idea for the board of free meals?"
+        ],
+        [
+          7,
+          "What has happened at Frank's restaurant since the board of free meals was"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "Welcome to our program, Friends and Relationships. Our guest today is psychologist Steve Pinker from McGill University. Glad to be here, Jane. Hi Steve. Our question today is why friends suddenly disappear.",
+        "They may block us on their social media accounts and stop responding to our emails. They simply vanish without a trace. The answer may lie in childhood. The way the person related to their mum and dad.",
+        "It's related to their attachment styles. Attachment styles? Yeah, there are two different attachment styles. An anxious attachment style and an avoidant attachment style.",
+        "When there is a relationship breakdown with their parents, children with an anxious attachment style scream and cry to get their parents to come back. other children simply shut down and try to deal with their emotions by ignoring the situation, and these attachment styles carry on into adulthood. Does avoidance reduce their stress levels?",
+        "Not really. Their stress levels are actually the same as those experienced by the children who yell and scream. And I assume both might be termed insecure. And it's a very insecure attachment. How does an insecure attachment affect relationships between friends, coworkers, and romantic relationships?",
+        "It's the same as conflicts. So if you have a disagreement with a securely attached person, they're not going to panic. They're able to hear what the other person is saying and express their own feelings and thoughts effectively.",
+        "However, an insecurely attached person won't. They might either attack you, get defensive or just disappear from your life. To them, a difference, no matter how small in your eyes, signals the end of the relationship.",
+        "That explains why they suddenly disappear."
+      ],
+      "prompts": [
+        [
+          8,
+          "What do we learn about the man?"
+        ],
+        [
+          9,
+          "What are the speakers mainly talking about?"
+        ],
+        [
+          10,
+          "How do children with an anxious attachment style react to a breakdown in their relationship with parents?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "I hear you're going to Japan soon. Yes, that's right. Could I ask you a favor? Sure, what is it? I was wondering if you could get me some jeans while you're there. I'll pay you back, of course. A pair of jeans?",
+        "Okay, I don't see why not. But what's wrong with jeans here? Well, I just love good jeans, and Japan happens to make the best in the world. My friend brought me a pair from there five years ago, and they still look new.",
+        "Really, I had no idea Japan made jeans. I would have thought America made the best jeans because it's a typical American garment. Yeah, I thought so too, but it turns out Japan still has some very old mills with the traditional weaving tools used to make jeans the original way.",
+        "It's a slower process of making clothing, but the end result is surely superior. Also, the fabric they use is of a higher quality and the dyes are natural. They have a denser weave and are more durable than any other jeans in the world.",
+        "That sounds cool. What size do you want and how much are they? I have a 34 waist and size 30 or 32 in length. Either is fine. They should be around $500 but make double certain they are made in Japan. $500?",
+        "Boy, that's expensive. Do you typically spend that much on a pair of casual trousers? They are a little pricey, yes, but they are very special. Bear in mind they will last me several years, and they are very fashionable too.",
+        "I think they're totally worth it."
+      ],
+      "prompts": [
+        [
+          12,
+          "What makes the man choose to buy jeans made in Japan?"
+        ],
+        [
+          13,
+          "Why is the woman puzzled by the man's request?"
+        ],
+        [
+          14,
+          "What does the man say about the dyes of Japanese jeans?"
+        ],
+        [
+          15,
+          "What does the man say about Japanese jeans at the end of the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "Every time I walk out of a superhero movie, I feel the same way. I experience a sense of longing, realizing that there should be more in life. The desire for adventure is a human one. Superhero films capture this desire perfectly.",
+        "The plot of each superhero film has become relatively predictable. The world is in peril. The world needs a hero. The hero is in peril. The hero resolves the peril. The hero saves the world. Each film has an attractive lead.",
+        "Several expensive explosions, a few jokes delight in the mood, and numerous punches that land unrealistically well. Even though we basically know what will happen, we keep coming back for more. The elites of our society have rejected superhero films.",
+        "They say the films lack any form of artistry. These movies are criticized as being too simple, but they give the fans what they want. No matter the form in which they reveal themselves, hero stories will always be present in life.",
+        "It's not just about being entertained, but also being inspired. One author has mentioned that women desire to play an irreplaceable role in a great adventure. Most young women want to be a part of something grand, something important.",
+        "It seems clear that this principle applies to men as well. So next time you see your favourite superhero film, be entertained, but also be inspired. That small longing you feel motivates you to make a difference."
+      ],
+      "prompts": [
+        [
+          16,
+          "How does the speaker feel every time he walks out of a superhero movie?"
+        ],
+        [
+          17,
+          "What does the passage say about the plot of all superhero movies?"
+        ],
+        [
+          18,
+          "What do the elites of American society think of superhero movies?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Telling Stories is one of the most powerful means leaders have to influence, teach, and inspire. Storytelling forges connections among people. When it comes to our countries, our communities, and our families, we understand instinctively that the stories we hold in common are an important part of the ties that bind.",
+        "This understanding also holds true in the business world, wherein organizations' stories and the stories its leaders tell help solidify relationships in a way that factual statements don't. Good stories do more than create a sense of connection.",
+        "They build familiarity and trust. They allow the listener to enter the story, making them more open to learning. Good stories can contain multiple meanings, so they're surprisingly economical in conveying complex ideas in graspable ways.",
+        "And stories are more engaging than the recital of data points, or a discussion of abstract ideas. Stories about professional mistakes and what leaders learned from them are another great avenue for learning.",
+        "As people identify so closely with stories, they can imagine how they would have acted in similar circumstances. They are able to work through situations in a way that's risk-free. There are extra benefits for leaders.",
+        "With a simple personal story, they can convey fundamental values. They can offer insight into the evolution of their own experience and knowledge, presenting themselves as more approachable. And then they are more likely to inspire others to want to know more."
+      ],
+      "prompts": [
+        [
+          20,
+          "What can good stories do to listeners according to the passage?"
+        ],
+        [
+          21,
+          "What can leaders do with a simple personal story?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "The US was founded by successive waves of immigrants and immigrants are still contributing to America today. Statistics prove it. On two key measures of financial performance, immigrants outperform native born Americans.",
+        "First, they're more likely to be entrepreneurs. From 1996 to 2016, the pace at which immigrants started businesses was double that of US-born individuals. Immigrants aren't just becoming entrepreneurs more frequently, they're often succeeding.",
+        "The 40% of Fortune 500 companies had a founder who was either an immigrant or the child of one. Another key measure of financial strength is debt level. Immigrants do better in this area too. Immigrants use credit less often for purchasing cars, homes or starting businesses.",
+        "This results in significantly lower levels of debt than native born Americans. For example, 34% of Americans born in Latin America report no credit card or installment loan debt. This can be compared to just 19% of the general population.",
+        "Why are immigrants doing so well? The values and habits they bring from their own homelands help explain some of the success. Unemployment tends to be higher in developing countries. That means more people must become entrepreneurs.",
+        "Credit is also scarcer in most developing countries. This means individuals must save more in order to achieve their goals. Or, they borrow money from friends and family, rather than a bank. That means less debt and potentially better credit outcomes when they reach the US."
+      ],
+      "prompts": [
+        [
+          22,
+          "What does the passage say statistics prove?"
+        ],
+        [
+          23,
+          "What do we learn about immigrants in the U.S. compared with native-born Americans?"
+        ],
+        [
+          24,
+          "What does the passage say about immigrants in the US in terms of financial strength?"
+        ],
+        [
+          25,
+          "What do immigrants do to achieve their goals in the US?"
+        ]
+      ]
+    }
+  ],
+  "2022_12_1": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "Operations at one of Australia's largest gold mines had to be temporarily suspended on Friday after a partial wall collapse at one of the mines dams. The wall collapse at the Caedium Mine came just a few days after two earthquakes hit the area.",
+        "The damage to the dam wall was noticed in the late afternoon on Friday, when workers found the section of the northern dam wall had collapsed into the southern dam. The dams contain waste products of mining and can contain materials which are harmful to the environment and human health.",
+        "The dams are generally constructed using earth fill and are gradually raised over time. The company was unable to confirm whether the recent earthquakes had contributed to the dam's wall collapse, but said it was conducting a thorough investigation.",
+        "A company spokesperson said that operations at the site had been halted while the investigation is ongoing, and that the break had posed no safety threat to workers."
+      ],
+      "prompts": [
+        [
+          2,
+          "What did the spokesperson say about the incident?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "Two boys and four girls were born on Monday to the surprise of a young couple and doctors. and doctors who had expected five babies. This was the first record of six babies being born at the same time in that region.",
+        "The doctors prepared from early in the morning to help deliver five tiny citizens. They were in the operating room with five teams of doctors, one for each baby. The first five babies were delivered successfully and all baby beds were occupied, and then, all of a sudden, it turned out there was another waiting to come out.",
+        "The doctor said the babies were in healthy condition but could not go home immediately. They needed to stay in the hospital for two to three months for medical supervision. The mother, who was in stable condition, could return home a day later if all physical tests came back normal.",
+        "The baby's mother commented that they had already prepared room for five babies at home, so they will have to rearrange things for their happy surprise. The new parents have yet to name the sixth baby, but are considering either Lily or Rose.",
+        "Question three."
+      ],
+      "prompts": [
+        [
+          3,
+          "What did the hospital do for the delivery of the babies?"
+        ],
+        [
+          4,
+          "What did the doctor say about the newborns?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "A Spanish island called Palmadore has been bought by a family from Europe for 18 million euros. The island is often described as Heaven on Earth by holiday makers. For decades, tourists have been flocking to Palmadore, which is located off the southeast coast of Spain.",
+        "They come to enjoy its unspoiled beaches and crystal-clear waters. Its natural beauty is protected as it lies inside a natural park. Although Palmadora is one of the most famous private islands in the world, its sea-front is public land and is a favorite destination for famous people.",
+        "When the island was put up for sale, it was offered to the local government but proved too expensive for the local authorities. It is unclear whether the new owners have the power to ban tourists from the island, but with their newfound luxury comes the responsibility for its protection and maintenance.",
+        "The island is less than two miles long and half a mile wide. It is said to have a remarkable location that few other private islands of this size can match according to a state agents. Palmadore is the perfect place to retreat to, somewhere to get away from the city noise and relax in beautiful surroundings with zero stress."
+      ],
+      "prompts": [
+        [
+          6,
+          "What do holiday makers come to Palmadur to enjoy?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "Hi, Christy's Gym Center. How can I help you? I'm calling to ask about the newly scheduled gym classes. I'm just wondering if I can get a discount on them. Are you already a member? I signed up two months ago, but I haven't been to any of the group classes yet.",
+        "Can I take your name please? Yes, my name is Carol Friedman. Carol Friedman, that's right, and you signed up two months ago. Currently we are offering existing members discounts off two of our brand new classes.",
+        "Hot yoga and advanced spinning. But the discount doesn't apply to any of our regular classes I'm afraid. I'm only interested in the new classes, so how much of a discount is there on these two new classes?",
+        "The same discount of 20% is being offered to everyone at the door on a first-come, first-serve basis for the first month. It's a shame you missed out on the general discount. I see. But you can get 25% off if you sign up in advance.",
+        "Which of the two classes are you thinking about? Well, I guess I am only really interested in hot yoga. Can you sign me up for the 10-week course on Thursday evenings? Would you prefer to pay in advance?",
+        "No, I don't like giving my card details over the phone anyway. Okay then. As you are already a member, the fee for the class will just be added to your monthly bill. That's perfect. Thanks for your help.",
+        "See you Thursday."
+      ],
+      "prompts": [
+        [
+          8,
+          "What do we learn about the woman from the conversation?"
+        ],
+        [
+          9,
+          "What is the gym center doing right now?"
+        ],
+        [
+          10,
+          "What does the man say is a pity for the woman?"
+        ],
+        [
+          11,
+          "Why is the woman unwilling to pay in advance?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Well, I think that was quite a successful trip in the end. Don't you think, Jenny? There are lots of great potential markets here in China. So I'm sure that the head office in London will be pleased once we get back and present our research.",
+        "We've got a bit of spare time now. Can we discuss the return trip to the head office? Sure, I've checked the availability of flights from Beijing to London on the 22nd, and you have a choice.",
+        "There's a flight arriving the following morning, with a two-hour stopover in Dubai, or a flight arriving at 11.30 in the evening, with a five-hour stopover in Amsterdam. Right, well, that's obvious then, isn't it?",
+        "Okay, so that's Dubai. I've booked a room in a hotel about a mile from the office. The The nearest Metro station is Earl's Court. Can you find a map that shows where the hotel is and send it to me online?",
+        "I've never been to the head office, you know. I want to see if I can get one of those rental bicycles and ride to the office, just for fun. For the presentation, I'll bring my own laptop and hook it up to their projector.",
+        "Do you remember the capacity of their meeting room? No, but I'll check. one more thing. I'll pay everything with my own card, right? And I'll submit my claims form afterwards.\" No problem. Just remember to keep all your receipts.",
+        "You remember the trouble you had last time. Oh, don't remind me."
+      ],
+      "prompts": [
+        [
+          12,
+          "Why are the speakers in China?"
+        ],
+        [
+          13,
+          "Where will the man stop over on his way to London?"
+        ],
+        [
+          14,
+          "What does the man ask the woman to do?"
+        ],
+        [
+          15,
+          "What did the woman remind the man to do at the end of the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "A new study has demonstrated the importance of women's rights. The researchers behind this study state that many parts of the world have made good economic progress, but women's rights are often overlooked.",
+        "Thus, they wanted to determine if there was a link between protection of women's rights and public health. The researchers analyzed databases which held information from 162 countries for the period 2004 to 2010.",
+        "Countries were classified according to the respect they gave to women's economic and social rights. There were three categories. They were high, moderate, and poor. Analysis of the data showed that countries with strong women's rights had better health than those where women's rights were not as respected.",
+        "The health indicators studied included disease prevention, reproductive health, death rates, and life expectancy. Furthermore, in countries where women's rights were most respected, but where access to hospitals and doctors was below average, health outcomes were still better than in countries rated as moderate or poor.",
+        "This confirms that, even with a lack of resources, if a country has strong women's rights, the health outcomes are better. Thus, the researchers argue that gender equality is not just a women's rights issue.",
+        "It is also a development issue. This is because better health aids economic development. They note that the value of women's rights has often been questioned from an economic standpoint. Some have argued that ensuring those rights would limit progress.",
+        "But this study indicates the opposite."
+      ],
+      "prompts": [
+        [
+          16,
+          "What did the researchers of the new study try to determine?"
+        ],
+        [
+          17,
+          "What does the passage say about countries lacking in medical resources?"
+        ],
+        [
+          18,
+          "What has often been questioned regarding women's rights?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Sunshine and high temperatures can mean picnics in parks and trips to beaches. But they can make your body react in some strange ways. Sunshine can actually affect your breath. You may think that summer is the perfect time to go on a date or chat with an attractive boy or girl.",
+        "But excessive heat can cause you to lose water, which has been proven to have a pretty unattractive side effect. Bad breath. When you are lacking water, your mouth becomes dry. Bacteria accumulates because there isn't enough water in your mouth to wash it away.",
+        "Sunshine can stop you from sweating too. The body's normal temperature is 36 to 37 degrees centigrade. But, if it heats up to 40 to 41 degrees, you may find yourself getting heatstroke. At that point, your heat regulatory system can essentially quit, which stops you from sweating, as your body tries to keep water around your vital organs.",
+        "However, the sun can have a positive influence on your body by raising your energy levels. You might feel like the sun is giving you extra energy for your day, which is actually happening. And vitamin D from Sunshine can help your body to absorb certain minerals which are linked to building stronger bones.",
+        "Therefore, I suggest you spend more time in the park with your friends, but make sure you apply lots of skin protection and fill up those water bottles too."
+      ],
+      "prompts": [
+        [
+          19,
+          "What does the passage say about hot sunshine?"
+        ],
+        [
+          20,
+          "What does the passage say is a negative side effect of water loss?"
+        ],
+        [
+          21,
+          "What is said to be a positive effect of sunshine?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "Left-handed people can find it inconvenient to do certain things, writing in a notebook, for example. But there are a number of advantages of being left-handed. Research found that they were over-represented among fighters in combat sports.",
+        "Left-handed fighters also had higher chances to win. This confirms the fighter theory. Left-handers may also be better at remembering events. The explanation is that the two brain spheres of left-handers are more strongly connected.",
+        "Being left-handed might be a factor in mathematical ability. An Italian study found that for simple arithmetic there was little difference between right and left-handed performance. But for more difficult problem solving, left-handers went out.",
+        "No No one understands the reason for this. Left-handed people may think differently. In one study, researchers showed the participants columns of abstract illustrations and asked them which ones they would prefer.",
+        "Left-handed people were more likely to prefer the images on the left. Right-handed people preferred the ones on the right. Both groups disliked stuff on their opposite side. Lefthanders are also over-represented in professional interactive sports.",
+        "Researchers have looked at the influence of being left-handed on performance and interactive sports. Those that require the fastest reaction give left-handers the biggest advantage. So, if you have a left-handed child, you should encourage them to play table tennis, baseball, and tennis.",
+        "Being left-handed maximizes their chances of success in these sports."
+      ],
+      "prompts": [
+        [
+          22,
+          "What does the passage say about left-handed people?"
+        ],
+        [
+          23,
+          "What is said to be special about left-handed people?"
+        ],
+        [
+          24,
+          "Why are left-handed people better at solving more difficult problems?"
+        ],
+        [
+          25,
+          "What should parents do about a left-handed child?"
+        ]
+      ]
+    }
+  ],
+  "2022_12_2": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "The World Pipe Band Championships will take place in Glasgow on Saturday. Over 120 of the world's best pipe bands will compete at the championships. Over 4,000 the Pipers and Drummers are expected to descend on the city for the annual event.",
+        "It will take place at the St. James playing fields in Glasgow on Saturday 18 May from 10 AM until 7 PM. The event is free. Also, a free shuttle bus will run between the event car parks and the competition site.",
+        "Shuttle buses will run every 15 minutes from 8 AM until 8 PM. Glasgow City Council says it is estimated to bring 300,000 pounds to the local economy. The first World Pipe Band Championships were held in Edinburgh in 1947.",
+        "The event first took place in Glasgow in 1948. It has been held regularly in Glasgow since 1986."
+      ],
+      "prompts": [
+        [
+          1,
+          "What event will take place in Glasgow?"
+        ],
+        [
+          2,
+          "What does Glasgow City Council say the event will do?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "Summer doesn't begin for two more days, but scientists are already sounding the alarm about dangerous ice melts going on right now in Greenland. The vast island usually locks away enough fresh water in its ice sheet, which, if melted, can raise global sea levels by 6 meters.",
+        "And research shows that in recent years its ice has melted faster than ever before. This month, as temperatures in northwestern Greenland approach all-time highs, researchers are encountering unusual, surprising levels of melting ice in the region.",
+        "The most significant concern here is how early this is all happening. Greenland experiences annual ice melt and growth cycles, but this year the melting season began in early May. That's a month earlier than normal and something that's happened only once before in the historical record in 2016.",
+        "That means that not only is the ice melting very fast, it has more time to melt this summer than it would in a normal climate system. Longer melt seasons like this one seem to lead to much greater contributions to sea-level rise than in previous decades."
+      ],
+      "prompts": [
+        [
+          3,
+          "What is Scientists' Warning in the News Report?"
+        ],
+        [
+          4,
+          "What do we learn about this year's ice melting season in Greenland?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "Bundles containing thousands of pounds in cash keep turning up on the streets of black-hall collary in northern England, according to police. Residents of the village have been coming across bundles of 20-pound notes, usually worth 2,000 pounds, in the former mining village in County Durham.",
+        "The latest discovery was on Monday, meaning four of these cash bundles have been handed in this year and 13 since 2014. The bundles are usually left in plain sight and have been scattered across the small coastal village.",
+        "The owner has two weeks to collect the cash, which is then returned to the finder, if not claimed, according to Peter Lee, police. A Durham Police spokesperson said the money has been returned to the lucky finders in all cases except yesterday.",
+        "John Forster said in the statement, The circumstances remain a mystery, so we would welcome any information that will help us get to the bottom of these random incidents.",
+        "He told the Northern Echo, It isn't an affluent part of the world, so for them to find cash of that amount and instantly think about taking it to the police stations shows the community spirit there is."
+      ],
+      "prompts": [
+        [
+          5,
+          "What happened on the streets of Blackhall collaring?"
+        ],
+        [
+          6,
+          "What do the local police do with the money, if not claimed, in two weeks?"
+        ],
+        [
+          7,
+          "What did the policeman John Forrester say about the villagers?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "It's your birthday next week. What have you got planned? I'm not sure. I often feel strange on my birthday. It's like my brain decides to have a crisis. It's not entirely unusual to feel anxious or sad around your birthday.",
+        "Birthdays can tap into a lot of things people worry about, including their achievements in life, in the past decade, or their accomplishments of the past year. Many begin to search for the meaning of their existence, Leading to behaviors such as ending or starting a relationship, or plans like starting a vigorous diet or fitness program.",
+        "I have wonderful friends, and I love celebrating their birthdays, but I don't like being the center of attention. Receiving gifts and having a fuss made, it seems to trigger a type of social anxiety. I think social media too can intensify things as birthdays now play out more publicly.",
+        "Birthday reminders can be helpful, but I kind of worry I won't be able to drum up my own day and show it to look as exciting as it is supposed to be. Well, to deal with the birthday blues, you should not isolate yourself.",
+        "It's best to gradually face your birthday with people you trust. That would help you learn self-acceptance, or that it's okay to be the focus. Perhaps, or I could perceive my birthday as an opportunity to do something for others, like asking people to make a donation instead of buying a gift.",
+        "Exactly, or even simply see your birthday as an opportunity to bring people together, for them to have fun."
+      ],
+      "prompts": [
+        [
+          8,
+          "How does the man often feel on his birthday?"
+        ],
+        [
+          9,
+          "What does the woman say many people tend to do on their birthday?"
+        ],
+        [
+          10,
+          "What does the man say about birthday celebrations?"
+        ],
+        [
+          11,
+          "What does the woman suggest the man do about his birthday celebration at the end of the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "The Metro was absolutely terrible this morning. Oh, was there a delay? No, but the train was so packed that I could barely move, and it was difficult to breathe too. At every station, more people squeezed in, and I got pushed further and further inside.",
+        "When I got to my station, I could hardly get out. Once I did get out, I was totally exhausted. That sounds like a nightmare. Why didn't you take the bus? The bus takes twice as long, and it's just as crowded.",
+        "Well, what's the alternative? Haven't you got a car? I've got a driver's license, but that's all. I'm saving up to buy something reasonably small and cute, but it's still a bit expensive for me, and it'll take a while before I have enough money.",
+        "Have you thought about getting an electric motorbike? I considered that for maybe a minute, but honestly, I've just seen too many horrible accidents involving those dangerous monsters. What about those popular sharebikes?",
+        "You could register to use one. Yeah, that's a possibility. There are always several of those bikes out in front of our apartment complex. Or you could just walk to work. Well, it's five kilometers from home to the office, but you've given me a thought.",
+        "I could take a change of clothes and jog to work. But at this time of year, the air pollution is a real problem. Oh yeah, I didn't think of that. You'd a taxi if you really have to. Well, that's an expensive way to get to work.",
+        "But if you use a ride-sharing app… Good idea. I'll download one immediately. Thank you."
+      ],
+      "prompts": [
+        [
+          12,
+          "What does the woman say about her subway ride?"
+        ],
+        [
+          13,
+          "Why hasn't the woman got her own car?"
+        ],
+        [
+          14,
+          "What does the woman say about electric motorbikes?"
+        ],
+        [
+          15,
+          "How was the woman going to get to work?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "Steve Miller began his career in IT back in the late 1980s. Being a Deaf person in tech required a huge amount of effort in organization. Because there was no email or text message service, everything had to be done face to face or by telephone.",
+        "Communicating in meetings was very difficult. He needed a sign language interpreter for every meeting, but it was a huge effort to coordinate. These days, although challenges still remain, it's a good time to be a deaf person in tech,\" says Miller.",
+        "Big advances in speech recognition technology have enabled communication tools to turn live speech into text in real time on your smartphone or laptop and sign language into text as well. New tech, coupled with improvements in hearing aid technology and medical advances, means that Miller is able to focus far more on his work.",
+        "He is benefited to a great extent from a tiny hearing device in his ear. It gives him a degree of hearing, and he can use a variety of communication methods depending on the situation. He can employ lip reading and have meetings via video instead of on the phone.",
+        "These things have made a huge difference. He no longer has to worry about whether or not he can understand. He can just concentrate on how interesting the meeting might be and what he needs to get out of it in order to progress."
+      ],
+      "prompts": [
+        [
+          16,
+          "What do we learn about Steve Miller?"
+        ],
+        [
+          17,
+          "What does Miller say is making things better for people like him?"
+        ],
+        [
+          18,
+          "In what way can Miller benefit from attending meetings via video?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Color is now spreading through our homes, upstairs cases, across wood frames and ceilings, filling in neutral spaces. According to one interior designer, when people return home, they want to see colors that cheer them up and give them a hug.",
+        "Pure white walls simply don't do that. They don't look after you. Another interior designer commented that certain combinations can key into something on a deeper level, transporting you to a different moment in time.",
+        "That's the power of color. If you were thinking to try color on some of your neutral walls, the advice is refreshingly simple. Choose a color you actually like. Go for a color because it's in fashion or you've seen it in a magazine.",
+        "If you're wary of full color, test your tolerance with smaller spaces, such as the inside of a cupboard or a bright window frame. If it gives you joy every time you open the cupboard, you can start to take it further.",
+        "One can also paint the wooden frameworks the same color as the walls, helping the rooms look bigger. In the kitchen, painting the overhead cupboards and the walls in the same color can make it feel more spacious, while painting the kitchen counters, a bold color can make everything feel more open and lighter.",
+        "Additionally, a painted ceiling is a magical thing without being too obvious and can affect how the space feels as well."
+      ],
+      "prompts": [
+        [
+          19,
+          "What do people want upon returning home according to the passage?"
+        ],
+        [
+          20,
+          "What does the passage say people should avoid doing in home decoration?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "In 2021, what can one do to make a room look bigger? Parents often hear that reading to their children is critical for supporting development, and the message is getting through to them.",
+        "In fact, in the United States, a little over half of children between the ages of 3 and 5 were read to every day in 2007, and 83% of children in that age group in the same country were read to 3 or more times per week in 2012. This is good news because reading to young children helps their language and brain development.",
+        "In fact, recent research has found that both the quality and quantity of shared book reading in infancy predicted later childhood vocabulary and reading skills. In other words, the more time parents spend reading, the greater the developmental benefits in their four-year-old children.",
+        "This is an important finding, but does it matter what books parents read? A new study has investigated this question. It followed infants across the second six months of life and found that when parents showed babies' books that had faces or objects with specific labels, they learned more.",
+        "This is in contrast to books that did not name images or books that had the same label under each image. Books that named different characters also promoted greater learning. So what does this mean for parents?",
+        "Not all books are created equal. So parents need to choose the books they share with their children with great care."
+      ],
+      "prompts": [
+        [
+          23,
+          "What can predict children's reading skills according to recent research?"
+        ],
+        [
+          22,
+          "What kind of books are said to help babies learn more?"
+        ],
+        [
+          24,
+          "What are parents advised to do at the end of the passage?"
+        ]
+      ]
+    }
+  ],
+  "2022_09_1": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "White meat, such as chicken, may raise blood cholesterol levels as much as red meat does. This finding surprised researchers who admitted they didn't expect that eating white meat would lead to higher blood cholesterol levels.",
+        "In the study, researchers looked at 113 healthy people, the participants ate three different diets. These were a red meat diet, which is primarily beef, a white meat diet, which is mostly chicken and turkey, and a vegetarian protein diet.",
+        "Each diet period was four weeks. Between the diet periods, participants had a break, during which they ate their regular foods. In addition, participants had blood tests at the start and finish of each new diet.",
+        "The results showed that white and red meat diets had the same effects on blood cholesterol levels. Further, both diets increased blood cholesterol levels compared with the diet built on vegetarian protein sources.",
+        "The team acknowledged that it is possible that white meat is better for our health than red meat, despite their findings. This is because other effects of red meat consumption could contribute to heart disease, independent of cholesterol.",
+        "Their main recommendations are that people eat less of both kinds of meat and more vegetarian protein."
+      ],
+      "prompts": [
+        [
+          1,
+          "What do we learn from the news report about the study?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "At around half past 9 this morning, a trailer attached to a lorry turned over at the crossing of High Street and Milton. Hundreds of frozen turkeys were spilled all over the road. It is reported that nobody was hurt in the incident, but police said it may affect traffic and Christmas dinners.",
+        "With just one week to go before Christmas, there are worries that local supermarket supplies of this holiday favorite may be affected. A police spokeswoman said that officers were currently in attendance at the scene.",
+        "She stated that the driver of the lorry had been arrested on suspicion of dangerous driving. The crossing on High Street is a well-known accident black spot. This year alone, there have been seven traffic accidents at this location.",
+        "Thankfully, none of these accidents have resulted in serious injury."
+      ],
+      "prompts": [
+        [
+          3,
+          "What does the news report say about the accident at the crossing of High Street and Milton?"
+        ],
+        [
+          4,
+          "What do we learn about the crossing on High Street?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "Use Report 3. India launched its helicopter taxi service on Monday, promising to ferry customers the 40 miles between Bangalore's Electronic City Tech Hub and the International Airport Terminal in 15 minutes.",
+        "Customers can book their helicopter ride through a mobile app. The service, which claims to be the first of its kind in India, offers only one route, but Bangalore Airport will add more once it gets approval. taxi is not an affordable option for many travelers.",
+        "A car ride for the same journey costs less than half as much. But Bengalore Airport says it is a competitive alternative to a car ride for tech executives in a hurry. A large number of high-class travelers, including CEOs, have to spend more than three hours by road to get there, and that is a loss of time.",
+        "A Bengalore airport spokesperson said. �This is not a low-cost option, but it is an option,� she added. The helicopters ferried around eight customers to the airport on their first day. The company that owns and operates the service is called Thumbie Aviation.",
+        "It previously specialized in private charter flights for government officials."
+      ],
+      "prompts": [
+        [
+          5,
+          "What is Bangalore Airport trying to do about the helicopter taxi service?"
+        ],
+        [
+          6,
+          "What do we learn from the news report about the helicopter taxi ride?"
+        ],
+        [
+          7,
+          "Who are the targeted customers of the helicopter taxi service?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "I wish to buy some cheese for a barbecue this weekend. What kind would you like? I don't know much about cheese. What type do you think would be suitable for a barbecue? That's easy. For a barbecue, you could have any cheese you want.",
+        "I imagine there will be different foods, and people will just help themselves and eat at their own pace, right? Yes, exactly. It will be very casual. We will just be a small group of friends gathering together at Washington Park.",
+        "There will be around 20 of us, including children. So you could have different types of cheese. How much would you like to spend? Not very much. Let's say, $30. I would suggest having at least one soft cheese and one hard cheese.",
+        "That will offer you a good variety to suit different people's tastes. That sounds good. What's the difference between a soft cheese and a hard cheese? Well, it depends. But generally speaking, soft cheeses are creamy and go well with sweet things like honey and jam.",
+        "I would suggest something like this Spanish goat cheese. It's only $15. A very good price. You can spread it on bread with a knife and then add a tiny bit of honey on top. It's delicious. Children love it.",
+        "Okay, great. What about a hard cheese? Yes, for hard cheese, I would recommend this Italian one here. It has a very strong smell and a dry flavor. You can cut it into thin slices and eat it on its own.",
+        "Okay, I'll take both. Thank you for your help."
+      ],
+      "prompts": [
+        [
+          8,
+          "What does the woman plan to do for the weekend?"
+        ],
+        [
+          9,
+          "What does the man suggest the woman do?"
+        ],
+        [
+          10,
+          "What does the man say about Spanish goat cheese?"
+        ],
+        [
+          11,
+          "What is the woman going to do at the end of the conversation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Our school is replacing printed textbooks with e-textbooks next semester. I can't wait. What about the cost? Not only buying all those tablets, but the software and electronic infrastructure that goes with it, not to mention retraining all the teachers and administration staff.",
+        "Sure, the initial expenditure will be high, but much lower afterwards. Besides that, tablet prices continue to drop and are becoming increasingly affordable. Anyway, tablets help students learn up to 80% faster.",
+        "Not necessarily. have too many distractions. Students may pay attention to apps, games, and websites instead of their teachers. In fact, research suggests that people who read printed text comprehend more, remember more, and learn 30% more than those who read digital text.",
+        "Yes, but tablets contain many technological features that are not found in printed textbooks. about it. Students are able to highlight and edit text, write notes, and search for information much more quickly than they can with printed textbooks.",
+        "And what about all those trees that are cut down to make printed books? Actually, manufacturing tablets is environmentally destructive and dangerous to human health. The health impacts from making one electronic reader are 70 times greater than those from making a single printed book.",
+        "A lot of minerals are extracted from the earth to make electronic readers. It does far more damage to the environment. Yes, but the software for electronic readers can be updated instantly without the need for buying a whole lot of new books.",
+        "That's better for the environment. But the core curriculum doesn't change that much. Printed textbooks that are not brand new still contain the basic, relevant information of core subjects. Well, I'm looking forward to the change.",
+        "I'll stick with my printed books."
+      ],
+      "prompts": [
+        [
+          12,
+          "What does the woman say about using e textbooks?"
+        ],
+        [
+          13,
+          "According to the man, how can the use of tablets benefit students?"
+        ],
+        [
+          14,
+          "What does the woman say about students using tablets?"
+        ],
+        [
+          15,
+          "What does the woman say about making electronic readers?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "In social psychology, the term person perception refers to the mental processes that we use to form impressions of other people. It includes not just how we form these impressions, but the conclusions we make about other people based on our impressions. how often you make this kind of judgment every day.",
+        "When you meet with a new coworker, you immediately begin to develop an initial impression of this person. When you visit the grocery store, you might draw conclusions about the cashier who checks you out.",
+        "Obviously, person perception is a very subjective process that can be affected by a number of variables, the characteristics of the person you're observing, the context of the situation, your own personal traits, and your past experiences.",
+        "One of the techniques we use in person perception is social categorization. In this process, we mentally categorize people into different groups, based on common characteristics. Problems with this technique include the fact that it can lead to errors and prejudice.",
+        "Imagine that you are getting on a bus. There are only two seats available. One is next to a small, elderly woman. The other is next to a muscular, fierce looking man. You sit next to the elderly woman, who unfortunately turns out to be quite skilled at picking pockets.",
+        "Because of social categorization, you immediately judge the woman as harmless and the man as threatening, leading to the loss of your wallet."
+      ],
+      "prompts": [
+        [
+          17,
+          "What do we learn about person perception from this passage?"
+        ],
+        [
+          18,
+          "What is the problem with using social categorization in person perception?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Despite smartphones and social media, young people today are as socially competent as those from the previous generation. At least this is what a new study suggests. For the study, researchers compared teacher and parent evaluations of American children who started kindergarten in 1998 with those who began school in 2010.",
+        "The former group entered kindergarten when mobile phones were luxuries. The latter group started school when mobile devices were widespread. Results showed both groups of children were rated similarly on important social skills.",
+        "These included the ability to form and maintain friendships and get along with people who are different. They were also rated similarly on self-control, such as the ability to regulate their temper. In virtually every comparison made, ratings of social skills either remained constant or improved for the children born later.",
+        "There was one exception. Cultural skills were slightly lower for children who accessed online games and social networking sites many times a day. Adults are worried when technological change starts to undermine traditional relationships, particularly the parent-child relationship.",
+        "The introduction of telephones, automobiles, and radio all led to moral panic among adults of the time because the technology allowed children to enjoy more freedom. Fears over screen-based technology represent the most recent panic in response to technological change.",
+        "But overall, the study found little evidence that time spent on screens was hurting social skills for most children."
+      ],
+      "prompts": [
+        [
+          19,
+          "What does the new study suggest about young people today and those from the previous generation?"
+        ],
+        [
+          20,
+          "What did the study find about children who accessed social networking sites many times a day?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "It's easy to spend all day searching for inspiration. You can find incredible videos, articles, and news stories about the success of others. The problem is that consuming the success and ideas of others is passive inspiration.",
+        "Every time you read an article or listen to an interview, you're practicing passive inspiration. You might learn something, but you don't actually have to do anything. Hearing about other people's success isn't the same as creating your own.",
+        "Instead, it is through the process of active inspiration, the act of creating things, applying new ideas to our goals, and making mistakes, that we discover who we are and what is important to us. Furthermore, active inspiration is what results in long-term passion and enthusiasm.",
+        "Watching someone else's success might leave you feeling excited for a few minutes. However, taking action and applying a new idea to your life will inspire you more than anything someone else could say.",
+        "Learning and listening can help you think about things in a different way, but creating, producing, and experimenting is what drives you forward. Passive inspiration can give you ideas, but active inspiration will give you power.",
+        "Too often we spend our lives consuming the world around us, instead of creating it. And what matters is the power your actions have to inspire you. The best inspiration comes from the application of ideas, not the consumption of them."
+      ],
+      "prompts": [
+        [
+          22,
+          "What does the speaker say about inspiration from consuming others' ideas and success"
+        ]
+      ]
+    }
+  ],
+  "2022_06_1": [
+    {
+      "section": "Section A",
+      "title": "News Report One",
+      "first": 1,
+      "last": 2,
+      "paragraphs": [
+        "A new study finds that beverages containing added sugar might be harmful. In the study, researchers analyzed information from over 80,000 women and 37,000 men. Participants worked in the health profession.",
+        "They were followed for approximately three decades. They completed surveys about their diet every four years. They also answered questions about sleep and exercise and health every two years. The more beverages containing added sugar that people drank, the greater their risk of death was during the study period.",
+        "These beverages included soda, energy drinks, and sports drinks. Beverages like pure fruit juice, which are sweet but do not contain added sugar, were not part of the study. The findings held even after the researchers considered other factors that could affect people's health.",
+        "These factors included lack of exercise and not eating enough vegetables. They also included consuming too much meat. The scientists say that their results support limiting beverages with added sugar.",
+        "They argue we should replace them with other drinks, with water being the best choice. However, the researchers admit this is simply their recommendation. The study found only an association. It did not prove that drinks with added sugar cause early death."
+      ],
+      "prompts": [
+        [
+          1,
+          "What do we learn about the news study from the news report?"
+        ],
+        [
+          2,
+          "What is the scientists' recommendation?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Two",
+      "first": 3,
+      "last": 4,
+      "paragraphs": [
+        "German police appealed Friday for information about the possible owners of two 17th century oil paintings. Police said a 64-year-old man found the paintings in a garbage pile at a highway rest stop last month.",
+        "He later handed them in to the Cologne police. An initial assessment by an art expert concluded the two framed paintings were originals, police said. One is a landscape painted by by the Italian artist Pietro Bellotti dating to 1665.",
+        "The other is a painting of a boy by the 17th century Dutch artist Samuel van Hoogstraden, date unknown. Their combined worth is estimated to be around 1 million euros. Authorities have not yet confirmed what will happen if the rightful owner is not found.",
+        "Nevertheless, is speculated that they could either be handed over to the National Art Museum of Cologne or sold to the public by the local government."
+      ],
+      "prompts": [
+        [
+          4,
+          "What is the art expert's conclusion about the two framed paintings?"
+        ]
+      ]
+    },
+    {
+      "section": "Section A",
+      "title": "News Report Three",
+      "first": 5,
+      "last": 7,
+      "paragraphs": [
+        "A four-year-old girl has walked eight kilometers through a snowy forest to seek help for her sick grandmother, who later died of a heart attack. The young girl braved the threat of bears, wolves, and temperatures far below freezing.",
+        "She made the journey through a remote region in Siberia after waking up to find her grandmother motionless. Named locally as Karla, she lives alone with her elderly grandmother and her blind grandfather.",
+        "As a result, the girl's mother is facing a criminal case. She stands accused of leaving a minor in danger in the care of the elderly. She also faces investigation from child care services, who will also be asking why Carla was left alone with her vulnerable relatives.",
+        "The journey took place in February, when temperatures average negative 26 degrees Celsius. Russian reports on social media suggest the forest may have been as cold as negative 34 degrees Celsius. The journey was only recently confirmed by authorities.",
+        "But though she was suffering from the effects of extreme cold, the child reportedly suffered no life-threatening effects. Last year, a three-year-old boy survived alone for three days in a remote forest in the same region."
+      ],
+      "prompts": [
+        [
+          5,
+          "What did the 4-year-old girl attempt to do?"
+        ],
+        [
+          6,
+          "What do we learn from the news report about the girl's mother?"
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation One",
+      "first": 8,
+      "last": 11,
+      "paragraphs": [
+        "I've made a new friend recently. Her name is Susan and she's from South Africa. How did you meet her? We met over WeChat. She has very cool photos on her social media. The photos of her hometown look amazing.",
+        "What's her hometown called? It's called Cape Town. It's in the southwest of South Africa. She says it's very green and windy. The city was built by European settlers, and there's a big mountain that overlooks the city.",
+        "The mountain is called Table Mountain, because it's flat at the top. That sounds interesting. What are the people there like? Well, Susan says South Africa is very mixed. There are black people and white people, and Indian people.",
+        "Susan is what? She says her ancestors were from Britain. Many languages are spoken in South Africa, but she only speaks English. Didn't South Africa host the football World Cup a few years ago? They must play football a lot then, right?",
+        "I think they play football, but it's not as popular as rugby. What's rugby? Rugby is a sport with two teams and the players carry the ball in their arms and throw it at each other. The ball is not round, and the players push each other.",
+        "I don't really understand the rules, I think it's very complicated. That sounds like a very strange sport indeed. Is it only South Africa that plays it? No, it's also popular in Britain and in other former British colonies like Australia and New Zealand."
+      ],
+      "prompts": [
+        [
+          8,
+          "What does the woman say about her new friend Susan?"
+        ],
+        [
+          9,
+          "What does the woman say about Table Mountain?"
+        ],
+        [
+          10,
+          "What do we learn from the conversation about the woman's friend, Susan, and her friend."
+        ]
+      ]
+    },
+    {
+      "section": "Section B",
+      "title": "Conversation Two",
+      "first": 12,
+      "last": 15,
+      "paragraphs": [
+        "Hi, Jennifer. I'm really struggling with this semester's workload. Do you have any advice? Have you considered making a study guide? If a tool you can make yourself to take the stress out of studying.",
+        "I've been using one since the start of last semester, and it has really helped relieve a lot of study pressure. Sounds like just what I need. My main problem is that my study folder is full of notes and worksheets and is badly disorganized.",
+        "I don't know where to start. Okay, well, the main thing is to have everything in the right place. Whatever you're reviewing, It's important that it's arranged for your particular needs of that subject, and in the most user-friendly way you can.",
+        "What kind of learner are you? Hmmm, I'm not sure. Well, visual learners prefer using images, pictures, colors, and maps to organize information. learners have a linear mind and would rather use logic, reasoning, and systems.",
+        "I'm an emotional learner, which means I need to connect to information emotionally to understand it. Oh, I'm very much dependent on vision as a way of taking in information. Well, I suggest reorganizing your notes using color-coded sections in your study guides, using idea mapping to lay out the information and make it more quickly accessible.",
+        "So you think I should arrange my notes using colour and pictures in place of text? Yes, you'll probably start to grasp information a lot quicker that way. As an emotional learner, I organize my notes into a story that I can connect to and recite to myself.",
+        "That's amazing. I didn't know there were so many different ways to learn."
+      ],
+      "prompts": [
+        [
+          12,
+          "What does the woman advise the man do?"
+        ],
+        [
+          13,
+          "What is the biggest problem the man has with his studies?"
+        ],
+        [
+          14,
+          "What kind of learner does the woman say she is?"
+        ],
+        [
+          15,
+          "What does the woman think the man can do with his notes?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage One",
+      "first": 16,
+      "last": 18,
+      "paragraphs": [
+        "The golden rule is a moral principle which states that you should treat others the way you want to be treated yourself. For example, if you want people to treat you with respect, you should treat them with respect.",
+        "Different people tend to be exposed to different forms of the Golden Rule, based on factors such as the religion in their society. However, all forms of the Golden Rule revolve around the same concept.",
+        "Namely, they help you treat others better by using the way you yourself would want to be treated as a guide of how to behave. A notable criticism of the Golden Rule is that its application can lead to undesirable outcomes, when it conflicts with laws and ethical principles.",
+        "For example, if someone breaks the law, the Golden Rule would suggest that we should let them go, because we would not want to be punished ourselves.",
+        "However, this issue with the Golden Rule can be dealt with in a general manner, by viewing this principle as one of several principles that we use to guide our behaviour as individuals and as a society. Specifically, in the example described above, most individuals and societies choose to place laws and ethical principles above the golden rule.",
+        "This means that they strive to implement the golden rule whenever possible as long as it doesn't clash with a more important concept."
+      ],
+      "prompts": [
+        [
+          17,
+          "What is a notable criticism of the Golden Rule?"
+        ],
+        [
+          18,
+          "What does the example of someone breaking the law serve to show?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Two",
+      "first": 19,
+      "last": 21,
+      "paragraphs": [
+        "Today, many large corporations stress the importance of diversity on their websites, but current statistics show that the typical manager in America still tends to be white and male. Obviously, the desire to bring about diversity has not translated into corporate reality.",
+        "Why is this? A team of researchers from the University of Basel published their new study about people's attitudes towards diversity at work. They found that people have a wide range of opinions concerning diversity.",
+        "On the one hand, many see value in diversity, which can contribute a variety of perspectives, encourage new ideas, and generate innovative solutions. On the other hand, they assume that it might be difficult to work with someone who has completely different views, speaks a different language, or has a different style of work.",
+        "The actual value they attribute to diversity depends on the decision-making perspective. Doubts about the practicability of diversity have a greater weight if a person is directly affected. In other words, when a person's own work group is involved, they tend to prefer team members who are similar to themselves.",
+        "But when people make decisions for others, they typically put together a more diverse team. These findings could help organizations become more diverse. Companies need to pay attention to who makes hiring and team decisions.",
+        "These decisions should not only be made by those directly affected. People who are not directly involved in the group's daily work should also take part."
+      ],
+      "prompts": [
+        [
+          19,
+          "What do we learn from the current statistics about diversity in large corporations?"
+        ],
+        [
+          20,
+          "What is the newly published study focused on?"
+        ],
+        [
+          21,
+          "What do the findings of the new study show?"
+        ]
+      ]
+    },
+    {
+      "section": "Section C",
+      "title": "Passage Three",
+      "first": 22,
+      "last": 25,
+      "paragraphs": [
+        "Communication can essentially be divided into two categories, the written and the spoken. How the balance is struck between these two forms of communication, the point at which one needs to be exchanged for another really depends on individual cultures.",
+        "Understandings when it's appropriate to exchange one form for another can be a major key to success in international business. Many cultures place a much greater value on the spoken word than the American working culture does.",
+        "In parts of the Middle East, You'll find spoken word agreements are seen as seriously binding. A person's word is linked to their honour, so verbal agreements are seen as important, whereas written contracts are taken as memos of understanding.",
+        "Western working culture tends to place a high value on the written word, and this reaches its highest level of intensity when it comes to contracts. In the US, France and Germany, written contracts tend to be seen as something that must be strictly carried out.",
+        "By contrast, other cultures may not see written contracts as quite so binding. It can prove a challenge to Western businesses if your business partner wants to renegotiate terms that you thought were already agreed on.",
+        "For example, a Japanese firm may have signed a contract, but they may not feel bound by every detail of it, particularly if circumstances later change. Such differences in value that different working cultures place on the written word tend to cause many problems when it comes to business relationships."
+      ],
+      "prompts": [
+        [
+          23,
+          "What does the passage say about spoken word agreements in some Middle East"
+        ]
+      ]
+    }
+  ]
+}

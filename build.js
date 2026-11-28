@@ -26,6 +26,8 @@ const app = fs.readFileSync(path.join(dir, 'desk_app.js'), 'utf8');
 const essay = fs.readFileSync(path.join(dir, 'essay.js'), 'utf8');
 
 const d = JSON.parse(fs.readFileSync(path.join(dir, 'desk_data.json'), 'utf8'));
+d.listeningTranscripts = JSON.parse(fs.readFileSync(path.join(dir, 'listening_transcripts.json'), 'utf8'));
+d.coreWords = [...new Set(fs.readFileSync(path.join(dir, 'core_words.txt'), 'utf8').trim().split(/\s+/))];
 const mockPath = path.join(dir, 'mock_data.json');
 if (fs.existsSync(mockPath)) {
   const m = JSON.parse(fs.readFileSync(mockPath, 'utf8'));
@@ -39,7 +41,7 @@ const spell = fs.existsSync(spellPath) ? fs.readFileSync(spellPath, 'utf8').trim
 const dictPath = path.join(dir, 'dict_final.txt');
 const dict = fs.existsSync(dictPath) ? fs.readFileSync(dictPath, 'utf8').trim() : '';
 
-const data = JSON.stringify(d);
+const data = JSON.stringify(d).replace(/</g, '\\u003c');
 /* 版本号：每次构建都变，页面靠它自检有没有被浏览器缓存成旧版 */
 const ver = new Date().toISOString().replace(/\D/g, '').slice(0, 14);
 shell = shell.replace('"__VER__"', () => JSON.stringify(ver));

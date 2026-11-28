@@ -8,6 +8,7 @@
   const PP = DAT.papers;               // 真题卷
   const MOCKS = DAT.mocks || {};       // 模考卷
   const UN = DAT.units;
+  const LISTENING = DAT.listeningTranscripts || {};
   const PTS = DAT.points;
   const VAULT = DAT.vault || { total: 0, byDir: {} };
   const ALLQ = QS.concat(MQ);
@@ -779,7 +780,7 @@
     if (isL) {
       if (sess.src === 'real') {
         h += audioHTML(q);
-        h += '<div class="small" style="margin:10px 0 4px">听录音作答。真实考试不印题干，问题只播一遍。</div>';
+        h += '<div class="small" style="margin:10px 0 4px">听录音作答。交卷后可在逐题解析中查看对应原文。</div>';
       } else {
         h += '<div class="stem en">' + esc(q.st) + '</div>';
       }
@@ -991,7 +992,7 @@
 
     /* 答题卡 */
     h += '<h2>逐题结果</h2><div class="card"><div class="row" style="margin-bottom:8px">' +
-      '<span class="small dim">绿 = 对 · 红 = 错 · 灰 = 空着 · 点任何一题看解析</span></div>' +
+      '<span class="small dim">绿 = 对 · 红 = 错 · 灰 = 空着 · 点题号看解析，听力题可展开原文</span></div>' +
       '<div class="cardgrid-in">' + obj.map(q => {
         const a = sess.ans[q.id];
         const cls = a === undefined ? 'blank' : a === q.a ? 'ok' : 'bad';
@@ -1005,7 +1006,8 @@
           '<td class="mono" style="color:var(--bad)">' + sess.ans[q.id] + '</td>' +
           '<td class="mono" style="color:var(--ok)">' + q.a + '</td>' +
           '<td class="dim">' + (q.pt[0] || '') + ' ' + esc((PMAP[q.pt[0]] || {}).name || '') + '</td>' +
-          '<td><button class="btn sm ghost" onclick="DESK.reviewInPaper(\'' + q.id + '\')">看解析</button></td></tr>').join('') +
+          '<td><button class="btn sm ghost" onclick="DESK.reviewInPaper(\'' + q.id + '\')">' +
+          (q.k === 'L' && LISTENING[q.p] ? '原文与解析' : '看解析') + '</button></td></tr>').join('') +
         '</tbody></table></div>';
     }
 
@@ -1065,6 +1067,7 @@
     h += '<div class="qcol"><div class="pane">';
     h += '<div class="qtag"><span class="chip">' + (q.n ? '第 ' + q.n + ' 题' : KIND[q.k].n) + '</span>' +
       '<span class="chip">' + esc(q.ty || '') + '</span>' + doneChip(q.id) + '</div>';
+    if (isL && sess.src === 'real') h += audioHTML(q);
     if (isC) h += '<div class="stem en">' + blankSentence(q) + '</div>';
     else if (q.k !== 'W' && q.k !== 'T' && !(isL && sess.src === 'real' && !q.st)) h += '<div class="stem en">' + esc(q.st || '') + '</div>';
     if (q.k === 'W' || q.k === 'T') {
@@ -1076,6 +1079,7 @@
     }
     h += optionsHTML(q, true);
     h += resultHTML(q);
+    if (isL && sess.src === 'real') h += listeningTranscript(q);
     h += analysisHTML(q, true);
     h += '</div></div></div></div>';
     return h;
@@ -1126,7 +1130,7 @@
 
     if (isL) {
       h += audioHTML(q);
-      h += '<div class="small" style="margin:10px 0 12px">听录音，选最佳答案。真实考试问题只播一遍，这里也一样——先作答，再看解析。</div>';
+      h += '<div class="small" style="margin:10px 0 12px">听录音，选最佳答案。作答后可展开本题原文。</div>';
     } else if (isC) {
       h += '<div class="stem en">' + blankSentence(q) + '</div>';
       h += '<div class="small dim" style="margin:-6px 0 10px">空位需要填一个 <b>' + posName(q.pos) + '</b>。先按词性排除，再看语义；<b>十个空填完才统一公布答案</b>。</div>';
@@ -1137,7 +1141,10 @@
     }
 
     h += optionsHTML(q, judged);
-    if (judged) h += resultHTML(q);
+    if (judged) {
+      h += resultHTML(q);
+      if (isL) h += listeningTranscript(q);
+    }
     else if (isC) {
       const set = cFillSet(q.u, q.p);
       const got = set.filter(x => sess.ans[x.id] !== undefined).length;
@@ -1217,6 +1224,20 @@
     if (!p || !p.audio) return '<div class="audiobar"><span class="dot"></span><span class="small">这一套没有音频文件，按选项逻辑作答。</span></div>';
     return '<div class="audiobar"><span class="dot"></span><div class="grow"><audio controls preload="none" src="' + p.audio + '"></audio></div></div>' +
       '<div class="small dim" style="margin-top:6px">音频来自原卷镜像；播不动就按选项逻辑选，解析照常看。</div>';
+  }
+
+  function listeningTranscript(q) {
+    const segment = LISTENING[q.p]?.find(part => q.n >= part.first && q.n <= part.last);
+    if (!segment) return '';
+    const prompt = segment.prompts.find(([number]) => number === q.n);
+    return '<details class="listen-transcript"><summary><span class="listen-transcript-title">' +
+      '<span lang="en">Listening transcript</span><small>听力原文</small></span>' +
+      '<span class="listen-transcript-range" lang="en">' + esc(segment.section) + ' · Q' + segment.first + '–' + segment.last + '</span>' + svg(IC.chevron) +
+      '</summary><div class="listen-transcript-body"><h3 lang="en">' + esc(segment.title) + '</h3>' +
+      '<p class="small dim">音频转写稿，个别数字或专有名词可能有偏差。</p>' +
+      '<div class="passage" lang="en">' + segment.paragraphs.map(text => '<p>' + esc(pretty(text)) + '</p>').join('') + '</div>' +
+      (prompt ? '<div class="listen-transcript-question"><span class="small">录音问题 · Q' + q.n + '</span><p lang="en">' + esc(pretty(prompt[1])) + '</p></div>' : '') +
+      '</div></details>';
   }
 
   function optionsHTML(q, answered) {
@@ -2051,10 +2072,19 @@
     const y = all.filter(w => w.c === 'y').length;
     const r = all.filter(w => w.c === 'r').length;
     const list = all.filter(w => wFilter === 'all' || w.c === wFilter);
+    const selected = selectedWords().length;
 
-    let h = '<div class="wrap"><div style="margin-top:22px"><h1>单词本</h1>' +
-      '<div class="small" style="margin-top:6px">在任意原文、题干、解析里<b>划选一个英文词</b>，弹出「译 / 黄标 / 红标」；选中整句英文时变成「译整句」。' +
-      '释义走内置离线词库（' + (window.dictInit ? window.dictInit().size : 0) + ' 条，自动还原 studies→study、running→run），没收录的给在线英汉入口。</div></div>';
+    let h = '<div class="wrap"><div class="inner-page-head"><h1 lang="en">Vocabulary</h1>' +
+      '<div class="small">单词本 · 勾选收藏的词练习，或从四级重点词里随机抽一组。</div></div>' +
+      '<div class="word-decks"><section class="card word-deck"><h2>练标记词</h2><p class="small">从全部收藏、黄标待背或红标易错中抽词，也可以自己勾选。</p>' +
+      '<div class="word-deck-actions">' + [['all', '全部标记', all.length], ['y', '黄标', y], ['r', '红标', r]].map(([key, name, count]) =>
+        '<button type="button" class="btn sm ghost" onclick="DESK.reviewWords(\'' + key + '\')"' + (count ? '' : ' disabled') +
+        '>' + name + ' · ' + count + '</button>').join('') +
+      '<button id="word-study-selected" type="button" class="btn sm pri" onclick="DESK.reviewWords(\'selected\')"' +
+      (selected ? '' : ' disabled') + '>背所选 · ' + selected + '</button></div></section>' +
+      '<section class="card word-deck word-deck-core"><h2>随机背四级重点词</h2><p class="small">' + getCoreWords().length +
+      ' 个精选词 · 每轮随机抽取 ' + WORD_ROUND_SIZE + ' 个</p><div class="word-deck-actions">' +
+      '<button type="button" class="btn sm pri" onclick="DESK.reviewWords(\'core\')">随机开始 ' + svg(IC.arrow) + '</button></div></section></div>';
 
     h += '<div class="stats" style="margin-top:16px">' +
       statCard('全部', all.length, '词', '黄标 + 红标') +
@@ -2065,7 +2095,8 @@
 
     h += '<div class="row wrap" style="margin-top:6px;gap:8px">' +
       [['all', '全部'], ['y', '黄标'], ['r', '红标']].map(([k, n]) =>
-        '<span class="chip click ' + (wFilter === k ? 'acc' : '') + '" style="padding:7px 14px;font-size:13px" onclick="DESK.wFilter(\'' + k + '\')">' + n + '</span>').join('') +
+        '<button type="button" class="chip click ' + (wFilter === k ? 'acc' : '') + '" style="padding:7px 14px;font-size:13px" aria-pressed="' +
+        (wFilter === k) + '" onclick="DESK.wFilter(\'' + k + '\')">' + n + '</button>').join('') +
       '<span class="grow"></span>' +
       '<input id="wadd" class="winput" placeholder="手动加一个词，回车收录" onkeydown="if(event.key===\'Enter\')DESK.manualWord(this.value)">' +
       '</div>';
@@ -2077,6 +2108,9 @@
       h += '<div class="wlist">' + list.map(w => {
         const i = all.indexOf(w);
         return '<div class="wrow">' +
+          '<input class="word-select" type="checkbox" aria-label="选择 ' + esc(w.w) + ' 加入本轮背词"' +
+          (markedWordSelection.has(String(w.w).toLowerCase()) ? ' checked' : '') +
+          ' onchange="DESK.toggleWordSelection(' + i + ',this.checked)">' +
           '<span class="wmark ' + (w.c === 'y' ? 'y' : 'r') + '"></span>' +
           '<div class="grow" style="min-width:0"><div class="wh"><b>' + esc(w.w) + '</b>' +
           (w.ph ? '<span class="small dim">' + esc(w.ph) + '</span>' : '') + '</div>' +
@@ -2096,7 +2130,6 @@
       h += '<div class="row wrap" style="margin-top:14px;gap:8px">' +
         '<button class="btn sm ghost" onclick="DESK.exportWords()">导出 TXT</button>' +
         '<button class="btn sm ghost" onclick="DESK.copyWords()">复制全部</button>' +
-        '<button class="btn sm ghost" onclick="DESK.reviewWords()">开始背（黄标优先）</button>' +
         '<button class="btn sm ghost" onclick="if(confirm(\'清空单词本？\')){DESK.clearWords()}">清空</button></div>';
     }
     h += '</div>';
@@ -2111,8 +2144,13 @@
     render();
   }
   function wordColor(i, c) { if (S.words[i]) { S.words[i].c = c; S.words[i].t = Date.now(); save(); render(); } }
-  function wordDel(i) { S.words.splice(i, 1); save(); render(); }
-  function clearWords() { S.words = []; save(); render(); }
+  function wordDel(i) {
+    const item = S.words[i];
+    if (!item) return;
+    markedWordSelection.delete(String(item.w).toLowerCase());
+    S.words.splice(i, 1); save(); render();
+  }
+  function clearWords() { S.words = []; markedWordSelection.clear(); save(); render(); }
   function setWords(list) { S.words = list; save(); render(); }
 
   function say(t) {
@@ -2980,30 +3018,183 @@
     });
   }
 
-  /* 背单词：从黄标开始，随机 20 个，用浏览器朗读 */
-  function reviewWords() {
-    const pool = (S.words || []).slice().sort((a, b) => (a.c === 'y' ? -1 : 1) - (b.c === 'y' ? -1 : 1));
-    if (!pool.length) return toast('单词本是空的');
-    startWords(pool.slice(0, 20));
-  }
-  function startWords(list) {
-    wordQuiz = { list, i: 0, show: false };
-    view = 'words'; render();
-  }
+  /* ================= 背词练习 ================= */
+  const WORD_ROUND_SIZE = 12;
+  const WORD_DECK_LABELS = {
+    core: '四级重点词', all: '全部标记', y: '黄标待背', r: '红标易错', selected: '我的选词', retry: '重练本轮错词',
+  };
+  const markedWordSelection = new Set();
+  let coreWordDeck = null;
   let wordQuiz = null;
-  function wordQuizHTML() {
-    const w = wordQuiz.list[wordQuiz.i];
-    if (!w) { wordQuiz = null; return ''; }
-    return '<div class="wrap"><div class="card" style="max-width:640px;margin:24px auto;text-align:center">' +
-      '<div class="small dim">' + (wordQuiz.i + 1) + ' / ' + wordQuiz.list.length + '</div>' +
-      '<div style="font-size:30px;font-weight:650;margin:14px 0 6px">' + esc(w.w) + '</div>' +
-      '<div class="row" style="justify-content:center;gap:8px"><button class="btn sm ghost" onclick="DESK.say(\'' + esc(w.w).replace(/'/g, "\\'") + '\')">🔊 读一遍</button></div>' +
-      (wordQuiz.show ? '<div class="small" style="margin-top:14px;font-size:15px">' + esc(w.d || '（没有释义）') + '</div>' : '<div class="small dim" style="margin-top:14px">想好了再点「看释义」</div>') +
-      '<div class="row" style="justify-content:center;gap:8px;margin-top:20px">' +
-      (wordQuiz.show ? '' : '<button class="btn pri" onclick="DESK.quizShow()">看释义</button>') +
-      '<button class="btn ghost" onclick="DESK.quizNext()">' + (wordQuiz.i + 1 >= wordQuiz.list.length ? '结束' : '下一个 →') + '</button>' +
-      '</div></div></div>';
+
+  function shuffleWords(list) {
+    const shuffled = list.slice();
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
   }
+
+  function wordStudyEntry(item) {
+    const word = String(item.w || '').trim();
+    const key = word.toLowerCase();
+    const definition = String(item.d || '').trim() || CET_PHRASES.get(key)?.def || window.dictInit().get(key) || '';
+    const sense = definition ? dictionarySenses(definition)[0] : null;
+    const clue = sense?.sense.split(/[；;，,、]/)[0].trim() || '';
+    return { word, key, definition, clue, pos: sense?.pos || '' };
+  }
+
+  function getCoreWords() {
+    if (!coreWordDeck) coreWordDeck = (DAT.coreWords || []).map(w => wordStudyEntry({ w })).filter(entry => entry.clue);
+    return coreWordDeck;
+  }
+
+  function quizCard(word, pool) {
+    if (!word.clue) return { word, options: [] };
+    const candidates = shuffleWords(pool.filter(other => other.key !== word.key && other.clue &&
+      !other.clue.includes(word.clue) && !word.clue.includes(other.clue)));
+    const seen = new Set([word.clue]);
+    const distractors = [];
+    const similar = word.pos ? candidates.filter(other => other.pos === word.pos) : [];
+    for (const other of similar.concat(candidates)) {
+      if (seen.has(other.clue)) continue;
+      seen.add(other.clue);
+      distractors.push({ label: other.clue, correct: false });
+      if (distractors.length === 3) break;
+    }
+    return { word, options: distractors.length === 3 ? shuffleWords([{ label: word.clue, correct: true }, ...distractors]) : [] };
+  }
+
+  function selectedWords() {
+    return (S.words || []).filter(item => markedWordSelection.has(String(item.w).toLowerCase()));
+  }
+
+  function toggleWordSelection(index, checked) {
+    const item = S.words[index];
+    if (!item) return;
+    const key = item.w.toLowerCase();
+    if (checked) markedWordSelection.add(key); else markedWordSelection.delete(key);
+    const count = selectedWords().length;
+    const button = document.getElementById('word-study-selected');
+    if (button) {
+      button.disabled = count === 0;
+      button.textContent = '背所选 · ' + count;
+    }
+  }
+
+  function reviewWords(source = 'all') {
+    const all = S.words || [];
+    const core = getCoreWords();
+    let pool = core;
+    if (source !== 'core') {
+      const entries = source === 'selected' ? selectedWords() :
+        (source === 'y' || source === 'r') ? all.filter(item => item.c === source) : all;
+      pool = entries.map(wordStudyEntry).filter(item => item.word);
+    }
+    if (!pool.length) return toast('这个分组没有可背的单词');
+    const distinct = [...new Map(pool.map(entry => [entry.key, entry])).values()];
+    const list = shuffleWords(distinct);
+    startWordRound(source === 'selected' ? list : list.slice(0, WORD_ROUND_SIZE), source);
+  }
+
+  function startWordRound(words, source) {
+    const pool = getCoreWords().concat(words);
+    wordQuiz = {
+      source, cards: words.map(word => quizCard(word, pool)), index: 0, correct: 0, misses: [], complete: false,
+    };
+    closePanel();
+    go('words');
+    document.getElementById('word-study-term')?.focus();
+  }
+
+  function currentWordCard() {
+    return wordQuiz && !wordQuiz.complete ? wordQuiz.cards[wordQuiz.index] : null;
+  }
+
+  function wordQuizAnswer(index) {
+    const card = currentWordCard();
+    if (!card || card.result !== undefined || !card.options.length || (index !== -1 && !card.options[index])) return;
+    card.picked = index;
+    finishWordCard(card, index >= 0 && card.options[index].correct);
+  }
+
+  function wordQuizRecall(remembered) {
+    const card = currentWordCard();
+    if (!card || card.options.length || !card.revealed || card.result !== undefined) return;
+    finishWordCard(card, remembered);
+  }
+
+  function finishWordCard(card, correct) {
+    card.result = correct;
+    if (correct) wordQuiz.correct++;
+    else wordQuiz.misses.push(card.word);
+    render();
+    document.getElementById('word-study-next')?.focus();
+  }
+
+  function wordQuizNext() {
+    const card = currentWordCard();
+    if (!card || card.result === undefined) return;
+    if (wordQuiz.index + 1 === wordQuiz.cards.length) wordQuiz.complete = true;
+    else wordQuiz.index++;
+    render();
+    document.getElementById('word-study-term')?.focus();
+  }
+
+  function wordStudyAnswerHTML(card) {
+    const def = card.word.definition;
+    const heading = card.result === undefined ? '参考释义' : card.result ? (card.options.length ? '答对了' : '已记住') : '待复习';
+    const state = card.result === true ? ' correct' : card.result === false ? ' review' : '';
+    return '<div class="study-feedback' + state + '"><strong>' + heading + '</strong>' +
+      (def ? '<p>' + esc(def) + '</p>' : '<p>单词本还没有这条释义。<button class="dict-text-button" type="button" onclick="DESK.wordQuizLookup()">查这个词</button></p>') + '</div>';
+  }
+
+  function wordQuizHTML() {
+    const study = wordQuiz;
+    const total = study.cards.length;
+    const label = WORD_DECK_LABELS[study.source];
+    let h = '<div class="wrap word-study"><div class="word-study-top"><span class="small mono">' + label + '</span>' +
+      '<button class="btn sm ghost" type="button" onclick="DESK.wordQuizExit()">返回单词本</button></div>';
+    if (study.complete) {
+      return h + '<section class="card word-study-card word-study-summary"><h1 id="word-study-term" tabindex="-1">本轮完成</h1>' +
+        '<div class="word-study-score"><strong>' + study.correct + '<small> / ' + total + '</small></strong><span>记住 ' + study.correct + ' 词 · 待复习 ' + study.misses.length + ' 词</span></div>' +
+        (study.misses.length ? '<ul class="word-study-misses">' + study.misses.map(word => '<li lang="en">' + esc(word.word) + '</li>').join('') + '</ul>' : '') +
+        '<div class="word-study-actions">' +
+        (study.misses.length ? '<button class="btn pri" type="button" onclick="DESK.wordQuizRetry()">重练本轮错词</button>' : '') +
+        (study.source !== 'retry' ? '<button class="btn ghost" type="button" onclick="DESK.reviewWords(\'' + study.source + '\')">再练一轮</button>' : '') +
+        '</div></section></div>';
+    }
+    const card = currentWordCard();
+    const completed = study.index + (card.result !== undefined ? 1 : 0);
+    h += '<div class="word-study-progress"><progress value="' + completed + '" max="' + total + '" aria-label="本轮进度"></progress>' +
+      '<span class="small mono">' + (study.index + 1) + ' / ' + total + '</span></div><section class="card word-study-card">' +
+      '<div class="word-study-prompt"><p class="small">' + (card.options.length ? '选择最贴切的中文释义' : '先回想词义，再翻看释义') + '</p>' +
+      '<h1 id="word-study-term" lang="en" tabindex="-1">' + esc(card.word.word) + '</h1>' +
+      '<button class="dict-icon-button" type="button" onclick="DESK.wordQuizSay()" aria-label="朗读单词" title="朗读单词">' + svg(IC.audio) + '</button></div>';
+    if (card.options.length) {
+      h += '<div class="word-study-options">' + card.options.map((option, index) => {
+        const reveal = card.result !== undefined;
+        const state = reveal && option.correct ? ' correct' : reveal && card.picked === index ? ' wrong' : '';
+        return '<button class="word-study-option' + state + '" type="button" onclick="DESK.wordQuizAnswer(' + index + ')"' + (reveal ? ' disabled' : '') + '>' +
+          '<span>' + 'ABCD'[index] + '</span><strong>' + esc(option.label) + '</strong>' +
+          (state === ' correct' ? '<small>正确</small>' : state === ' wrong' ? '<small>你的选择</small>' : '') + '</button>';
+      }).join('') + '</div>';
+    }
+    if (card.result !== undefined || card.revealed) h += wordStudyAnswerHTML(card);
+    h += '<div class="word-study-actions">';
+    if (card.result !== undefined) {
+      h += '<button id="word-study-next" class="btn pri" type="button" onclick="DESK.wordQuizNext()">' +
+        (study.index + 1 < total ? '下一词 →' : '查看本轮结果 →') + '</button>';
+      if (!card.result) h += '<button class="btn ghost" type="button" onclick="DESK.wordQuizMark()" ' +
+        (card.marked ? 'disabled>已标易错' : '>标为易错') + '</button>';
+    } else if (card.options.length) h += '<button class="btn ghost" type="button" onclick="DESK.wordQuizAnswer(-1)">不认识</button>';
+    else if (!card.revealed) h += '<button class="btn pri" type="button" onclick="DESK.wordQuizShow()">看释义</button>';
+    else h += '<button class="btn pri" type="button" onclick="DESK.wordQuizRecall(true)">记住了</button>' +
+      '<button class="btn ghost" type="button" onclick="DESK.wordQuizRecall(false)">待复习</button>';
+    return h + '</div></section></div>';
+  }
+
 
   /* ================= 错题本 ================= */
   function viewWrong() {
@@ -3605,7 +3796,12 @@
     jumpPart: jumpPart,
     examText: examText,
     examSelf: examSelf,
-    reviewInPaper(qid) { if (!sess) return; sess.reviewId = qid; sess.i = Math.max(0, sess.ids.indexOf(qid)); view = 'paperReview'; render(); window.scrollTo(0, 0); },
+    reviewInPaper(qid) {
+      if (!sess?.exam || !sess.done) return;
+      const index = sess.ids.indexOf(qid);
+      if (index < 0) return;
+      sess.reviewId = qid; sess.i = index; go('paperReview');
+    },
     prevReview() { if (!sess) return; const i = sess.ids.indexOf(sess.reviewId); if (i > 0) { sess.reviewId = sess.ids[i - 1]; sess.i = i - 1; render(); window.scrollTo(0, 0); } },
     nextReview() { if (!sess) return; const i = sess.ids.indexOf(sess.reviewId); if (i >= 0 && i < sess.ids.length - 1) { sess.reviewId = sess.ids[i + 1]; sess.i = i + 1; render(); window.scrollTo(0, 0); } },
     backResult() { view = 'run'; render(); window.scrollTo(0, 0); },
@@ -3619,12 +3815,23 @@
     exportWords: exportWords,
     copyWords: copyWords,
     reviewWords: reviewWords,
-    quizShow() { if (wordQuiz) { wordQuiz.show = true; render(); } },
-    quizNext() {
-      if (!wordQuiz) return;
-      if (wordQuiz.i + 1 >= wordQuiz.list.length) { wordQuiz = null; render(); return; }
-      wordQuiz.i++; wordQuiz.show = false; render();
+    toggleWordSelection: toggleWordSelection,
+    wordQuizAnswer: wordQuizAnswer,
+    wordQuizRecall: wordQuizRecall,
+    wordQuizNext: wordQuizNext,
+    wordQuizShow() {
+      const card = currentWordCard();
+      if (card && !card.options.length) { card.revealed = true; render(); }
     },
+    wordQuizSay() { const card = currentWordCard(); if (card) say(card.word.word); },
+    wordQuizLookup() { const card = currentWordCard(); if (card) openSearchPanel(card.word.word); },
+    wordQuizMark() {
+      const card = currentWordCard();
+      if (!card || card.result !== false || card.marked) return;
+      if (saveWord(card.word.word, 'r', card.word.definition)) { card.marked = true; render(); }
+    },
+    wordQuizRetry() { if (wordQuiz?.complete && wordQuiz.misses.length) startWordRound(wordQuiz.misses, 'retry'); },
+    wordQuizExit() { wordQuiz = null; closePanel(); go('words'); },
     say: say,
     closePanel: closePanel,
     exportSession() { download('四级训练复盘 ' + today() + '.md', mdSession()); },

@@ -600,6 +600,57 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#acd7f3;border-radius:2px}
 .exwrite:focus{outline:none;border-color:rgba(241,153,114,.45)}
 
 /* ===== 单词本 ===== */
+.word-decks{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:12px;margin-top:17px}
+.word-deck{padding:16px 18px;display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.word-deck h2{margin:0;font-size:16px}
+.word-deck p{margin:0 0 9px}
+.word-deck-core{border-color:#644752;background:linear-gradient(115deg,#2b1e29,#211b26)}
+.word-deck-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.word-deck-actions svg{width:14px;height:14px}
+.word-select{flex:none;width:16px;height:16px;margin:5px 0 0;accent-color:var(--acc);cursor:pointer}
+.word-study{max-width:790px;padding-top:20px}
+.word-study-top,.word-study-progress{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.word-study-progress{margin:13px 0}
+.word-study-progress progress{flex:1;min-width:0;height:6px;border:0;border-radius:6px;background:var(--card3);accent-color:var(--acc)}
+.word-study-progress progress::-webkit-progress-bar{background:var(--card3);border-radius:6px}
+.word-study-progress progress::-webkit-progress-value{background:var(--acc);border-radius:6px}
+.word-study-card{padding:clamp(15px,3vw,30px);margin-bottom:12px}
+.word-study-prompt{position:relative;margin-bottom:16px;padding-right:47px}
+.word-study-prompt p{margin:0 0 3px}
+.word-study-prompt h1{font:clamp(38px,7vw,65px)/.98 var(--display);color:#faeee9;overflow-wrap:anywhere}
+.word-study-prompt button{position:absolute;right:0;bottom:0}
+.word-study-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.word-study-option{
+  display:grid;grid-template-columns:25px minmax(0,1fr);align-items:center;gap:5px 8px;text-align:left;
+  padding:10px;border:1px solid #504152;border-radius:6px;background:#221b28;color:var(--txt);cursor:pointer;
+  font-size:14px;line-height:1.55;min-height:49px;
+}
+.word-study-option:not(:disabled):hover{background:#302032;border-color:#a9757e}
+.word-study-option>span{justify-self:start;padding:1px 5px;border-radius:3px;background:#332639;color:#e8ad9b;font:11px var(--code)}
+.word-study-option strong{font-weight:540;overflow-wrap:anywhere}
+.word-study-option small{grid-column:2;color:inherit}
+.word-study-option:disabled{cursor:default}
+.word-study-option.correct{border-color:#58816b;background:#25382f;color:#b9e7c7}
+.word-study-option.wrong{border-color:#a76677;background:#402a36;color:#ffc5cc}
+.study-feedback{
+  margin-top:13px;padding:10px 12px;border-left:2px solid #a77382;border-radius:4px;background:#261d2a;color:var(--txt)
+}
+.study-feedback.correct{border-color:var(--ok)}
+.study-feedback.review{border-color:var(--bad)}
+.study-feedback p{margin:3px 0 0;overflow-wrap:anywhere}
+.word-study-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:15px}
+.word-study-summary{margin-top:13px}
+.word-study-summary h1{font-size:22px}
+.word-study-score{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px 16px;margin-top:10px}
+.word-study-score strong{font:52px/.9 var(--display);color:#f7af8e}
+.word-study-score small,.word-study-score>span{font:13px var(--sans);color:var(--mut)}
+.word-study-misses{display:flex;gap:5px;flex-wrap:wrap;list-style:none;margin:13px 0 0;padding:0}
+.word-study-misses li{padding:3px 7px;border:1px solid #51424f;border-radius:4px;background:#26202b;color:#e6d4e1;font-size:12px}
+@media (max-width:590px){
+  .word-decks,.word-study-options{grid-template-columns:1fr}
+  .word-study,.word-decks{padding-top:11px}
+  .word-decks{margin-top:5px}
+}
 .winput{background:var(--bg2);border:1px solid var(--line);border-radius:8px;color:var(--txt);
   padding:7px 11px;font-size:13px;font-family:inherit;min-width:180px}
 .winput:focus{outline:none;border-color:rgba(241,153,114,.45)}
@@ -813,3 +864,23 @@ mark.e-punct{background:rgba(120,180,255,.2);color:#acd7f3;border-radius:2px}
 
 /* 页面级横向溢出兜底：宽表格在 .card.pad0 内部自己滚，不要让整页跟着横滚 */
 .wrap{overflow-x:clip}
+
+/* ===== 听力原文 ===== */
+.listen-transcript{margin-top:14px;border:1px solid #65495a;border-radius:6px;background:#231c28}
+.listen-transcript>summary{
+  display:flex;align-items:center;gap:8px;padding:10px 13px;cursor:pointer;list-style:none;
+}
+.listen-transcript>summary::-webkit-details-marker{display:none}
+.listen-transcript>summary:hover{background:#2e2231}
+.listen-transcript>summary svg{width:15px;height:15px;flex:none;color:var(--acc)}
+.listen-transcript[open]>summary svg{transform:rotate(90deg)}
+.listen-transcript-title{flex:1;min-width:0;font:23px/1.02 var(--display);color:#f9e9e7}
+.listen-transcript-title small{display:block;margin-top:4px;font:10px var(--sans);color:var(--mut)}
+.listen-transcript-range{white-space:nowrap;padding:3px 5px;border-radius:3px;background:#322537;color:#e1bac9;font:10px var(--code)}
+.listen-transcript-body{padding:12px 13px 9px;border-top:1px solid #493647}
+.listen-transcript-body h3{font:24px/1.1 var(--display);margin:0}
+.listen-transcript-body>.small{margin:3px 0 8px}
+.listen-transcript-body .passage{font-size:15.5px;line-height:1.78}
+.listen-transcript-body .passage p{margin-bottom:8px}
+.listen-transcript-question{border-top:1px solid #493647;margin:10px 0 1px;padding-top:7px}
+.listen-transcript-question p{margin:1px 0 0;font:15px/1.6 var(--serif)}
