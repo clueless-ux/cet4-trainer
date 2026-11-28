@@ -12,6 +12,16 @@ const shellPath = path.join(dir, 'desk_shell.html');
 let shell = fs.readFileSync(shellPath, 'utf8');
 
 const css = fs.readFileSync(path.join(dir, 'desk_style.css'), 'utf8');
+const fonts = path.join(dir, 'fonts');
+const fontLicense = fs.readFileSync(path.join(fonts, 'OFL.txt'), 'utf8')
+  .split(/\r?\n/).map(line => line.trimEnd()).join('\n');
+const displayFonts = [
+  ['normal', 'instrument-serif.woff2'],
+  ['italic', 'instrument-serif-italic.woff2'],
+].map(([style, file]) => {
+  const font = fs.readFileSync(path.join(fonts, file)).toString('base64');
+  return `@font-face{font-family:"Instrument Serif";font-style:${style};font-weight:400;font-display:swap;src:url(data:font/woff2;base64,${font}) format("woff2")}`;
+}).join('\n');
 const app = fs.readFileSync(path.join(dir, 'desk_app.js'), 'utf8');
 const essay = fs.readFileSync(path.join(dir, 'essay.js'), 'utf8');
 
@@ -33,7 +43,7 @@ const data = JSON.stringify(d);
 /* 版本号：每次构建都变，页面靠它自检有没有被浏览器缓存成旧版 */
 const ver = new Date().toISOString().replace(/\D/g, '').slice(0, 14);
 shell = shell.replace('"__VER__"', () => JSON.stringify(ver));
-shell = shell.replace('/*__CSS__*/', () => css);
+shell = shell.replace('/*__CSS__*/', () => `/*\n${fontLicense}\n*/\n${displayFonts}\n${css}`);
 shell = shell.replace('/*__DATA__*/{}', () => data);
 shell = shell.replace('/*__ESSAY__*/', () => essay);
 shell = shell.replace('/*__SPELL__*/""', () => JSON.stringify(spell));

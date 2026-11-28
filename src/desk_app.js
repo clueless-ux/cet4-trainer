@@ -26,12 +26,12 @@
   }
 
   const KIND = {
-    L: { n: '听力', full: '听力理解', color: '#8e581b' },
-    C: { n: '选词', full: '选词填空', color: '#286d87' },
-    M: { n: '匹配', full: '长篇匹配', color: '#36683b' },
-    R: { n: '阅读', full: '仔细阅读', color: '#655292' },
-    W: { n: '写作', full: '短文写作', color: '#a13f69' },
-    T: { n: '翻译', full: '段落翻译', color: '#8c640c' },
+    L: { n: '听力', full: '听力理解', english: 'Listening', color: '#f1ad7e' },
+    C: { n: '选词', full: '选词填空', english: 'Cloze', color: '#88c4d8' },
+    M: { n: '匹配', full: '长篇匹配', english: 'Matching', color: '#a2ceaa' },
+    R: { n: '阅读', full: '仔细阅读', english: 'Reading', color: '#c4b0ee' },
+    W: { n: '写作', full: '短文写作', english: 'Writing', color: '#eda9c2' },
+    T: { n: '翻译', full: '段落翻译', english: 'Translation', color: '#efcc81' },
   };
 
   const CAUSES = [
@@ -347,32 +347,33 @@
 
   /* ================= 框架 ================= */
   const NAV = [
-    ['desk', '工作台', 'desk'],
-    ['train', '训练', 'train'],
-    ['brain', '考点地图', 'brain'],
-    ['wrong', '错题本', 'wrong'],
-    ['words', '单词本', 'words'],
-    ['stats', '学习数据', 'stats'],
-    ['write', '写作翻译', 'write'],
-    ['vault', 'Obsidian 脑库', 'vault'],
+    ['desk', 'Overview', '工作台', 'desk'],
+    ['train', 'Practice', '训练', 'train'],
+    ['write', 'Writing & Translation', '写作翻译', 'write'],
+    ['brain', 'Skill Map', '考点地图', 'brain'],
+    ['wrong', 'Review', '错题本', 'wrong'],
+    ['words', 'Vocabulary', '单词本', 'words'],
+    ['stats', 'Progress', '学习数据', 'stats'],
+    ['vault', 'Obsidian', '脑库', 'vault'],
   ];
 
-  function navButton([key, label, icon], mobile) {
+  function navButton([key, english, label, icon], mobile) {
     const page = view === 'run' || view === 'paperReview' ? 'train' : view;
     const active = page === key;
     return '<button type="button" class="' + (mobile ? 'mobile-tab' : 'nav-item') + (active ? ' on' : '') + '"' +
       (active ? ' aria-current="page"' : '') + ' onclick="DESK.go(\'' + key + '\')">' +
-      (mobile ? '' : svg(IC[icon])) + '<span>' + label + '</span></button>';
+      (mobile ? '' : svg(IC[icon])) + '<span class="nav-label"><span lang="en">' + english + '</span>' +
+      '<small>' + label + '</small></span></button>';
   }
 
   function rail() {
     return '<aside class="rail">' +
-      '<button type="button" class="brand" onclick="DESK.go(\'desk\')"><span class="logo">' +
-      svg(IC.words) + '</span><span><b>四级训练工作台</b><span class="brand-sub">CET-4 WORKBENCH</span></span></button>' +
-      '<nav class="rail-nav" aria-label="工作台导航"><div class="nav-sep">学习空间</div>' +
-      NAV.slice(0, -1).map(item => navButton(item, false)).join('') +
-      '<div class="nav-sep">学习资料</div>' + navButton(NAV[NAV.length - 1], false) + '</nav>' +
-      '<div class="rail-foot"><span class="rail-foot-dot" aria-hidden="true"></span>离线题库' +
+      '<button type="button" class="brand" onclick="DESK.go(\'desk\')"><span class="logo" aria-hidden="true">E</span>' +
+      '<span><b lang="en">CET-4 Studio</b><span class="brand-sub">英语四级训练台</span></span></button>' +
+      '<nav class="rail-nav" aria-label="工作台导航"><div class="nav-sep" lang="en">Study</div>' +
+      NAV.slice(0, 4).map(item => navButton(item, false)).join('') +
+      '<div class="nav-sep" lang="en">Library</div>' + NAV.slice(4).map(item => navButton(item, false)).join('') + '</nav>' +
+      '<div class="rail-foot"><span class="rail-foot-dot" aria-hidden="true"></span><span lang="en">Offline question bank</span>' +
       '<div>' + Object.keys(PP).length + ' 套真题 · ' + PTS.length + ' 个考点</div></div></aside>';
   }
 
@@ -383,12 +384,65 @@
 
   function topbar(crumb) {
     return '<header class="topbar"><div class="crumb">' + crumb + '</div><div class="right">' +
-      '<button type="button" class="btn sm utility" onclick="DESK.search()" title="查词 / 译句">' + svg(IC.search) + '查词</button>' +
-      '<button type="button" class="btn sm utility" onclick="DESK.runDiag()" title="划词与存储自检">自检</button>' +
+      '<button type="button" class="btn sm utility" onclick="DESK.search()" title="查词 / 译句">' + svg(IC.search) + '<span lang="en">Dictionary</span></button>' +
+      '<button type="button" class="btn sm utility" onclick="DESK.runDiag()" title="划词与存储自检"><span lang="en">Diagnostics</span></button>' +
       '</div></header>';
   }
 
   /* ================= 工作台 ================= */
+  const STUDY_MODULES = [
+    { kind: 'L', x: 137, y: 77 },
+    { kind: 'R', x: 377, y: 94 },
+    { kind: 'C', x: 113, y: 238 },
+    { kind: 'M', x: 373, y: 252 },
+  ];
+
+  function studyGraph() {
+    return '<div class="study-graph" role="group" aria-label="选择训练专项">' +
+      '<canvas id="study-graph-canvas" width="1000" height="656" aria-hidden="true"></canvas>' +
+      '<div class="study-graph-core" aria-hidden="true"><span>CET</span><i></i><span>04</span></div>' +
+      STUDY_MODULES.map(({ kind, x, y }) =>
+        '<button type="button" class="study-node" style="--node-x:' + x / 5 + '%;--node-y:' + (y / 328 * 100).toFixed(2) + '%"' +
+        ' onclick="DESK.startSetup(\'module\',10,\'' + kind + '\')"><span lang="en">' + KIND[kind].english + '</span>' +
+        '<small>' + KIND[kind].full + '</small></button>').join('') + '</div>';
+  }
+
+  function drawStudyGraph() {
+    const canvas = document.getElementById('study-graph-canvas');
+    if (!canvas) return;
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    const cx = 250, cy = 164;
+    context.setTransform(2, 0, 0, 2, 0, 0);
+    context.lineWidth = 0.7;
+    context.setLineDash([1, 4]);
+    context.strokeStyle = 'rgba(224,207,255,.24)';
+    for (const radius of [52, 89, 126, 153]) {
+      context.beginPath();
+      context.arc(cx, cy, radius, 0, Math.PI * 2);
+      context.stroke();
+    }
+    context.setLineDash([]);
+    STUDY_MODULES.forEach(({ x, y }, index) => {
+      const bend = index % 2 ? 22 : -22;
+      context.strokeStyle = 'rgba(246,160,121,.56)';
+      context.beginPath();
+      context.moveTo(cx, cy);
+      context.quadraticCurveTo((cx + x) / 2 + bend, (cy + y) / 2 - bend, x, y);
+      context.stroke();
+    });
+    // A fixed golden-angle sequence keeps the particle field stable between renders.
+    for (let i = 1; i <= 420; i++) {
+      const angle = i * 2.399963 + 0.42 * Math.sin(i * .03);
+      const distance = 160 * Math.sqrt(i / 420) + 9 * Math.sin(angle * 4);
+      const opacity = .13 + .55 * ((i * 17 % 37) / 37);
+      context.fillStyle = i % 5 ? 'rgba(178,164,224,' + opacity + ')' : 'rgba(255,166,114,' + opacity + ')';
+      context.beginPath();
+      context.arc(cx + Math.cos(angle) * distance * 1.16, cy + Math.sin(angle) * distance * .76, i % 17 ? .76 : 1.45, 0, Math.PI * 2);
+      context.fill();
+    }
+  }
+
   function viewDesk() {
     const day = S.days[today()] || { n: 0, r: 0 };
     const acc7 = acc7days();
@@ -398,29 +452,27 @@
     const papers = Object.keys(S.papers || {}).sort((a, b) => (S.papers[b].ts || 0) - (S.papers[a].ts || 0)).slice(0, 3);
 
     let h = '<div class="wrap desk-home"><section class="hero" aria-labelledby="desk-title">' +
-      '<div class="hero-art" aria-hidden="true"><span class="hero-sheet hero-sheet-back"></span>' +
-      '<span class="hero-sheet hero-sheet-front"></span><span class="hero-orbit"></span></div>' +
-      '<div class="hero-copy"><div class="hero-meta"><span></span>大学英语四级</div>' +
-      '<h1 id="desk-title">四级训练工作台</h1>' +
-      '<p>按考点刷真题，按考试节奏做模考。</p><div class="acts">' +
-      '<button class="btn lg hero-primary" onclick="DESK.startSetup(\'smart\',10)">开始训练' + svg(IC.arrow) + '</button>' +
-      '<button class="btn lg hero-secondary" onclick="DESK.openPapers()">套卷模考</button>' +
-      '</div></div></section>';
+      '<div class="hero-copy"><div class="hero-meta" lang="en">College English Test <span></span> Band 4</div>' +
+      '<h1 id="desk-title" lang="en">English <em>Workbench</em></h1>' +
+      '<p>按考点练真题，按考试节奏做模考。<br>把值得回看的错题和笔记收进 Obsidian。</p><div class="acts">' +
+      '<button class="btn lg hero-primary" onclick="DESK.startSetup(\'smart\',10)"><span><span lang="en">Start practice</span><small>开始训练</small></span>' + svg(IC.arrow) + '</button>' +
+      '<button class="btn lg hero-secondary" onclick="DESK.openPapers()"><span><span lang="en">Mock exams</span><small>套卷模考</small></span></button>' +
+      '</div></div>' + studyGraph() + '</section>';
 
     h += '<div class="stats desk-stats">' +
-      statCard('今日训练', day.n, '题', day.n ? '答对 ' + day.r + ' 题' : '今日还未作答', IC.paper) +
-      statCard('近 7 天正确率', acc7 == null ? '—' : Math.round(acc7 * 100), acc7 == null ? '' : '%', acc7 == null ? '暂无作答记录' : '每题取最近一次', IC.target) +
-      statCard('连续训练', streak(), '天', '', IC.stats) +
-      statCard('待重练错题', wrong, '题', '', IC.wrong, 'DESK.quickWrong()') + '</div>';
+      statCard('今日训练', day.n, '题', day.n ? '答对 ' + day.r + ' 题' : '今日还未作答', IC.paper, '', 'Today') +
+      statCard('近 7 天正确率', acc7 == null ? '—' : Math.round(acc7 * 100), acc7 == null ? '' : '%', acc7 == null ? '暂无作答记录' : '每题取最近一次', IC.target, '', '7-day accuracy') +
+      statCard('连续训练', streak(), '天', '', IC.stats, '', 'Current streak') +
+      statCard('待重练错题', wrong, '题', '', IC.wrong, 'DESK.quickWrong()', 'Review queue') + '</div>';
 
     h += '<div class="desk-grid"><div class="desk-stack">' +
       '<section class="card desk-panel"><div class="desk-panel-head">' +
-      '<div class="grow"><h2>今日推荐</h2><p>' + preview.title + '</p></div>' +
+      '<div class="grow"><h2><span lang="en">Daily Practice</span><small>今日推荐</small></h2><p>' + preview.title + '</p></div>' +
       '<button class="btn pri" onclick="DESK.startSetup(\'smart\',10)">练这组' + svg(IC.arrow) + '</button></div>' +
       '<div class="desk-panel-note small">' + preview.desc + '</div>' +
       '<div class="desk-questions">' + preview.list + '</div></section>';
 
-    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>最近训练</h2>' +
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2><span lang="en">Recent Activity</span><small>最近训练</small></h2>' +
       '<button class="btn sm ghost" onclick="DESK.go(\'stats\')">查看数据' + svg(IC.arrow) + '</button></div>';
     if (recent.length) {
       h += '<div class="desk-table"><table class="t"><thead><tr><th>时间</th><th>方式</th><th class="num">题量</th><th class="num">正确率</th><th class="num">用时</th></tr></thead><tbody>' +
@@ -435,7 +487,7 @@
     }
     h += '</section>';
 
-    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>套卷记录</h2>' +
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2><span lang="en">Exam History</span><small>套卷记录</small></h2>' +
       '<button class="btn sm ghost" onclick="DESK.openPapers()">全部套卷' + svg(IC.arrow) + '</button></div>';
     if (papers.length) {
       h += '<div class="desk-table"><table class="t"><thead><tr><th>试卷</th><th class="num">客观题</th><th class="num">估算分</th><th class="num">日期</th><th></th></tr></thead><tbody>' +
@@ -452,7 +504,7 @@
     h += '</section></div><div class="desk-stack">';
 
     const weak = weakPoints(3);
-    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>薄弱考点</h2>' +
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2><span lang="en">Focus Areas</span><small>薄弱考点</small></h2>' +
       '<button class="btn sm ghost" onclick="DESK.go(\'brain\')">考点地图' + svg(IC.arrow) + '</button></div>';
     if (weak.length) {
       h += '<div class="desk-weak-list">' + weak.map(item => {
@@ -468,10 +520,10 @@
     h += '</section>';
 
     h += '<section class="card desk-vault"><div class="desk-vault-icon">' + svg(IC.vault) + '</div>' +
-      '<h2>Obsidian 脑库</h2><p>导出 Markdown 复盘，放进 <code>04-复盘/</code>，串起真题和考点。</p>' +
+      '<h2><span lang="en">Obsidian Vault</span><small>脑库</small></h2><p>导出 Markdown 复盘，放进 <code>04-复盘/</code>，串起真题和考点。</p>' +
       '<button class="btn sm ghost" onclick="DESK.go(\'vault\')">导出与导入说明' + svg(IC.arrow) + '</button></section>';
 
-    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2>其他训练方式</h2></div><div class="desk-modes">' +
+    h += '<section class="card desk-panel"><div class="desk-panel-head"><h2><span lang="en">Practice Modes</span><small>其他训练方式</small></h2></div><div class="desk-modes">' +
       modeRow('弱项专攻', '集中练正确率偏低的考点', 'weak') +
       modeRow('整块专项', '按听力、阅读等模块练习', 'module') +
       modeRow('没做过的题', '优先覆盖还没作答的真题', 'new') +
@@ -479,11 +531,11 @@
     return h;
   }
 
-  function statCard(label, value, unit, detail, icon, action) {
+  function statCard(label, value, unit, detail, icon, action, english) {
     const tag = action ? 'button' : 'div';
     return '<' + tag + ' class="stat' + (action ? ' stat-action' : '') + '"' +
       (action ? ' type="button" onclick="' + action + '"' : '') + '>' +
-      '<span class="stat-head"><span class="lb">' + label + '</span>' +
+      '<span class="stat-head"><span class="lb">' + (english ? '<span lang="en">' + english + '</span><small>' + label + '</small>' : label) + '</span>' +
       (icon ? '<span class="stat-icon">' + svg(icon) + '</span>' : '') + '</span>' +
       '<span class="vv">' + value + (unit ? '<small>' + unit + '</small>' : '') + '</span>' +
       (detail ? '<span class="ft">' + esc(detail) + '</span>' : '') +
@@ -522,7 +574,7 @@
       title: '智能组卷 · 10 题',
       desc: '听力 3 · 选词 2 · 匹配 2 · 阅读 3，优先抽你没做过的、以及错过的考点',
       list: list.map(q => '<button type="button" class="desk-question" onclick="DESK.previewOne(\'' + q.id + '\')">' +
-        '<span class="chip" style="flex:0 0 auto">' + KIND[q.k].n + '</span>' +
+        '<span class="question-kind" lang="en" title="' + KIND[q.k].full + '" style="--kind:' + KIND[q.k].color + '">' + KIND[q.k].english + '</span>' +
         '<span class="grow" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(cut(
           q.k === 'C' ? ctxOf(q) : q.st || ('第 ' + q.n + ' 题 · ' + q.ty + ' · ' + (q.o[0] || '')), 62)) + '</span>' +
         (S.qs[q.id] ? '<span class="chip done" style="flex:0 0 auto">做过 · 上次' + (S.qs[q.id].ok ? '对' : '错') + '</span>' : '') +
@@ -535,7 +587,7 @@
   let paperTab = 'real';
 
   function viewTrain() {
-    let h = '<div class="wrap"><div style="margin-top:22px"><h1>开始训练</h1>' +
+    let h = '<div class="wrap"><div class="inner-page-head"><h1 lang="en">Practice</h1>' +
       '<div class="small" style="margin-top:6px">两种练法：<b>单题</b>按考点抽题，答完立刻看依据；<b>套卷</b>整卷计时，交卷才给分与解析。</div></div>';
 
     h += '<div class="segwrap"><div class="seg">' +
@@ -563,7 +615,9 @@
 
     if (setup.mode === 'module') {
       h += '<h2>练哪一块</h2><div class="row wrap">' + ['L', 'C', 'M', 'R'].map(k =>
-        '<div class="chip click ' + (setup.kind === k ? 'acc' : '') + '" style="padding:8px 14px;font-size:13px" onclick="DESK.setKind(\'' + k + '\')">' + KIND[k].full + '</div>').join('') + '</div>';
+        '<button type="button" class="chip click ' + (setup.kind === k ? 'acc' : '') + '" aria-pressed="' + (setup.kind === k) +
+        '" style="padding:8px 14px;font-size:13px" onclick="DESK.setKind(\'' + k + '\')"><span lang="en">' + KIND[k].english +
+        '</span> · ' + KIND[k].full + '</button>').join('') + '</div>';
     }
 
     h += '<h2>题量</h2><div class="row wrap">' + [10, 20, 30].map(n =>
@@ -905,7 +959,7 @@
     let h = '<div class="wrap"><div class="scorehero">' +
       ring(acc) +
       '<div class="grow"><div class="small dim">' + esc(P.label) + ' · 已交卷</div>' +
-      '<div style="font-size:22px;font-weight:650;margin:2px 0 6px">估算 <span style="color:#655292">' + score + '</span> / 710' +
+      '<div style="font-size:22px;font-weight:650;margin:2px 0 6px">估算 <span style="color:var(--acc)">' + score + '</span> / 710' +
       (self.w || self.t ? '' : '<span class="small dim" style="font-size:12px;font-weight:400"> · 主观题未自评</span>') + '</div>' +
       '<div class="small">客观题 ' + right + ' / ' + obj.length + ' 对' + (blank ? '（' + blank + ' 题空着）' : '') +
       ' · 客观得分 ' + Math.round((sess.objGot || 0) * 10) / 10 + ' / ' + Math.round((sess.objMax || 0) * 10) / 10 +
@@ -1734,9 +1788,9 @@
   function ring(acc) {
     const R = 44, C = 2 * Math.PI * R;
     const on = Math.max(0, Math.min(1, acc)) * C;
-    const col = acc >= 0.8 ? '#157153' : acc >= 0.6 ? '#8e581b' : '#a83745';
+    const col = acc >= 0.8 ? 'var(--ok)' : acc >= 0.6 ? 'var(--amber)' : 'var(--bad)';
     return '<div class="ring"><svg width="104" height="104" viewBox="0 0 104 104">' +
-      '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="#e1e3da" stroke-width="8"/>' +
+      '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="var(--line2)" stroke-width="8"/>' +
       '<circle cx="52" cy="52" r="' + R + '" fill="none" stroke="' + col + '" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + on + ' ' + C + '"/>' +
       '</svg><div class="num"><b style="color:' + col + '">' + Math.round(acc * 100) + '%</b><span>正确率</span></div></div>';
   }
@@ -1756,7 +1810,7 @@
       '<div class="row wrap" style="gap:12px;margin:2px 0 8px">' +
       [['L', '听力'], ['R', '仔细阅读'], ['D', '干扰项'], ['C', '选词填空'], ['M', '长篇匹配'], ['W', '写作'], ['T', '翻译']].map(([k, n]) =>
         '<span class="small dim" style="display:inline-flex;align-items:center;gap:5px"><i style="width:7px;height:7px;border-radius:99px;background:' +
-        ({ L: '#8e581b', R: '#655292', D: '#a34b35', C: '#286d87', M: '#36683b', W: '#a13f69', T: '#8c640c' })[k] + ';display:inline-block"></i>' + n + '</span>').join('') +
+        (KIND[k]?.color || '#eea2aa') + ';display:inline-block"></i>' + n + '</span>').join('') +
       '<span class="small dim" style="margin-left:6px">· 半透明 = 还没练过</span></div>' +
       graphSVG() + '</div>';
 
@@ -1776,7 +1830,7 @@
         const pct = m == null ? 0 : Math.round(m * 100);
         h += '<div class="pcard" onclick="DESK.openPoint(\'' + p.id + '\')">' +
           '<div class="id">' + p.id + '</div><b>' + esc(p.name) + '</b>' +
-          '<div class="mt"><div class="bar"><i style="width:' + pct + '%;background:' + (m == null ? '#d4dacd' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></div>' +
+          '<div class="mt"><div class="bar"><i style="width:' + pct + '%;background:' + (m == null ? 'var(--line2)' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></div>' +
           '<span class="mono">' + (m == null ? '未练' : pct + '%') + '</span></div>' +
           '<div class="small dim" style="margin-top:6px">' + p.n + ' 题 · 我练过 ' + st.s + ' 次</div>' +
           '</div>';
@@ -1793,7 +1847,6 @@
   /* 考点共现网络：同题共现 + 同篇材料共现 */
   function graphSVG() {
     const W = 1040, H = 430;
-    const MODC = { L: '#8e581b', C: '#286d87', M: '#36683b', R: '#655292', D: '#a34b35', W: '#a13f69', T: '#8c640c' };
     const nodes = PTS.map(p => ({
       id: p.id, name: p.name, mod: p.id[0], n: p.n,
       m: mastery(p.id), x: 0, y: 0, vx: 0, vy: 0,
@@ -1904,11 +1957,11 @@
 
     const dots = nodes.map(n => {
       const r = 4.4 + Math.min(4.5, Math.log(1 + n.n) * 1.0);
-      const col = n.m == null ? MODC[n.mod] : n.m >= 0.8 ? '#157153' : n.m >= 0.6 ? '#8e581b' : '#a83745';
+      const col = n.m == null ? (KIND[n.mod]?.color || '#eea2aa') : n.m >= 0.8 ? 'var(--ok)' : n.m >= 0.6 ? 'var(--amber)' : 'var(--bad)';
       const fillOp = n.m == null ? 0.42 : 0.9;
       return '<g style="cursor:pointer" onclick="DESK.openPoint(\'' + n.id + '\')"><title>' + esc(n.id + ' ' + n.name) + ' · ' + n.n + ' 题 · ' + (n.m == null ? '未练' : Math.round(n.m * 100) + '%') + '</title>' +
-        '<circle cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + col + '" fill-opacity="' + fillOp + '" stroke="#f5f5ef" stroke-width="1.1"/>' +
-        '<text x="' + (n.x + r + 3).toFixed(1) + '" y="' + (n.y + 3).toFixed(1) + '" font-size="9.5" fill="#535954" font-family="ui-monospace,monospace">' + n.id + '</text></g>';
+        '<circle cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + col + '" fill-opacity="' + fillOp + '" stroke="var(--bg)" stroke-width="1.1"/>' +
+        '<text x="' + (n.x + r + 3).toFixed(1) + '" y="' + (n.y + 3).toFixed(1) + '" font-size="9.5" fill="var(--mut)" font-family="ui-monospace,monospace">' + n.id + '</text></g>';
     }).join('');
 
     return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">' + lines + glabels + dots + '</svg>';
@@ -2997,7 +3050,7 @@
     ];
 
     let h = '<div class="wrap vault-page"><div class="vault-page-head"><span class="desk-vault-icon">' + svg(IC.vault) + '</span>' +
-      '<div><h1>Obsidian 脑库</h1><p>下载 Markdown，按下方路径导入四级英语库。笔记里的双链可跳到对应的真题和考点。</p></div></div>';
+      '<div><h1 lang="en">Obsidian Vault</h1><p>下载 Markdown，按下方路径导入四级英语库。笔记里的双链可跳到对应的真题和考点。</p></div></div>';
 
     const exports = [
       ['本次训练复盘', '本次作答的正确率、错题、错因和依据句。', '04-复盘/', 'exportSession'],
@@ -3307,8 +3360,9 @@
     else if (view === 'write') body = viewWrite();
     else body = viewDesk();
 
-    const crumb = (view === 'desk' ? '' : '<button class="crumb-home" type="button" onclick="DESK.go(\'desk\')">四级工作台</button> / ') +
-      '<b>' + (crumbs[view] || '') + '</b>' +
+    const crumb = '<span class="crumb-prefix" lang="en">CET-4</span><span class="crumb-divider" aria-hidden="true">/</span>' +
+      (view === 'desk' ? '<b lang="en">Overview</b>' : '<button class="crumb-home" type="button" onclick="DESK.go(\'desk\')" lang="en">Overview</button>' +
+      '<span class="crumb-divider" aria-hidden="true">/</span><b>' + (crumbs[view] || '') + '</b>') +
       (view === 'run' && sess ? ' <span class="chip" style="margin-left:6px">' + esc(modeName(sess)) + '</span>' : '');
 
     const wxTip = (isWX() && !S.wxTip)
@@ -3327,6 +3381,7 @@
       '<button type="button" id="wdock" onclick="DESK.search()" aria-label="查词 / 译句"><b>查</b><small>单词</small></button>';
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
       '<main class="main">' + topbar(crumb) + mobileNav() + body + '</main></div>' + dock;
+    if (view === 'desk') drawStudyGraph();
     const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
     if (currentTab) {
       const nav = currentTab.parentElement;
@@ -3345,10 +3400,10 @@
     setMode(m) { setup.mode = m; if (m === 'module' && !setup.kind) setup.kind = 'R'; render(); },
     setKind(k) { setup.kind = k; render(); },
     setSize(n) { setup.size = n; render(); },
-    startSetup(mode, size) {
+    startSetup(mode, size, kind) {
       setup.mode = mode;
       setup.size = size;
-      if (mode === 'module' && !setup.kind) setup.kind = 'R';
+      if (mode === 'module') setup.kind = kind || setup.kind || 'R';
       trainTab = 'single';
       go('train');
     },
