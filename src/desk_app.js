@@ -338,6 +338,9 @@
     arrow: '<path d="M4 12h15m-6-6 6 6-6 6"/>',
     chevron: '<path d="m9 6 6 6-6 6"/>',
     search: '<circle cx="11" cy="11" r="6"/><path d="m16 16 4 4"/>',
+    close: '<path d="m6 6 12 12M18 6 6 18"/>',
+    clipboard: '<rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V3h6v2m-6 6h6m-6 4h6"/>',
+    audio: '<path d="M3 9v6h4l5 4V5L7 9zM16 9a4 4 0 0 1 0 6m3-9a8 8 0 0 1 0 12"/>',
     target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
     download: '<path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/>',
   };
@@ -1540,7 +1543,6 @@
     if (!cur || cur.k !== 'C') return;
     const all = cFillSet(cur.u, cur.p);
     const q = all.find(x => String(x.n) === String(n)) || cur;
-    pickQ = q;
     if (isCJudged(cur) || sess.done) { toast('这篇已经判分了，答案在下面'); return; }
     if (q.id !== cur.id) {
       const idx = sess.ids.indexOf(q.id);
@@ -1548,6 +1550,8 @@
     }
     const u = UN[q.u];
     if (!u) return;
+    closePanel();
+    pickQ = q;
     const p = document.getElementById('wpanel');
     p.innerHTML = '<div class="row"><b>第 ' + q.n + ' 空</b>' +
       '<span class="small dim">要填 <b>' + posName(q.pos) + '</b></span><span class="grow"></span>' +
@@ -2119,26 +2123,27 @@
     speechSynthesis.speak(u);
   }
 
-  function saveWord(txt, color) {
+  function saveWord(txt, color, definition) {
     const t = enOnly(txt);
     if (!t) return;
     const one = /^[A-Za-z][A-Za-z'’\-]*$/.test(t);
-    const r = one && window.lookup ? window.lookup(t) : null;
-    const gl = !one && window.glossPhrase ? window.glossPhrase(t) : null;
-    let def = (r && r.def) || (gl ? gl.join('；') : '');
+    const r = one ? window.lookup(t) : null;
+    const phrase = !one ? CET_PHRASES.get(t.toLowerCase()) : null;
     const cur = (S.words || []).find(w => w.w.toLowerCase() === t.toLowerCase());
+    const def = definition ?? (cur?.d || phrase?.def || (r && !r.compound ? r.def : '') || window.dictInit().get(t.toLowerCase()) || '');
     if (cur) {
       cur.c = color; cur.t = Date.now();
-      if (def) cur.d = def;
+      cur.d = def;
     } else {
       S.words = S.words || [];
       S.words.unshift({
-        w: t, d: def, c: color, ph: r && r.base ? '原形 ' + r.base : '',
+        w: t, d: def, c: color, ph: r && r.base && !r.compound ? '原形 ' + r.base : '',
         src: wordSrc(), t: Date.now(),
       });
     }
     save(); toast('已加入单词本 · ' + (color === 'y' ? '黄标' : '红标'));
     if (view === 'words') render();
+    return cur || S.words[0];
   }
   function wordSrc() {
     if (sess && sess.exam) return (PAPER[sess.paperKey] || {}).label || '套卷';
@@ -2505,126 +2510,277 @@
     render();
   }
 
-  /* 常驻入口：手机上划不动也能查 */
-  function openSearchPanel(prefill) {
-    const p = document.getElementById('wpanel');
-    if (!p) return;
-    const t = prefill || '';
-    p.innerHTML = '<div class="row"><b>查词 / 译句</b><span class="small dim" style="margin-left:8px">中英文都可以</span><span class="grow"></span>' +
-      '<button class="btn sm ghost" onclick="DESK.closePanel()">关闭</button></div>' +
-      '<div class="row" style="margin-top:10px;gap:8px">' +
-      '<input id="wq" class="winput grow" enterkeyhint="search" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="输入或粘贴英文，回车查询" value="' + esc(t).replace(/"/g, '&quot;') + '">' +
-      '<button class="btn sm pri" onclick="DESK.wq()">查</button></div>' +
-      '<div class="row" style="margin-top:8px;gap:8px">' +
-      '<button class="btn sm ghost" onclick="DESK.pasteWord()">粘贴剪贴板</button>' +
-      '<span class="small dim">微信里长按选中→「复制」→点这里，最稳</span></div>' +
-      '<label class="row taprow"><input type="checkbox" id="wtap"' + (S.tapDict ? ' checked' : '') + ' onchange="DESK.setTapDict(this.checked)">' +
-      '<span>点词即译：轻点正文英文词直接出释义（长按不灵时用这个）</span></label>' +
-      '<div class="small dim" style="margin-top:8px">也可以长按页面里的英文词 0.5 秒，浮条会出现在词下方。</div>';
-    p.classList.add('on');
-    fitPanel();
-    const inp = document.getElementById('wq');
-    if (inp) {
-      inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); wq(); } });
-      inp.addEventListener('paste', () => setTimeout(() => wq(), 120));
-      if (!IS_TOUCH) inp.focus();
+  const CET_PHRASES = new Map([
+    ['daily practice', { def: '日常练习；每日练习', example: 'Daily practice helps you build confidence.', translation: '每天练习有助于建立信心。' }],
+    ['take into account', { def: '把……考虑在内；顾及', example: 'The study takes age into account.', translation: '这项研究考虑了年龄因素。' }],
+    ['in contrast', { def: '相比之下；与此相反' }],
+    ['as a result', { def: '因此；结果是' }],
+    ['to some extent', { def: '在某种程度上' }],
+    ['make a difference', { def: '产生影响；起作用' }],
+    ['in the long run', { def: '从长远来看' }],
+    ['play a role', { def: '发挥作用；扮演角色' }],
+    ['be likely to', { def: '很可能；有可能' }],
+    ['on the other hand', { def: '另一方面' }],
+  ]);
+  const DICT_TYPES = { word: ['Word', '单词'], phrase: ['Phrase', '短语'], sentence: ['Sentence', '整句'] };
+  let dictEntry = null;
+  let dictAnchor = null;
+
+  function openSearchPanel(prefill = '', forceSentence = false) {
+    const panel = document.getElementById('wpanel');
+    if (!panel) return;
+    if (!panel.classList.contains('dictionary-panel')) {
+      pickQ = null;
+      dictAnchor = document.activeElement;
+      panel.style.bottom = '';
+      panel.classList.add('on', 'dictionary-panel');
+      panel.setAttribute('role', 'dialog');
+      panel.setAttribute('aria-labelledby', 'dictionary-title');
+      panel.innerHTML = '<header class="dict-head">' +
+        '<span class="dict-emblem">' + svg(IC.words) + '</span><div class="grow"><h2 id="dictionary-title" lang="en">Dictionary</h2><span>英汉词典</span></div>' +
+        '<button type="button" class="dict-icon-button" data-dict-action="close" aria-label="关闭词典" title="关闭（Esc）">' + svg(IC.close) + '</button></header>' +
+        '<div class="dict-search"><form id="dict-form" class="dict-form" role="search">' +
+        '<label class="dict-field" for="wq">' + svg(IC.search) + '<span class="dict-sr-only">要查询的英文</span>' +
+        '<input id="wq" type="search" enterkeyhint="search" autocapitalize="off" autocomplete="off" spellcheck="false" maxlength="480" placeholder="输入单词、短语或英文句子" aria-describedby="dict-form-message"></label>' +
+        '<button type="submit" class="btn pri dict-submit">查词</button></form>' +
+        '<div class="dict-tools"><button type="button" class="dict-text-button" data-dict-action="paste">' + svg(IC.clipboard) + '粘贴</button>' +
+        '<label class="dict-toggle"><input type="checkbox" id="wtap"' + (S.tapDict ? ' checked' : '') + '>点词即译</label></div>' +
+        '<div id="dict-form-message" class="dict-form-message" role="status"></div></div>' +
+        '<div id="dict-scroll" class="dict-scroll"><div id="dict-result"><div class="dict-empty">' +
+        '<p>直接查词，也可以在题目里划词或长按查询。</p><div class="dict-examples" aria-label="查询示例">' +
+        ['approach', 'daily practice', 'take into account'].map(term =>
+          '<button type="button" data-dict-action="term" data-term="' + term + '" lang="en">' + term + '</button>').join('') + '</div></div></div></div>';
+      fitPanel();
     }
+    if (prefill) return queryDictionary(prefill, forceSentence);
+    if (!IS_TOUCH) document.getElementById('wq')?.focus();
   }
 
-  /* 手机软键盘弹出时把面板顶上去，否则输入框被键盘挡住 */
   function fitPanel() {
     const p = document.getElementById('wpanel');
-    if (!p) return;
     const vv = window.visualViewport;
-    if (!vv) return;
+    if (!p || !vv) return;
     const kb = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
-    p.style.bottom = kb > 60 ? kb + 'px' : '';
-  }
-
-  /* 微信里最可靠的一条：选中→复制→点「粘贴剪贴板」 */
-  function pasteWord() {
-    const inp = document.getElementById('wq');
-    if (navigator.clipboard && navigator.clipboard.readText) {
-      navigator.clipboard.readText().then(txt => {
-        const t = String(txt || '').trim();
-        if (!t) return toast('剪贴板是空的，先长按选中再点「复制」');
-        if (inp) inp.value = t;
-        wq();
-      }).catch(() => {
-        if (inp) { inp.focus(); }
-        toast('这个浏览器不让读剪贴板：长按输入框选「粘贴」');
-      });
+    if (p.classList.contains('dictionary-panel')) {
+      p.style.setProperty('--dict-keyboard', kb > 60 ? kb + 'px' : '0px');
+      p.style.setProperty('--dict-visible-height', Math.max(0, Math.floor(vv.height - 8)) + 'px');
     } else {
-      if (inp) inp.focus();
-      toast('长按输入框选「粘贴」');
+      p.style.bottom = kb > 60 ? kb + 'px' : '';
     }
   }
 
-  function wq() {
-    const inp = document.getElementById('wq');
-    const raw = inp ? inp.value.trim() : '';
-    if (!raw) return;
-    const w = enOnly(raw);
-    if (w && raw.split(/\s+/).length <= 6) return openWordPanel(w);
-    const sent = sentenceOK(raw) || raw;
-    openSentPanel(sent);
+  function pasteWord() {
+    const input = document.getElementById('wq');
+    if (!input) return;
+    function manualPaste() {
+      if (document.getElementById('wq') !== input) return;
+      input.focus();
+      document.getElementById('dict-form-message').textContent = '请在输入框内长按或使用粘贴快捷键。';
+    }
+    if (!navigator.clipboard?.readText) return manualPaste();
+    const previous = input.value;
+    navigator.clipboard.readText().then(text => {
+      if (document.getElementById('wq') !== input || input.value !== previous) return;
+      if (!text.trim()) {
+        document.getElementById('dict-form-message').textContent = '剪贴板为空。';
+        return;
+      }
+      if (queryDictionary(text) && IS_TOUCH) input.blur();
+    }).catch(manualPaste);
   }
 
-  function closePanel() {
-    const p = document.getElementById('wpanel');
-    if (p) { p.classList.remove('on'); p.innerHTML = ''; }
+  function initDictionary() {
+    const panel = document.getElementById('wpanel');
+    panel.addEventListener('submit', event => {
+      if (event.target.id !== 'dict-form') return;
+      event.preventDefault();
+      const input = document.getElementById('wq');
+      if (queryDictionary(input.value) && IS_TOUCH) input.blur();
+    });
+    panel.addEventListener('paste', event => {
+      if (event.target.id !== 'wq') return;
+      setTimeout(() => {
+        if (document.getElementById('wq') === event.target && queryDictionary(event.target.value) && IS_TOUCH) event.target.blur();
+      }, 0);
+    });
+    panel.addEventListener('input', event => {
+      if (event.target.id === 'wq') document.getElementById('dict-form-message').textContent = '';
+    });
+    panel.addEventListener('change', event => {
+      if (event.target.id === 'wtap') setTapDict(event.target.checked);
+    });
+    panel.addEventListener('click', event => {
+      const button = event.target.closest('[data-dict-action]');
+      if (!button) return;
+      const action = button.dataset.dictAction;
+      if (action === 'close') closePanel(true);
+      if (action === 'paste') pasteWord();
+      if (action === 'say' && dictEntry) say(dictEntry.term);
+      if (action === 'mark') addWordFromPanel(button.dataset.color);
+      if (action === 'term' && queryDictionary(button.dataset.term)) document.getElementById('dict-term-title')?.focus();
+    });
+  }
+
+  function closePanel(restoreFocus = false) {
+    const panel = document.getElementById('wpanel');
+    if (panel) {
+      panel.classList.remove('on', 'dictionary-panel');
+      panel.removeAttribute('role');
+      panel.removeAttribute('aria-labelledby');
+      panel.style.bottom = '';
+      panel.innerHTML = '';
+    }
+    if (restoreFocus && dictAnchor?.isConnected) dictAnchor.focus();
+    dictEntry = null;
+    dictAnchor = null;
     pickQ = null;
   }
-  let panelWord = '';
-  function openWordPanel(txt) {
-    const t = enOnly(txt);
-    if (!t) return;
-    panelWord = t;
-    const one = /^[A-Za-z][A-Za-z'’\-]*$/.test(t);
-    const r = one && window.lookup ? window.lookup(t) : null;
-    const gl = !one && window.glossPhrase ? window.glossPhrase(t) : null;
-    const def = (r && r.def) || (gl ? gl.join('；') : '');
-    const p = document.getElementById('wpanel');
-    p.innerHTML = '<div class="row"><b class="wbig">' + esc(t) + '</b>' +
-      (r && r.base ? '<span class="small dim">原形 ' + esc(r.base) + '</span>' : '') +
-      '<span class="grow"></span><button class="btn sm ghost" onclick="DESK.say(\'' + esc(t).replace(/'/g, "\\'") + '\')">🔊</button>' +
-      '<button class="btn sm ghost" onclick="DESK.closePanel()">关闭</button></div>' +
-      '<div class="small" style="margin-top:6px" id="wdefbox">' + (def ? esc(def) : '<span class="dim" id="wdefzh">内置词库没收录，正在联网查…</span>') + '</div>' +
-      '<div class="row" style="margin-top:10px;gap:8px"><input id="wdefin" class="winput grow" placeholder="释义（可改）" value="' + esc(def).replace(/"/g, '&quot;') + '">' +
-      '<a class="btn sm ghost" style="text-decoration:none" target="_blank" href="https://dict.youdao.com/result?word=' + encodeURIComponent(t) + '&lang=en">在线英汉 ↗</a></div>' +
-      '<div class="row" style="margin-top:10px;gap:8px"><span class="small">加入单词本：</span>' +
-      '<button class="btn sm ybtn" onclick="DESK.addWordFromPanel(\'y\')">标黄（要背）</button>' +
-      '<button class="btn sm rbtn" onclick="DESK.addWordFromPanel(\'r\')">标红（易错）</button></div>';
-    p.classList.add('on');
-    const inp = document.getElementById('wdefin');
-    if (inp && !IS_TOUCH) { inp.focus(); inp.select(); }
-    /* 离线词库没收录（14604 条之外）→ 自动联网补一个中文释义 */
-    if (!def && one) {
-      trWord(t).then(zh => {
-        const box = document.getElementById('wdefbox');
-        const fin = document.getElementById('wdefin');
-        if (!box) return;
-        if (!box.closest('#wpanel')) return;
-        box.innerHTML = '<span style="color:var(--ok)">在线</span> ' + esc(zh);
-        if (fin && !fin.value) fin.value = zh;
-      }).catch(() => {
-        const box = document.getElementById('wdefbox');
-        if (box && box.closest('#wpanel')) {
-          box.innerHTML = '<span class="dim">内置词库没收录，联网也没查到。可以自己填释义，或点右边「在线英汉」。</span>';
+
+  function openWordPanel(text) { openSearchPanel(text); }
+  function openSentPanel(text) { openSearchPanel(text, true); }
+
+  function dictionarySenses(definition) {
+    const markers = [...definition.matchAll(/(^|[\s；;，,])(adj|adv|prep|pron|conj|abbr|num|int|aux|det|ad|vt|vi|a|n|v)\.\s*/gi)];
+    if (!markers.length) return [{ pos: '', sense: definition }];
+    const senses = [];
+    if (markers[0].index) senses.push({ pos: '', sense: definition.slice(0, markers[0].index) });
+    markers.forEach((marker, i) => senses.push({
+      pos: (marker[2] === 'a' ? 'adj' : marker[2] === 'ad' ? 'adv' : marker[2]) + '.',
+      sense: definition.slice(marker.index + marker[0].length, markers[i + 1]?.index),
+    }));
+    return senses.map(({ pos, sense }) => ({ pos, sense: sense.trim().replace(/[；;，,]+$/, '') })).filter(item => item.sense);
+  }
+
+  function dictionaryComponents(term) {
+    const words = [...new Set(term.toLowerCase().replace(/’/g, "'").match(/[a-z][a-z'\-]*/g) || [])];
+    return words.slice(0, 8).flatMap(word => {
+      const record = window.lookup(word);
+      if (!record?.def || record.compound) return [];
+      const first = dictionarySenses(record.def)[0]?.sense || record.def;
+      return [{ word, sense: cut(first, 48) }];
+    });
+  }
+
+  function queryDictionary(raw, forceSentence = false) {
+    const input = document.getElementById('wq');
+    if (!input) return false;
+    const query = String(raw || '').replace(/\s+/g, ' ').trim();
+    const message = document.getElementById('dict-form-message');
+    if (!query || query.length > 480 || !/[a-z]/i.test(query) || CJK_RE.test(query)) {
+      message.textContent = query.length > 480 ? '一次最多查询 480 个字符。' : '请输入英文单词、短语或句子。';
+      return false;
+    }
+    message.textContent = '';
+    input.value = query;
+    const short = enOnly(query);
+    const curated = short && CET_PHRASES.get(short.toLowerCase());
+    const isSentence = forceSentence || !short || (!curated && /\s/.test(short) && /[.!?]["'”’)]?$/.test(query));
+    const term = isSentence ? query : short;
+    const type = isSentence ? 'sentence' : /[\s,;]/.test(term) ? 'phrase' : 'word';
+    const key = term.toLowerCase().replace(/’/g, "'"), tokens = window.dictInit();
+    const word = type === 'word' ? window.lookup(key) : null;
+    const exact = type === 'sentence' ? '' : tokens.get(key);
+    const definition = exact || (!isSentence && curated?.def) || (word && !word.compound ? word.def : '') || '';
+    const entry = {
+      type, term, definition, curated: isSentence ? null : curated,
+      base: word && !word.compound ? word.base : '',
+      components: type === 'word' && !word?.compound ? [] : dictionaryComponents(term.replace(/-/g, type === 'word' ? ' ' : '-')),
+      status: definition ? 'offline' : 'loading',
+      saved: type === 'sentence' ? null : (S.words || []).find(item => item.w.toLowerCase() === term.toLowerCase()),
+    };
+    dictEntry = entry;
+    renderDictionaryEntry(entry);
+    if (!entry.definition) {
+      const task = type === 'word' ? trWord(term) : trSentence(term);
+      task.then(({ zh, cached }) => {
+        if (entry.fillOnResolve && entry.saved && !entry.saved.d && (S.words || []).includes(entry.saved)) {
+          entry.saved.d = zh;
+          save();
+          if (view === 'words') render();
         }
+        if (dictEntry !== entry) return;
+        entry.definition = zh;
+        entry.status = cached ? 'cached' : 'online';
+        updateDictionaryDefinition(entry);
+      }).catch(() => {
+        if (dictEntry !== entry) return;
+        entry.status = 'unavailable';
+        updateDictionaryDefinition(entry);
       });
     }
+    return true;
   }
-  function addWordFromPanel(color) {
-    const inp = document.getElementById('wdefin');
-    const def = inp ? inp.value.trim() : '';
-    saveWord(panelWord, color);
-    if (def && S.words[0] && S.words[0].w.toLowerCase() === panelWord.toLowerCase()) {
-      S.words[0].d = def; save();
+
+  function dictionaryDefinition(entry) {
+    const label = entry.type === 'sentence' || (entry.type === 'phrase' && entry.status !== 'offline') ? '参考译文' : '释义';
+    const source = {
+      offline: entry.curated ? '离线短语' : '离线词典', loading: '正在联网查询', online: '在线参考',
+      cached: '缓存译文', unavailable: '暂无在线结果',
+    }[entry.status];
+    let body = '';
+    if (entry.definition) {
+      body = entry.type === 'word' && entry.status === 'offline'
+        ? '<ul class="dict-senses">' + dictionarySenses(entry.definition).map(({ pos, sense }) =>
+          '<li>' + (pos ? '<span class="dict-pos" lang="en">' + esc(pos) + '</span>' : '') + '<span>' + esc(sense) + '</span></li>').join('') + '</ul>'
+        : '<p class="dict-translation">' + esc(entry.definition) + '</p>';
+    } else if (entry.status === 'unavailable') {
+      body = '<p class="dict-message">' + (entry.components.length ? '可以先看下方的逐词释义。' : '可以用有道词典继续查询。') + '</p>';
     }
-    closePanel();
-    render();
+    return '<div class="dict-definition-head"><span>' + label + '</span><span class="dict-source ' + entry.status + '">' + source + '</span></div>' + body;
   }
+
+  function updateDictionaryDefinition(entry) {
+    const body = document.getElementById('dict-definition');
+    if (body) body.innerHTML = dictionaryDefinition(entry);
+  }
+
+  function dictionaryActions(entry) {
+    const link = '<a class="dict-online" target="_blank" rel="noopener noreferrer" href="https://dict.youdao.com/result?word=' +
+      encodeURIComponent(entry.term) + '&amp;lang=en">有道词典 <span aria-hidden="true">↗</span></a>';
+    if (entry.type === 'sentence') return link;
+    return '<div class="dict-marks" role="group" aria-label="加入单词本">' + [['y', '待背'], ['r', '易错']].map(([color, label]) =>
+      '<button type="button" class="dict-mark ' + color + '" data-dict-action="mark" data-color="' + color + '" aria-pressed="' +
+      (entry.saved?.c === color) + '"><span aria-hidden="true"></span>' + label + '</button>').join('') + '</div>' + link;
+  }
+
+  function renderDictionaryEntry(entry) {
+    const [kind, kindZh] = DICT_TYPES[entry.type];
+    let h = '<article class="dict-entry"><div class="dict-type"><span lang="en">' + kind + '</span><span>' + kindZh + '</span></div>' +
+      '<div class="dict-term-row"><h3 id="dict-term-title" class="dict-term' + (entry.type === 'sentence' ? ' dict-sentence' : '') + '" lang="en" tabindex="-1">' + esc(entry.term) + '</h3>' +
+      '<button type="button" class="dict-icon-button dict-audio" data-dict-action="say" aria-label="朗读英文" title="朗读英文">' + svg(IC.audio) + '</button></div>' +
+      (entry.base ? '<div class="dict-base">相关原形 <button type="button" class="dict-text-button" lang="en" data-dict-action="term" data-term="' + esc(entry.base) + '">' + esc(entry.base) + '</button></div>' : '') +
+      '<div id="dict-definition" class="dict-definition" aria-live="polite">' + dictionaryDefinition(entry) + '</div>';
+    if (entry.curated?.example) {
+      h += '<div class="dict-example"><div class="dict-section-label"><span lang="en">In context</span> 例句</div><p lang="en">' + esc(entry.curated.example) + '</p><span>' + esc(entry.curated.translation) + '</span></div>';
+    }
+    if (entry.components.length) {
+      h += '<details class="dict-components"' + (entry.status === 'loading' ? ' open' : '') + '><summary><span lang="en">Word by word</span> 逐词查看</summary>' +
+        '<div class="dict-component-list">' + entry.components.map(({ word, sense }) =>
+          '<button type="button" data-dict-action="term" data-term="' + esc(word) + '"><b lang="en">' + esc(word) + '</b><span>' + esc(sense) + '</span>' + svg(IC.chevron) + '</button>').join('') + '</div></details>';
+    }
+    if (entry.type !== 'sentence') {
+      h += '<details class="dict-edit"><summary>编辑我的释义</summary><label class="dict-sr-only" for="wdefin">我的释义</label>' +
+        '<textarea id="wdefin" rows="2" maxlength="1000" placeholder="留空时使用词典释义">' + esc(entry.saved?.d || '') + '</textarea><p>点击下方「待背」或「易错」保存。</p></details>';
+    }
+    h += '<footer class="dict-footer" id="dict-footer">' + dictionaryActions(entry) + '</footer>' +
+      '<div id="dict-saved" class="dict-saved" role="status">' + (entry.saved ? '已收录 · ' + (entry.saved.c === 'r' ? '易错' : '待背') : '') + '</div></article>';
+    document.getElementById('dict-result').innerHTML = h;
+    document.getElementById('dict-scroll').scrollTop = 0;
+  }
+
+  function addWordFromPanel(color) {
+    const entry = dictEntry;
+    if (!entry || entry.type === 'sentence' || (color !== 'y' && color !== 'r')) return;
+    const custom = document.getElementById('wdefin')?.value.trim();
+    const saved = saveWord(entry.term, color, custom || entry.definition);
+    if (!saved) return;
+    entry.saved = saved;
+    entry.fillOnResolve = !saved.d && entry.status === 'loading';
+    const status = document.getElementById('dict-saved');
+    status.textContent = (storageOK ? '已收录 · ' : '仅本次有效 · ') + (color === 'y' ? '待背' : '易错');
+    document.querySelectorAll('#dict-footer [data-color]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.color === color)));
+  }
+
 
   /* ---------- 整句翻译（在线，带缓存） ---------- */
   function trCache() {
@@ -2638,60 +2794,30 @@
       localStorage.setItem('cet4_tr', JSON.stringify(c));
     } catch (e) { }
   }
-  function trSentence(text) {
-    const key = text.slice(0, 360);
-    const c = trCache();
-    if (c[key]) return Promise.resolve({ zh: c[key], cached: 1 });
-    if (typeof fetch !== 'function') return Promise.reject(new Error('no fetch'));
-    const url = 'https://api.mymemory.translated.net/get?langpair=' + encodeURIComponent('en|zh-CN') + '&q=' + encodeURIComponent(text.slice(0, 480));
-    return fetch(url).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(j => {
-      let zh = j && j.responseData && j.responseData.translatedText;
-      if (!zh) throw new Error('空结果');
-      if (/MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID/i.test(zh)) throw new Error('限额');
-      zh = zh.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+  async function translateEnglish(text, key) {
+    const cached = trCache()[key];
+    if (cached) return { zh: cached, cached: true };
+    if (typeof fetch !== 'function' || navigator.onLine === false) throw new Error('离线');
+    const controller = typeof AbortController === 'function' ? new AbortController() : null;
+    const timeout = controller && setTimeout(() => controller.abort(), 8000);
+    try {
+      const url = 'https://api.mymemory.translated.net/get?langpair=' + encodeURIComponent('en|zh-CN') + '&q=' + encodeURIComponent(text);
+      const response = await fetch(url, controller ? { signal: controller.signal } : undefined);
+      if (!response.ok) throw new Error('HTTP ' + response.status);
+      const payload = await response.json();
+      const translation = String(payload?.responseData?.translatedText || '').trim();
+      if (!/[\u3400-\u9fff]/.test(translation) || /MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID/i.test(translation)) throw new Error('暂无中文译文');
+      const zh = translation.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
       trSave(key, zh);
       return { zh };
-    });
+    } finally {
+      if (timeout) clearTimeout(timeout);
+    }
   }
-  /* 单词也走同一个翻译接口：离线词库没收的词照样能出中文 */
-  function trWord(word) {
-    const key = 'W:' + String(word || '').toLowerCase();
-    const c = trCache();
-    if (c[key]) return Promise.resolve(c[key]);
-    if (typeof fetch !== 'function') return Promise.reject(new Error('no fetch'));
-    const url = 'https://api.mymemory.translated.net/get?langpair=' + encodeURIComponent('en|zh-CN') + '&q=' + encodeURIComponent(String(word).slice(0, 60));
-    return fetch(url).then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }).then(j => {
-      let zh = j && j.responseData && j.responseData.translatedText;
-      if (!zh) throw new Error('空结果');
-      if (/MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID/i.test(zh)) throw new Error('限额');
-      zh = zh.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-      if (zh.toLowerCase() === String(word).toLowerCase()) throw new Error('未翻译');
-      trSave(key, zh);
-      return zh;
-    });
-  }
-  function openSentPanel(text) {
-    const t = String(text || '').trim();
-    const p = document.getElementById('wpanel');
-    const gl = window.glossPhrase ? window.glossPhrase(t) : null;
-    p.innerHTML = '<div class="row"><span class="small dim">整句</span><span class="grow"></span>' +
-      '<button class="btn sm ghost" onclick="DESK.say(' + JSON.stringify(t) + ')">🔊</button>' +
-      '<button class="btn sm ghost" onclick="DESK.closePanel()">关闭</button></div>' +
-      '<div class="small" style="margin-top:4px;line-height:1.7">' + esc(t) + '</div>' +
-      '<div style="margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)">' +
-      '<div class="small dim">参考译文</div><div id="sentzh" class="small" style="margin-top:4px;line-height:1.8">翻译中…</div></div>' +
-      (gl ? '<div class="small dim" style="margin-top:8px">逐词：' + esc(gl.slice(0, 6).join('；')) + '</div>' : '');
-    p.classList.add('on');
-    trSentence(t).then(r => {
-      const el = document.getElementById('sentzh');
-      if (el) el.innerHTML = esc(r.zh) + (r.cached ? '<span class="dim">（缓存）</span>' : '');
-    }).catch(() => {
-      const el = document.getElementById('sentzh');
-      if (el) el.innerHTML = '<span class="amber">没连上翻译服务（离线或接口限额）。</span>' +
-        (gl ? '<div style="margin-top:6px">逐词释义：' + esc(gl.join('；')) + '</div>' : '') +
-        '<div style="margin-top:4px"><a target="_blank" href="https://dict.youdao.com/result?word=' + encodeURIComponent(t) + '&lang=en">用在线词典整句翻译 ↗</a></div>';
-    });
-  }
+
+  function trSentence(text) { return translateEnglish(text.slice(0, 480), text.slice(0, 360)); }
+  function trWord(word) { return translateEnglish(word.slice(0, 60), 'W:' + word.toLowerCase()); }
+
 
   function exportWords() {
     const txt = (S.words || []).map(w => w.w + '\t' + (w.d || '') + '\t' + (w.c === 'y' ? '黄' : '红')).join('\n');
@@ -3501,7 +3627,6 @@
     },
     say: say,
     closePanel: closePanel,
-    addWordFromPanel: addWordFromPanel,
     exportSession() { download('四级训练复盘 ' + today() + '.md', mdSession()); },
     copySessionMd() { copyText(mdSession(), '复盘 markdown 已复制'); },
     exportWrong() { download('四级错题本 ' + today() + '.md', mdWrong()); },
@@ -3509,9 +3634,7 @@
     exportPoints() { download('四级考点诊断 ' + today() + '.md', mdPoints()); },
     exportAll: exportAll,
     exportJSON() { download('cet4-desk-data ' + today() + '.json', JSON.stringify(S, null, 1), 'application/json'); },
-    search() { openSearchPanel(''); },
-    pasteWord() { pasteWord(); },
-    wq() { wq(); },
+    search: openSearchPanel,
     setTapDict(on) { setTapDict(on); },
     pickBlank(n) { pickBlank(n); },
     answerFromPicker(l) { answerFromPicker(l); },
@@ -3585,6 +3708,13 @@
 
   /* 键盘 */
   document.addEventListener('keydown', e => {
+    const panel = document.getElementById('wpanel');
+    if (e.key === 'Escape' && panel?.classList.contains('on')) {
+      e.preventDefault();
+      closePanel(true);
+      return;
+    }
+    if (e.target.closest?.('#wpanel')) return;
     if (view !== 'run' || !sess || sess.done) return;
     const tag = (e.target.tagName || '').toLowerCase();
     if (tag === 'textarea' || tag === 'input') return;
@@ -3604,6 +3734,7 @@
     const m = document.createElement('div'); m.id = 'modal'; document.body.appendChild(m);
   }
   initSelection();
+  initDictionary();
   render();
 
   /* ---------- PWA：manifest / 图标 / 离线缓存 ----------

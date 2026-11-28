@@ -94,7 +94,7 @@ function lookup(raw) {
   const D = dictInit();
   const cleaned = (raw || '').toLowerCase().replace(/^[^a-z]+|[^a-z\-']+$/g, '');
   if (!cleaned) return null;
-  if (D.has(cleaned)) return { word: cleaned, def: D.get(cleaned), base: null };
+  if (D.has(cleaned)) return { word: cleaned, def: D.get(cleaned), base: D.has(IRREG[cleaned]) ? IRREG[cleaned] : null };
   if (IRREG[cleaned] && D.has(IRREG[cleaned])) return { word: cleaned, def: D.get(IRREG[cleaned]), base: IRREG[cleaned] };
   const bare = cleaned.replace(/['’]s$/, '');
   if (bare !== cleaned && D.has(bare)) return { word: cleaned, def: D.get(bare), base: bare };
@@ -106,18 +106,8 @@ function lookup(raw) {
   if (b && D.has(b)) return { word: cleaned, def: D.get(b), base: b === bare ? null : b };
   return { word: cleaned, def: null, base: null };
 }
-function glossPhrase(txt) {
-  const ws = String(txt || '').toLowerCase().match(/[a-z][a-z'\-]*/g) || [];
-  if (!ws.length) return null;
-  const parts = ws.slice(0, 8).map(w => {
-    const r = lookup(w);
-    return r && r.def ? w + ' ' + r.def.split('；')[0].replace(/^[a-z]+\.\s*/, '').split('，')[0] : null;
-  }).filter(Boolean);
-  return parts.length ? parts : null;
-}
 window.dictInit = dictInit;
 window.lookup = lookup;
-window.glossPhrase = glossPhrase;
 </script>
 <script>/*__ESSAY__*/</script>
 <script>/*__APP__*/</script>
