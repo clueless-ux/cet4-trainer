@@ -13,8 +13,9 @@ let shell = fs.readFileSync(shellPath, 'utf8');
 
 const css = fs.readFileSync(path.join(dir, 'desk_style.css'), 'utf8');
 const fonts = path.join(dir, 'fonts');
-const fontLicense = fs.readFileSync(path.join(fonts, 'OFL.txt'), 'utf8')
-  .split(/\r?\n/).map(line => line.trimEnd()).join('\n');
+const notices = [path.join(fonts, 'OFL.txt'), path.join(dir, 'ecdict-LICENSE.txt')]
+  .map(file => fs.readFileSync(file, 'utf8').split(/\r?\n/).map(line => line.trimEnd()).join('\n').trimEnd())
+  .join('\n\n');
 const displayFonts = [
   ['normal', 'instrument-serif.woff2'],
   ['italic', 'instrument-serif-italic.woff2'],
@@ -45,7 +46,7 @@ const data = JSON.stringify(d).replace(/</g, '\\u003c');
 /* 版本号：每次构建都变，页面靠它自检有没有被浏览器缓存成旧版 */
 const ver = new Date().toISOString().replace(/\D/g, '').slice(0, 14);
 shell = shell.replace('"__VER__"', () => JSON.stringify(ver));
-shell = shell.replace('/*__CSS__*/', () => `/*\n${fontLicense}\n*/\n${displayFonts}\n${css}`);
+shell = shell.replace('/*__CSS__*/', () => `/*\n${notices}\n*/\n${displayFonts}\n${css}`);
 shell = shell.replace('/*__DATA__*/{}', () => data);
 shell = shell.replace('/*__ESSAY__*/', () => essay);
 shell = shell.replace('/*__SPELL__*/""', () => JSON.stringify(spell));
