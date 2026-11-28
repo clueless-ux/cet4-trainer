@@ -455,6 +455,49 @@ audio{width:100%;height:38px;accent-color:var(--acc)}
 .pcard b{display:block;font-size:14px;margin:3px 0 8px;font-weight:620}
 .pcard .mt{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--dim)}
 .pcard .mt .bar{flex:1}
+.point-card{text-align:left;color:var(--txt)}
+.point-card-count{display:block;margin-top:6px}
+
+/* ===== 三维考点关系图 ===== */
+.point-network{margin-top:16px;padding:14px;background:#18161e}
+.point-network-head{display:flex;align-items:center;justify-content:space-between;gap:10px 15px;flex-wrap:wrap;margin-bottom:10px}
+.point-network-head h2{margin:0;font-size:16px}
+.point-network-head p{margin:4px 0 0}
+.point-network-tools{display:flex;gap:5px}
+.point-network-tools .btn{min-width:34px;min-height:31px;white-space:nowrap}
+.point-network-frame{
+  position:relative;border:1px solid #463747;border-radius:6px;overflow:hidden;
+  background:radial-gradient(ellipse at 46% 48%,#2a2232 0,#191721 54%,#13121a 88%);
+}
+.point-network-frame::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.52;
+  background:radial-gradient(circle,#68566c 0.7px,transparent .9px) 0 0/24px 24px;
+  mask-image:linear-gradient(#0007,transparent 45%,#0008);
+}
+#point-network-canvas{
+  position:relative;display:block;width:100%;height:clamp(350px,48vw,530px);
+  touch-action:none;user-select:none;cursor:grab;
+}
+#point-network-canvas.over-node{cursor:pointer}
+#point-network-canvas.dragging{cursor:grabbing}
+#point-network-canvas:focus-visible{outline:2px solid var(--acc);outline-offset:-3px}
+.point-network-status{
+  position:absolute;left:10px;bottom:10px;max-width:calc(100% - 20px);padding:5px 9px;
+  border:1px solid #655064;border-radius:4px;background:#211923eb;color:#f2e2ec;font-size:11px;pointer-events:none;
+}
+.point-network-status:empty{display:none}
+.point-network-help{margin:8px 0 5px}
+.point-network-desktop{margin-left:5px}
+.point-network-legend{display:flex;flex-wrap:wrap;gap:4px 11px;color:var(--mut);font-size:11px}
+.point-network-legend>span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.point-network-legend i{width:7px;height:7px;background:var(--point-color);border-radius:50%}
+.point-network-legend .point-network-mastery{color:var(--dim)}
+@media (max-width:620px){
+  .point-network{padding:10px}
+  #point-network-canvas{height:clamp(300px,92vw,410px)}
+  .point-network-desktop{display:none}
+  .point-network-tools .btn{min-width:39px;min-height:35px}
+}
 
 /* 表格 */
 table.t{width:100%;border-collapse:collapse;font-size:12.8px}

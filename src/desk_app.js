@@ -1829,21 +1829,9 @@
   /* ================= 考点地图 ================= */
   function viewBrain() {
     const groups = [
-      ['听力', ['L']], ['阅读', ['R']], ['干扰项', ['D']], ['选词填空', ['C']], ['长篇匹配', ['M']], ['写作', ['W']], ['翻译', ['T']],
+      ['听力', ['L']], ['仔细阅读', ['R']], ['干扰项', ['D']], ['选词填空', ['C']], ['长篇匹配', ['M']], ['写作', ['W']], ['翻译', ['T']],
     ];
-    let h = '<div class="wrap"><div style="margin-top:22px"><h1>考点地图</h1>' +
-      '<div class="small" style="margin-top:6px">43 个考点是脑库的骨架：每道真题挂 1–2 个考点，每个考点又有自己的笔记。这里显示的是<b>你在每个考点上的实测正确率</b>。</div></div>';
-
-    h += '<div class="card" style="margin-top:16px;padding:16px 18px">' +
-      '<div class="row" style="margin-bottom:6px"><b style="font-size:14.5px">知识网络</b>' +
-      '<span class="small dim" style="margin-left:8px">点 = 考点，线 = 同一道题或同一篇文章里一起出现，颜色 = 你的正确率</span>' +
-      '<span class="grow"></span><span class="small dim">点一下进考点</span></div>' +
-      '<div class="row wrap" style="gap:12px;margin:2px 0 8px">' +
-      [['L', '听力'], ['R', '仔细阅读'], ['D', '干扰项'], ['C', '选词填空'], ['M', '长篇匹配'], ['W', '写作'], ['T', '翻译']].map(([k, n]) =>
-        '<span class="small dim" style="display:inline-flex;align-items:center;gap:5px"><i style="width:7px;height:7px;border-radius:99px;background:' +
-        (KIND[k]?.color || '#eea2aa') + ';display:inline-block"></i>' + n + '</span>').join('') +
-      '<span class="small dim" style="margin-left:6px">· 半透明 = 还没练过</span></div>' +
-      graphSVG() + '</div>';
+    let h = '<div class="wrap"><div style="margin-top:22px"><h1>考点地图</h1></div>' + pointGraphHTML(groups);
 
     h += '<div class="stats" style="margin-top:16px">' +
       statCard('考点总数', PTS.length, '个', '覆盖 7 个模块') +
@@ -1859,144 +1847,78 @@
       list.forEach(p => {
         const m = mastery(p.id), st = ptStat(p.id);
         const pct = m == null ? 0 : Math.round(m * 100);
-        h += '<div class="pcard" onclick="DESK.openPoint(\'' + p.id + '\')">' +
-          '<div class="id">' + p.id + '</div><b>' + esc(p.name) + '</b>' +
-          '<div class="mt"><div class="bar"><i style="width:' + pct + '%;background:' + (m == null ? 'var(--line2)' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></div>' +
-          '<span class="mono">' + (m == null ? '未练' : pct + '%') + '</span></div>' +
-          '<div class="small dim" style="margin-top:6px">' + p.n + ' 题 · 我练过 ' + st.s + ' 次</div>' +
-          '</div>';
+        h += '<button type="button" class="pcard point-card" onclick="DESK.openPoint(\'' + p.id + '\')">' +
+          '<span class="id">' + p.id + '</span><b>' + esc(p.name) + '</b>' +
+          '<span class="mt"><span class="bar"><i style="width:' + pct + '%;background:' + (m == null ? 'var(--line2)' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></span>' +
+          '<span class="mono">' + (m == null ? '未练' : pct + '%') + '</span></span>' +
+          '<span class="small dim point-card-count">' + p.n + ' 题 · 我练过 ' + st.s + ' 次</span>' +
+          '</button>';
       });
       h += '</div>';
     });
 
-    h += '<h2>这张图怎么读</h2><div class="card"><div class="small">' +
-      '绿色 = 稳（≥80%），黄色 = 半会（60–80%），红色 = 没通（&lt;60%），灰条 = 还没练过。' +
-      '点任意考点，能看到它的判定信号、常见下套方式和边界，以及你在这个考点上错过的题——那些题就是你在 Obsidian 里该补的笔记。</div></div>';
+    h += '<h2>正确率图例</h2><div class="card"><div class="small">' +
+      '绿色 ≥80% · 黄色 60%–79% · 红色 &lt;60% · 无外圈表示还没练过。</div></div>';
     h += '</div>';
     return h;
   }
-  /* 考点共现网络：同题共现 + 同篇材料共现 */
-  function graphSVG() {
-    const W = 1040, H = 430;
-    const nodes = PTS.map(p => ({
-      id: p.id, name: p.name, mod: p.id[0], n: p.n,
-      m: mastery(p.id), x: 0, y: 0, vx: 0, vy: 0,
+  /* Preserve the existing edges: three units of weight per shared question, one per shared passage. */
+  function pointGraphData() {
+    const nodes = PTS.map(point => ({
+      id: point.id, name: point.name, module: point.id[0], count: point.n,
+      color: pointModuleColor(point.id[0]), mastery: mastery(point.id),
     }));
-    const idx = {};
-    nodes.forEach((n, i) => { idx[n.id] = i; });
-    const ew = {};
-    const addPair = (a, b, w) => {
-      if (a === b || idx[a] === undefined || idx[b] === undefined) return;
-      const k = a < b ? a + '|' + b : b + '|' + a;
-      ew[k] = (ew[k] || 0) + w;
-    };
-    QS.forEach(q => {
-      const ps = (q.pt || []).filter(x => idx[x] !== undefined);
-      for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) addPair(ps[i], ps[j], 3);
-    });
-    // 同一篇材料下的题（同一篇文章），把它们的考点连起来
-    const byUnit = {};
-    QS.forEach(q => {
-      if (!q.u) return;
-      const ps = (q.pt || []).filter(x => idx[x] !== undefined);
-      if (!ps.length) return;
-      byUnit[q.u] = byUnit[q.u] || {};
-      ps.forEach(x => { byUnit[q.u][x] = 1; });
-    });
-    Object.values(byUnit).forEach(set => {
-      const arr = Object.keys(set);
-      for (let i = 0; i < arr.length; i++) for (let j = i + 1; j < arr.length; j++) addPair(arr[i], arr[j], 1);
-    });
-
-    const edges = Object.keys(ew).map(k => {
-      const [a, b] = k.split('|');
-      return { a: idx[a], b: idx[b], w: ew[k] };
-    });
-    const maxW = Math.max(1, ...edges.map(e => e.w));
-
-    // 初始位置：按模块分扇区
-    const mods = [];
-    nodes.forEach(n => { if (mods.indexOf(n.mod) < 0) mods.push(n.mod); });
-    nodes.forEach((n, i) => {
-      const gi = mods.indexOf(n.mod);
-      const ang = (gi / mods.length) * Math.PI * 2 + (i % 4) * 0.22;
-      const rad = 80 + (i % 9) * 16;
-      n.x = W / 2 + Math.cos(ang) * rad;
-      n.y = H / 2 + Math.sin(ang) * rad * 0.66;
-    });
-
-    for (let step = 0; step < 420; step++) {
-      for (let i = 0; i < nodes.length; i++) {
-        const a = nodes[i];
-        for (let j = i + 1; j < nodes.length; j++) {
-          const b = nodes[j];
-          let dx = a.x - b.x, dy = a.y - b.y;
-          let d2 = dx * dx + dy * dy || 1;
-          if (d2 > 120000) continue;
-          const f = 2200 / d2;
-          const d = Math.sqrt(d2);
-          dx /= d; dy /= d;
-          a.vx += dx * f; a.vy += dy * f;
-          b.vx -= dx * f; b.vy -= dy * f;
+    const index = new Map(nodes.map((node, i) => [node.id, i]));
+    const pairs = new Map(), units = new Map();
+    function connect(ids, weight) {
+      const positions = [...new Set(ids)].map(id => index.get(id)).sort((a, b) => a - b);
+      for (let i = 0; i < positions.length; i++) {
+        for (let j = i + 1; j < positions.length; j++) {
+          const a = positions[i], b = positions[j], key = a + ':' + b;
+          const current = pairs.get(key);
+          if (current) current.weight += weight;
+          else pairs.set(key, { a, b, weight });
         }
       }
-      edges.forEach(e => {
-        const a = nodes[e.a], b = nodes[e.b];
-        let dx = b.x - a.x, dy = b.y - a.y;
-        const d = Math.sqrt(dx * dx + dy * dy) || 1;
-        const target = 74;
-        const f = (d - target) * 0.0055 * (1 + e.w / maxW);
-        dx /= d; dy /= d;
-        a.vx += dx * f; a.vy += dy * f;
-        b.vx -= dx * f; b.vy -= dy * f;
-      });
-      nodes.forEach(n => {
-        n.vx += (W / 2 - n.x) * 0.0012;
-        n.vy += (H / 2 - n.y) * 0.0018;
-        n.vx *= 0.84; n.vy *= 0.84;
-        n.x += Math.max(-14, Math.min(14, n.vx));
-        n.y += Math.max(-12, Math.min(12, n.vy));
-      });
     }
-
-    // 归一化到画布（填满，别挤在中间）
-    let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
-    nodes.forEach(n => { minX = Math.min(minX, n.x); maxX = Math.max(maxX, n.x); minY = Math.min(minY, n.y); maxY = Math.max(maxY, n.y); });
-    const padX = 46, padY = 28;
-    nodes.forEach(n => {
-      n.x = padX + (n.x - minX) / (maxX - minX || 1) * (W - padX * 2);
-      n.y = padY + (n.y - minY) / (maxY - minY || 1) * (H - padY * 2);
-    });
-
-    // 模块标签（放在该模块节点重心上方）
-    const MODNAME = { L: '听力', R: '仔细阅读', D: '干扰项', C: '选词填空', M: '长篇匹配', W: '写作', T: '翻译' };
-    const gl = {};
-    nodes.forEach(n => {
-      const g = gl[n.mod] || (gl[n.mod] = { x: 0, y: 0, c: 0, top: 1e9, l: 1e9, r: -1e9 });
-      g.x += n.x; g.y += n.y; g.c++;
-      g.top = Math.min(g.top, n.y); g.l = Math.min(g.l, n.x); g.r = Math.max(g.r, n.x);
-    });
-    const glabels = '';
-
-    const lines = edges.map(e => {
-      const a = nodes[e.a], b = nodes[e.b];
-      const k = e.w / maxW;
-      const op = 0.07 + k * 0.33;
-      return '<line x1="' + a.x.toFixed(1) + '" y1="' + a.y.toFixed(1) + '" x2="' + b.x.toFixed(1) + '" y2="' + b.y.toFixed(1) +
-        '" stroke="#8a77ab" stroke-opacity="' + op.toFixed(2) + '" stroke-width="' + (0.5 + k * 1.8).toFixed(1) + '"/>';
-    }).join('');
-
-    const dots = nodes.map(n => {
-      const r = 4.4 + Math.min(4.5, Math.log(1 + n.n) * 1.0);
-      const col = n.m == null ? (KIND[n.mod]?.color || '#eea2aa') : n.m >= 0.8 ? 'var(--ok)' : n.m >= 0.6 ? 'var(--amber)' : 'var(--bad)';
-      const fillOp = n.m == null ? 0.42 : 0.9;
-      return '<g style="cursor:pointer" onclick="DESK.openPoint(\'' + n.id + '\')"><title>' + esc(n.id + ' ' + n.name) + ' · ' + n.n + ' 题 · ' + (n.m == null ? '未练' : Math.round(n.m * 100) + '%') + '</title>' +
-        '<circle cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + col + '" fill-opacity="' + fillOp + '" stroke="var(--bg)" stroke-width="1.1"/>' +
-        '<text x="' + (n.x + r + 3).toFixed(1) + '" y="' + (n.y + 3).toFixed(1) + '" font-size="9.5" fill="var(--mut)" font-family="ui-monospace,monospace">' + n.id + '</text></g>';
-    }).join('');
-
-    return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">' + lines + glabels + dots + '</svg>';
+    for (const question of QS) {
+      const ids = (question.pt || []).filter(id => index.has(id));
+      connect(ids, 3);
+      if (!question.u || !ids.length) continue;
+      if (!units.has(question.u)) units.set(question.u, new Set());
+      ids.forEach(id => units.get(question.u).add(id));
+    }
+    units.forEach(ids => connect(ids, 1));
+    return { nodes, edges: [...pairs.values()] };
   }
+
+  function pointModuleColor(module) { return KIND[module]?.color || '#eea2aa'; }
+
+  function pointGraphHTML(groups) {
+    return '<section class="card point-network" aria-labelledby="point-network-title">' +
+      '<header class="point-network-head"><div><h2 id="point-network-title">知识网络</h2>' +
+      '<p class="small">节点是考点，连线表示在同一道题或同一篇材料中共同出现。</p></div>' +
+      '<div class="point-network-tools" role="group" aria-label="图谱视角">' +
+      '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphZoom(0.8)" aria-label="缩小图谱">−</button>' +
+      '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphZoom(1.25)" aria-label="放大图谱">+</button>' +
+      '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphReset()">复位</button></div></header>' +
+      '<div class="point-network-frame"><canvas id="point-network-canvas" tabindex="0" role="img" aria-label="三维考点关系图谱" aria-describedby="point-network-help">' +
+      '可从下方的考点列表打开详情。</canvas><div id="point-network-status" class="point-network-status" role="status"></div></div>' +
+      '<p id="point-network-help" class="point-network-help small">拖空白处旋转，拖节点调整位置，点节点看详情。滚轮或双指缩放。<span class="point-network-desktop">按住 Shift 拖动可平移，方向键也可旋转。</span></p>' +
+      '<div class="point-network-legend" aria-label="节点颜色图例">' + groups.map(([label, [module]]) =>
+        '<span><i aria-hidden="true" style="--point-color:' + pointModuleColor(module) + '"></i>' + label + '</span>').join('') +
+      '<span class="point-network-mastery">外圈表示练习正确率</span></div></section>';
+  }
+
+  let pointGraph = null;
+  function mountBrainGraph() {
+    const canvas = document.getElementById('point-network-canvas');
+    const status = document.getElementById('point-network-status');
+    if (!canvas || !status) return;
+    const { nodes, edges } = pointGraphData();
+    pointGraph = window.mountPointGraph(canvas, status, nodes, edges, openPoint);
+  }
+
 
   function bestPoint() {
     let best = null, bm = -1;
@@ -3492,6 +3414,8 @@
   }
 
   function render() {
+    pointGraph?.destroy();
+    pointGraph = null;
     const crumbs = {
       desk: '工作台', train: '训练', run: sess && sess.exam ? '套卷模考' : '训练中',
       paperReview: '逐题解析', brain: '考点地图', wrong: '错题本', words: '单词本',
@@ -3533,6 +3457,7 @@
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
       '<main class="main">' + topbar(crumb, questionLookup) + mobileNav() + body + '</main></div>' + dock;
     if (view === 'desk') drawStudyGraph();
+    if (view === 'brain') mountBrainGraph();
     const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
     if (currentTab) {
       const nav = currentTab.parentElement;
@@ -3547,6 +3472,8 @@
   /* ================= 对外 ================= */
   const DESK = {
     go: go,
+    pointGraphZoom(factor) { pointGraph?.zoom(factor); },
+    pointGraphReset() { pointGraph?.reset(); },
     setMode(m) { setup.mode = m; if (m === 'module' && !setup.kind) setup.kind = 'R'; render(); },
     setKind(k) { setup.kind = k; render(); },
     setSize(n) { setup.size = n; render(); },

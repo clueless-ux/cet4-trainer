@@ -24,6 +24,7 @@ const displayFonts = [
   return `@font-face{font-family:"Instrument Serif";font-style:${style};font-weight:400;font-display:swap;src:url(data:font/woff2;base64,${font}) format("woff2")}`;
 }).join('\n');
 const app = fs.readFileSync(path.join(dir, 'desk_app.js'), 'utf8');
+const pointGraph = fs.readFileSync(path.join(dir, 'point_graph.js'), 'utf8');
 const essay = fs.readFileSync(path.join(dir, 'essay.js'), 'utf8');
 
 const d = JSON.parse(fs.readFileSync(path.join(dir, 'desk_data.json'), 'utf8'));
@@ -51,6 +52,7 @@ shell = shell.replace('/*__DATA__*/{}', () => data);
 shell = shell.replace('/*__ESSAY__*/', () => essay);
 shell = shell.replace('/*__SPELL__*/""', () => JSON.stringify(spell));
 shell = shell.replace('/*__DICT__*/""', () => JSON.stringify(dict));
+shell = shell.replace('/*__POINT_GRAPH__*/', () => pointGraph);
 shell = shell.replace('/*__APP__*/', () => app);
 
 if (shell.indexOf('__DESK__') < 0) throw new Error('数据未注入');

@@ -14,7 +14,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>四级训练工作台</title>
-<script>window.__VER__="20261128140638";</script>
+<script>window.__VER__="20261128142425";</script>
 <style>/*
 Copyright 2022 The Instrument Serif Project Authors (https://github.com/Instrument/instrument-serif)
 
@@ -591,6 +591,49 @@ audio{width:100%;height:38px;accent-color:var(--acc)}
 .pcard b{display:block;font-size:14px;margin:3px 0 8px;font-weight:620}
 .pcard .mt{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--dim)}
 .pcard .mt .bar{flex:1}
+.point-card{text-align:left;color:var(--txt)}
+.point-card-count{display:block;margin-top:6px}
+
+/* ===== 三维考点关系图 ===== */
+.point-network{margin-top:16px;padding:14px;background:#18161e}
+.point-network-head{display:flex;align-items:center;justify-content:space-between;gap:10px 15px;flex-wrap:wrap;margin-bottom:10px}
+.point-network-head h2{margin:0;font-size:16px}
+.point-network-head p{margin:4px 0 0}
+.point-network-tools{display:flex;gap:5px}
+.point-network-tools .btn{min-width:34px;min-height:31px;white-space:nowrap}
+.point-network-frame{
+  position:relative;border:1px solid #463747;border-radius:6px;overflow:hidden;
+  background:radial-gradient(ellipse at 46% 48%,#2a2232 0,#191721 54%,#13121a 88%);
+}
+.point-network-frame::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.52;
+  background:radial-gradient(circle,#68566c 0.7px,transparent .9px) 0 0/24px 24px;
+  mask-image:linear-gradient(#0007,transparent 45%,#0008);
+}
+#point-network-canvas{
+  position:relative;display:block;width:100%;height:clamp(350px,48vw,530px);
+  touch-action:none;user-select:none;cursor:grab;
+}
+#point-network-canvas.over-node{cursor:pointer}
+#point-network-canvas.dragging{cursor:grabbing}
+#point-network-canvas:focus-visible{outline:2px solid var(--acc);outline-offset:-3px}
+.point-network-status{
+  position:absolute;left:10px;bottom:10px;max-width:calc(100% - 20px);padding:5px 9px;
+  border:1px solid #655064;border-radius:4px;background:#211923eb;color:#f2e2ec;font-size:11px;pointer-events:none;
+}
+.point-network-status:empty{display:none}
+.point-network-help{margin:8px 0 5px}
+.point-network-desktop{margin-left:5px}
+.point-network-legend{display:flex;flex-wrap:wrap;gap:4px 11px;color:var(--mut);font-size:11px}
+.point-network-legend>span{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.point-network-legend i{width:7px;height:7px;background:var(--point-color);border-radius:50%}
+.point-network-legend .point-network-mastery{color:var(--dim)}
+@media (max-width:620px){
+  .point-network{padding:10px}
+  #point-network-canvas{height:clamp(300px,92vw,410px)}
+  .point-network-desktop{display:none}
+  .point-network-tools .btn{min-width:39px;min-height:35px}
+}
 
 /* 表格 */
 table.t{width:100%;border-collapse:collapse;font-size:12.8px}
@@ -1869,6 +1912,331 @@ window.lookup = lookup;
   }
 
   window.Essay = { analyze, markSentence, rewrite, esc, quickFix };
+})();
+</script>
+<script>(function () {
+  'use strict';
+
+  const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
+  const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const homeCamera = { yaw: .4, pitch: -.24, zoom: 1, x: 0, y: 0 };
+
+  function layoutGraph(points, edges) {
+    const modules = [...new Set(points.map(point => point.module))];
+    const centers = new Map(modules.map((module, i) => {
+      const y = (2 * (i + .5) / modules.length - 1);
+      const radius = Math.sqrt(1 - y * y) * 145;
+      return [module, { x: radius * Math.cos(i * GOLDEN_ANGLE), y: y * 130, z: radius * Math.sin(i * GOLDEN_ANGLE) }];
+    }));
+    const nodes = points.map((point, i) => {
+      const center = centers.get(point.module);
+      const angle = i * GOLDEN_ANGLE;
+      return {
+        ...point, center, x: center.x + Math.sin(angle) * 31, y: center.y + (i % 5 - 2) * 12,
+        z: center.z + Math.cos(angle) * 31, vx: 0, vy: 0, vz: 0,
+      };
+    });
+    const maxWeight = Math.max(1, ...edges.map(edge => edge.weight));
+    for (let step = 0; step < 180; step++) {
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const b = nodes[j];
+          const x = a.x - b.x, y = a.y - b.y, z = a.z - b.z;
+          const d2 = x * x + y * y + z * z + 36;
+          const repulsion = 1650 / (d2 * Math.sqrt(d2));
+          a.vx += x * repulsion; a.vy += y * repulsion; a.vz += z * repulsion;
+          b.vx -= x * repulsion; b.vy -= y * repulsion; b.vz -= z * repulsion;
+        }
+      }
+      for (const edge of edges) {
+        const a = nodes[edge.a], b = nodes[edge.b];
+        const x = b.x - a.x, y = b.y - a.y, z = b.z - a.z;
+        const distance = Math.hypot(x, y, z) || 1;
+        const spring = (distance - 65) / distance * (.008 + .023 * Math.sqrt(edge.weight / maxWeight));
+        a.vx += x * spring; a.vy += y * spring; a.vz += z * spring;
+        b.vx -= x * spring; b.vy -= y * spring; b.vz -= z * spring;
+      }
+      for (const node of nodes) {
+        node.vx = (node.vx + (node.center.x - node.x) * .004 - node.x * .0008) * .79;
+        node.vy = (node.vy + (node.center.y - node.y) * .004 - node.y * .0008) * .79;
+        node.vz = (node.vz + (node.center.z - node.z) * .004 - node.z * .0008) * .79;
+        node.x += clamp(node.vx, -13, 13);
+        node.y += clamp(node.vy, -13, 13);
+        node.z += clamp(node.vz, -13, 13);
+      }
+    }
+    return nodes;
+  }
+
+  function mountPointGraph(canvas, status, points, edges, openPoint) {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      status.textContent = '当前浏览器无法绘制图谱，可从下方列表打开考点。';
+      return null;
+    }
+    const nodes = layoutGraph(points, edges);
+    const initial = nodes.map(({ x, y, z }) => ({ x, y, z }));
+    const radius = Math.max(1, ...nodes.map(node => Math.hypot(node.x, node.y, node.z)));
+    const distance = radius * 3.5;
+    const maxWeight = Math.max(1, ...edges.map(edge => edge.weight));
+    const camera = { ...homeCamera };
+    const pointers = new Map();
+    let width = 1, height = 1, projected = [], hover = -1, frame = 0, gesture = null;
+
+    function project() {
+      const cy = Math.cos(camera.yaw), sy = Math.sin(camera.yaw);
+      const cp = Math.cos(camera.pitch), sp = Math.sin(camera.pitch);
+      const scale = Math.min(width * .43, height * .40) / radius * camera.zoom;
+      const stretch = clamp(1 + (width / height - 1) * .16, 1, 1.27);
+      return nodes.map(node => {
+        const x = node.x * cy - node.z * sy;
+        const z = node.x * sy + node.z * cy;
+        const y = node.y * cp - z * sp, depth = node.y * sp + z * cp;
+        const perspective = distance / Math.max(distance * .33, distance - depth);
+        const factor = scale * perspective;
+        return {
+          x: width / 2 + camera.x + x * factor * stretch, y: height / 2 + camera.y + y * factor,
+          depth, perspective, factor, stretch,
+          r: clamp((3.8 + Math.min(5.2, Math.log1p(node.count))) * perspective * Math.sqrt(camera.zoom), 2.8, 19),
+        };
+      });
+    }
+
+    function draw() {
+      frame = 0;
+      projected = project();
+      const order = nodes.map((_, i) => i).sort((a, b) => projected[a].depth - projected[b].depth);
+      const active = new Set(hover < 0 ? [] : [hover]);
+      ctx.clearRect(0, 0, width, height);
+      for (const edge of edges) {
+        const a = projected[edge.a], b = projected[edge.b];
+        const near = edge.a === hover || edge.b === hover;
+        if (near) { active.add(edge.a); active.add(edge.b); }
+        const weight = Math.sqrt(edge.weight / maxWeight);
+        ctx.strokeStyle = near ? nodes[hover].color : '#a79ab6';
+        ctx.globalAlpha = near ? .65 : (hover < 0 ? .1 + weight * .24 : .045);
+        ctx.lineWidth = near ? 1.25 + weight : .55 + weight * .85;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+      for (const index of order) {
+        const node = nodes[index], dot = projected[index];
+        const focused = index === hover, nearby = active.has(index);
+        ctx.globalAlpha = hover >= 0 && !nearby ? .28 : clamp(.58 + (dot.perspective - 1) * .75, .42, .95);
+        if (focused) {
+          ctx.fillStyle = node.color;
+          ctx.globalAlpha = .16;
+          ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r + 7, 0, Math.PI * 2); ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+        ctx.fillStyle = node.color;
+        ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.globalAlpha *= .29;
+        ctx.beginPath(); ctx.arc(dot.x - dot.r * .26, dot.y - dot.r * .28, dot.r * .32, 0, Math.PI * 2); ctx.fill();
+        if (node.mastery != null || focused) {
+          ctx.globalAlpha = focused || hover < 0 || nearby ? .95 : .23;
+          ctx.lineWidth = 1.3;
+          ctx.strokeStyle = focused ? '#f8eee9' : node.mastery >= .8 ? '#84d7aa' : node.mastery >= .6 ? '#f1b281' : '#ff9ca9';
+          ctx.beginPath(); ctx.arc(dot.x, dot.y, dot.r + 2.3, 0, Math.PI * 2); ctx.stroke();
+        }
+      }
+      ctx.textBaseline = 'middle';
+      const placed = [];
+      // Prefer the focused node and the foreground when labels would overlap.
+      const priority = index => index === hover ? 2 : Number(active.has(index));
+      const labels = order.slice().reverse().sort((a, b) => priority(b) - priority(a));
+      for (const index of labels) {
+        if (hover >= 0 && !active.has(index)) continue;
+        const dot = projected[index], node = nodes[index], focused = index === hover;
+        const label = focused ? node.name : node.id;
+        ctx.font = focused ? '600 13px sans-serif' : '10px monospace';
+        const textWidth = ctx.measureText(label).width;
+        const right = dot.x + dot.r + 6;
+        const x = right + textWidth + 7 < width ? right : dot.x - dot.r - textWidth - 6;
+        const y = dot.y;
+        if (x < 4 || x + textWidth > width - 4 || y < 8 || y > height - 8) continue;
+        if (!focused && placed.some(item => Math.abs(item.y - y) < 13 && x < item.right + 4 && item.x < x + textWidth + 4)) continue;
+        placed.push({ x, y, right: x + textWidth });
+        ctx.globalAlpha = focused ? 1 : clamp(.66 + (dot.perspective - 1) * .45, .52, .9);
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#121117';
+        ctx.strokeText(label, x, y);
+        ctx.fillStyle = focused ? '#faf0eb' : '#d0c4d6';
+        ctx.fillText(label, x, y);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function schedule() {
+      if (!frame) frame = window.requestAnimationFrame(draw);
+    }
+
+    function resize() {
+      const bounds = canvas.getBoundingClientRect();
+      width = Math.max(1, bounds.width);
+      height = Math.max(1, bounds.height);
+      const pixelRatio = clamp(window.devicePixelRatio || 1, 1, 2);
+      canvas.width = Math.round(width * pixelRatio);
+      canvas.height = Math.round(height * pixelRatio);
+      ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      schedule();
+    }
+
+    function location(event) {
+      const bounds = canvas.getBoundingClientRect();
+      return { x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+    }
+
+    function hit(point) {
+      let best = -1, depth = -Infinity;
+      for (let i = 0; i < projected.length; i++) {
+        const dot = projected[i];
+        if (dot.depth > depth && Math.hypot(point.x - dot.x, point.y - dot.y) <= Math.max(10, dot.r + 4)) {
+          best = i; depth = dot.depth;
+        }
+      }
+      return best;
+    }
+
+    function setHover(index) {
+      if (index === hover) return;
+      hover = index;
+      const node = nodes[index];
+      status.textContent = node ? node.id + ' ' + node.name + ' · ' + node.count + ' 题 · ' +
+        (node.mastery == null ? '未练' : '正确率 ' + Math.round(node.mastery * 100) + '%') : '';
+      canvas.classList.toggle('over-node', index >= 0);
+      schedule();
+    }
+
+    function zoom(factor, x = width / 2, y = height / 2) {
+      const next = clamp(camera.zoom * factor, .55, 3.1);
+      const ratio = next / camera.zoom;
+      camera.x = x - width / 2 - (x - width / 2 - camera.x) * ratio;
+      camera.y = y - height / 2 - (y - height / 2 - camera.y) * ratio;
+      camera.zoom = next;
+      schedule();
+    }
+
+    function reset() {
+      Object.assign(camera, homeCamera);
+      nodes.forEach((node, i) => Object.assign(node, initial[i]));
+      setHover(-1);
+      schedule();
+    }
+
+    function moveNode(index, dx, dy) {
+      const dot = projected[index], node = nodes[index];
+      const x = dx / (dot.factor * dot.stretch), y = dy / dot.factor;
+      const cy = Math.cos(camera.yaw), sy = Math.sin(camera.yaw);
+      const cp = Math.cos(camera.pitch), sp = Math.sin(camera.pitch);
+      const limit = radius * 1.65;
+      node.x = clamp(node.x + x * cy - y * sp * sy, -limit, limit);
+      node.y = clamp(node.y + y * cp, -limit, limit);
+      node.z = clamp(node.z - x * sy - y * sp * cy, -limit, limit);
+    }
+
+    function pinch(points) {
+      const [a, b] = points;
+      return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2, gap: Math.max(1, Math.hypot(a.x - b.x, a.y - b.y)) };
+    }
+
+    function pointerDown(event) {
+      if (event.button !== 0 && event.button !== 1 && event.button !== 2) return;
+      const point = location(event);
+      pointers.set(event.pointerId, point);
+      canvas.setPointerCapture?.(event.pointerId);
+      if (pointers.size > 1) {
+        gesture = null;
+        setHover(-1);
+      } else {
+        const node = event.shiftKey || event.button !== 0 ? -1 : hit(point);
+        gesture = { point, previous: point, node, moved: false, pan: event.shiftKey || event.button !== 0 };
+        setHover(node);
+      }
+      canvas.classList.add('dragging');
+    }
+
+    function pointerMove(event) {
+      const point = location(event);
+      if (!pointers.has(event.pointerId)) {
+        if (!pointers.size && event.pointerType !== 'touch') setHover(hit(point));
+        return;
+      }
+      const old = pointers.size > 1 ? pinch(pointers.values()) : null;
+      pointers.set(event.pointerId, point);
+      if (old) {
+        const next = pinch(pointers.values());
+        camera.x += next.x - old.x;
+        camera.y += next.y - old.y;
+        zoom(next.gap / old.gap, next.x, next.y);
+        return;
+      }
+      if (!gesture || (!gesture.moved && Math.hypot(point.x - gesture.point.x, point.y - gesture.point.y) < 4)) return;
+      const dx = point.x - gesture.previous.x, dy = point.y - gesture.previous.y;
+      gesture.previous = point;
+      gesture.moved = true;
+      if (gesture.node >= 0) moveNode(gesture.node, dx, dy);
+      else if (gesture.pan) { camera.x += dx; camera.y += dy; }
+      else {
+        camera.yaw += dx * .009;
+        camera.pitch = clamp(camera.pitch - dy * .009, -1.48, 1.48);
+      }
+      schedule();
+    }
+
+    function pointerEnd(event) {
+      if (!pointers.delete(event.pointerId)) return;
+      const clicked = event.type === 'pointerup' && gesture && !gesture.moved && gesture.node >= 0 ? gesture.node : -1;
+      gesture = null;
+      if (pointers.size === 1) {
+        const [point] = pointers.values();
+        gesture = { point, previous: point, node: -1, moved: true, pan: false };
+      } else if (!pointers.size) {
+        canvas.classList.remove('dragging');
+      }
+      if (clicked >= 0) openPoint(nodes[clicked].id);
+    }
+
+    const handlers = [
+      ['pointerdown', pointerDown], ['pointermove', pointerMove], ['pointerup', pointerEnd],
+      ['pointercancel', pointerEnd], ['lostpointercapture', pointerEnd],
+      ['pointerleave', () => { if (!pointers.size) setHover(-1); }],
+      ['contextmenu', event => event.preventDefault()],
+      ['wheel', event => {
+        event.preventDefault();
+        const { x, y } = location(event);
+        const step = event.deltaMode === 1 ? event.deltaY * 16 : event.deltaMode === 2 ? event.deltaY * height : event.deltaY;
+        zoom(Math.exp(-clamp(step, -120, 120) * .003), x, y);
+      }, { passive: false }],
+      ['keydown', event => {
+        if (event.key === '+' || event.key === '=') zoom(1.2);
+        else if (event.key === '-') zoom(1 / 1.2);
+        else if (event.key === '0' || event.key === 'Home') reset();
+        else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') camera.yaw += event.key === 'ArrowLeft' ? -.16 : .16;
+        else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') camera.pitch = clamp(camera.pitch + (event.key === 'ArrowUp' ? -.16 : .16), -1.48, 1.48);
+        else return;
+        event.preventDefault();
+        schedule();
+      }],
+    ];
+    handlers.forEach(args => canvas.addEventListener(...args));
+    const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
+    if (observer) observer.observe(canvas); else window.addEventListener('resize', resize);
+    resize();
+
+    return {
+      zoom, reset,
+      destroy() {
+        if (frame) window.cancelAnimationFrame(frame);
+        handlers.forEach(args => canvas.removeEventListener(...args));
+        if (observer) observer.disconnect(); else window.removeEventListener('resize', resize);
+      },
+    };
+  }
+
+  window.mountPointGraph = mountPointGraph;
 })();
 </script>
 <script>/* ================= 四级训练工作台 · 应用 ================= */
@@ -3702,21 +4070,9 @@ window.lookup = lookup;
   /* ================= 考点地图 ================= */
   function viewBrain() {
     const groups = [
-      ['听力', ['L']], ['阅读', ['R']], ['干扰项', ['D']], ['选词填空', ['C']], ['长篇匹配', ['M']], ['写作', ['W']], ['翻译', ['T']],
+      ['听力', ['L']], ['仔细阅读', ['R']], ['干扰项', ['D']], ['选词填空', ['C']], ['长篇匹配', ['M']], ['写作', ['W']], ['翻译', ['T']],
     ];
-    let h = '<div class="wrap"><div style="margin-top:22px"><h1>考点地图</h1>' +
-      '<div class="small" style="margin-top:6px">43 个考点是脑库的骨架：每道真题挂 1–2 个考点，每个考点又有自己的笔记。这里显示的是<b>你在每个考点上的实测正确率</b>。</div></div>';
-
-    h += '<div class="card" style="margin-top:16px;padding:16px 18px">' +
-      '<div class="row" style="margin-bottom:6px"><b style="font-size:14.5px">知识网络</b>' +
-      '<span class="small dim" style="margin-left:8px">点 = 考点，线 = 同一道题或同一篇文章里一起出现，颜色 = 你的正确率</span>' +
-      '<span class="grow"></span><span class="small dim">点一下进考点</span></div>' +
-      '<div class="row wrap" style="gap:12px;margin:2px 0 8px">' +
-      [['L', '听力'], ['R', '仔细阅读'], ['D', '干扰项'], ['C', '选词填空'], ['M', '长篇匹配'], ['W', '写作'], ['T', '翻译']].map(([k, n]) =>
-        '<span class="small dim" style="display:inline-flex;align-items:center;gap:5px"><i style="width:7px;height:7px;border-radius:99px;background:' +
-        (KIND[k]?.color || '#eea2aa') + ';display:inline-block"></i>' + n + '</span>').join('') +
-      '<span class="small dim" style="margin-left:6px">· 半透明 = 还没练过</span></div>' +
-      graphSVG() + '</div>';
+    let h = '<div class="wrap"><div style="margin-top:22px"><h1>考点地图</h1></div>' + pointGraphHTML(groups);
 
     h += '<div class="stats" style="margin-top:16px">' +
       statCard('考点总数', PTS.length, '个', '覆盖 7 个模块') +
@@ -3732,144 +4088,78 @@ window.lookup = lookup;
       list.forEach(p => {
         const m = mastery(p.id), st = ptStat(p.id);
         const pct = m == null ? 0 : Math.round(m * 100);
-        h += '<div class="pcard" onclick="DESK.openPoint(\'' + p.id + '\')">' +
-          '<div class="id">' + p.id + '</div><b>' + esc(p.name) + '</b>' +
-          '<div class="mt"><div class="bar"><i style="width:' + pct + '%;background:' + (m == null ? 'var(--line2)' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></div>' +
-          '<span class="mono">' + (m == null ? '未练' : pct + '%') + '</span></div>' +
-          '<div class="small dim" style="margin-top:6px">' + p.n + ' 题 · 我练过 ' + st.s + ' 次</div>' +
-          '</div>';
+        h += '<button type="button" class="pcard point-card" onclick="DESK.openPoint(\'' + p.id + '\')">' +
+          '<span class="id">' + p.id + '</span><b>' + esc(p.name) + '</b>' +
+          '<span class="mt"><span class="bar"><i style="width:' + pct + '%;background:' + (m == null ? 'var(--line2)' : pct < 60 ? 'var(--bad)' : pct < 80 ? 'var(--amber)' : 'var(--ok)') + '"></i></span>' +
+          '<span class="mono">' + (m == null ? '未练' : pct + '%') + '</span></span>' +
+          '<span class="small dim point-card-count">' + p.n + ' 题 · 我练过 ' + st.s + ' 次</span>' +
+          '</button>';
       });
       h += '</div>';
     });
 
-    h += '<h2>这张图怎么读</h2><div class="card"><div class="small">' +
-      '绿色 = 稳（≥80%），黄色 = 半会（60–80%），红色 = 没通（&lt;60%），灰条 = 还没练过。' +
-      '点任意考点，能看到它的判定信号、常见下套方式和边界，以及你在这个考点上错过的题——那些题就是你在 Obsidian 里该补的笔记。</div></div>';
+    h += '<h2>正确率图例</h2><div class="card"><div class="small">' +
+      '绿色 ≥80% · 黄色 60%–79% · 红色 &lt;60% · 无外圈表示还没练过。</div></div>';
     h += '</div>';
     return h;
   }
-  /* 考点共现网络：同题共现 + 同篇材料共现 */
-  function graphSVG() {
-    const W = 1040, H = 430;
-    const nodes = PTS.map(p => ({
-      id: p.id, name: p.name, mod: p.id[0], n: p.n,
-      m: mastery(p.id), x: 0, y: 0, vx: 0, vy: 0,
+  /* Preserve the existing edges: three units of weight per shared question, one per shared passage. */
+  function pointGraphData() {
+    const nodes = PTS.map(point => ({
+      id: point.id, name: point.name, module: point.id[0], count: point.n,
+      color: pointModuleColor(point.id[0]), mastery: mastery(point.id),
     }));
-    const idx = {};
-    nodes.forEach((n, i) => { idx[n.id] = i; });
-    const ew = {};
-    const addPair = (a, b, w) => {
-      if (a === b || idx[a] === undefined || idx[b] === undefined) return;
-      const k = a < b ? a + '|' + b : b + '|' + a;
-      ew[k] = (ew[k] || 0) + w;
-    };
-    QS.forEach(q => {
-      const ps = (q.pt || []).filter(x => idx[x] !== undefined);
-      for (let i = 0; i < ps.length; i++) for (let j = i + 1; j < ps.length; j++) addPair(ps[i], ps[j], 3);
-    });
-    // 同一篇材料下的题（同一篇文章），把它们的考点连起来
-    const byUnit = {};
-    QS.forEach(q => {
-      if (!q.u) return;
-      const ps = (q.pt || []).filter(x => idx[x] !== undefined);
-      if (!ps.length) return;
-      byUnit[q.u] = byUnit[q.u] || {};
-      ps.forEach(x => { byUnit[q.u][x] = 1; });
-    });
-    Object.values(byUnit).forEach(set => {
-      const arr = Object.keys(set);
-      for (let i = 0; i < arr.length; i++) for (let j = i + 1; j < arr.length; j++) addPair(arr[i], arr[j], 1);
-    });
-
-    const edges = Object.keys(ew).map(k => {
-      const [a, b] = k.split('|');
-      return { a: idx[a], b: idx[b], w: ew[k] };
-    });
-    const maxW = Math.max(1, ...edges.map(e => e.w));
-
-    // 初始位置：按模块分扇区
-    const mods = [];
-    nodes.forEach(n => { if (mods.indexOf(n.mod) < 0) mods.push(n.mod); });
-    nodes.forEach((n, i) => {
-      const gi = mods.indexOf(n.mod);
-      const ang = (gi / mods.length) * Math.PI * 2 + (i % 4) * 0.22;
-      const rad = 80 + (i % 9) * 16;
-      n.x = W / 2 + Math.cos(ang) * rad;
-      n.y = H / 2 + Math.sin(ang) * rad * 0.66;
-    });
-
-    for (let step = 0; step < 420; step++) {
-      for (let i = 0; i < nodes.length; i++) {
-        const a = nodes[i];
-        for (let j = i + 1; j < nodes.length; j++) {
-          const b = nodes[j];
-          let dx = a.x - b.x, dy = a.y - b.y;
-          let d2 = dx * dx + dy * dy || 1;
-          if (d2 > 120000) continue;
-          const f = 2200 / d2;
-          const d = Math.sqrt(d2);
-          dx /= d; dy /= d;
-          a.vx += dx * f; a.vy += dy * f;
-          b.vx -= dx * f; b.vy -= dy * f;
+    const index = new Map(nodes.map((node, i) => [node.id, i]));
+    const pairs = new Map(), units = new Map();
+    function connect(ids, weight) {
+      const positions = [...new Set(ids)].map(id => index.get(id)).sort((a, b) => a - b);
+      for (let i = 0; i < positions.length; i++) {
+        for (let j = i + 1; j < positions.length; j++) {
+          const a = positions[i], b = positions[j], key = a + ':' + b;
+          const current = pairs.get(key);
+          if (current) current.weight += weight;
+          else pairs.set(key, { a, b, weight });
         }
       }
-      edges.forEach(e => {
-        const a = nodes[e.a], b = nodes[e.b];
-        let dx = b.x - a.x, dy = b.y - a.y;
-        const d = Math.sqrt(dx * dx + dy * dy) || 1;
-        const target = 74;
-        const f = (d - target) * 0.0055 * (1 + e.w / maxW);
-        dx /= d; dy /= d;
-        a.vx += dx * f; a.vy += dy * f;
-        b.vx -= dx * f; b.vy -= dy * f;
-      });
-      nodes.forEach(n => {
-        n.vx += (W / 2 - n.x) * 0.0012;
-        n.vy += (H / 2 - n.y) * 0.0018;
-        n.vx *= 0.84; n.vy *= 0.84;
-        n.x += Math.max(-14, Math.min(14, n.vx));
-        n.y += Math.max(-12, Math.min(12, n.vy));
-      });
     }
-
-    // 归一化到画布（填满，别挤在中间）
-    let minX = 1e9, maxX = -1e9, minY = 1e9, maxY = -1e9;
-    nodes.forEach(n => { minX = Math.min(minX, n.x); maxX = Math.max(maxX, n.x); minY = Math.min(minY, n.y); maxY = Math.max(maxY, n.y); });
-    const padX = 46, padY = 28;
-    nodes.forEach(n => {
-      n.x = padX + (n.x - minX) / (maxX - minX || 1) * (W - padX * 2);
-      n.y = padY + (n.y - minY) / (maxY - minY || 1) * (H - padY * 2);
-    });
-
-    // 模块标签（放在该模块节点重心上方）
-    const MODNAME = { L: '听力', R: '仔细阅读', D: '干扰项', C: '选词填空', M: '长篇匹配', W: '写作', T: '翻译' };
-    const gl = {};
-    nodes.forEach(n => {
-      const g = gl[n.mod] || (gl[n.mod] = { x: 0, y: 0, c: 0, top: 1e9, l: 1e9, r: -1e9 });
-      g.x += n.x; g.y += n.y; g.c++;
-      g.top = Math.min(g.top, n.y); g.l = Math.min(g.l, n.x); g.r = Math.max(g.r, n.x);
-    });
-    const glabels = '';
-
-    const lines = edges.map(e => {
-      const a = nodes[e.a], b = nodes[e.b];
-      const k = e.w / maxW;
-      const op = 0.07 + k * 0.33;
-      return '<line x1="' + a.x.toFixed(1) + '" y1="' + a.y.toFixed(1) + '" x2="' + b.x.toFixed(1) + '" y2="' + b.y.toFixed(1) +
-        '" stroke="#8a77ab" stroke-opacity="' + op.toFixed(2) + '" stroke-width="' + (0.5 + k * 1.8).toFixed(1) + '"/>';
-    }).join('');
-
-    const dots = nodes.map(n => {
-      const r = 4.4 + Math.min(4.5, Math.log(1 + n.n) * 1.0);
-      const col = n.m == null ? (KIND[n.mod]?.color || '#eea2aa') : n.m >= 0.8 ? 'var(--ok)' : n.m >= 0.6 ? 'var(--amber)' : 'var(--bad)';
-      const fillOp = n.m == null ? 0.42 : 0.9;
-      return '<g style="cursor:pointer" onclick="DESK.openPoint(\'' + n.id + '\')"><title>' + esc(n.id + ' ' + n.name) + ' · ' + n.n + ' 题 · ' + (n.m == null ? '未练' : Math.round(n.m * 100) + '%') + '</title>' +
-        '<circle cx="' + n.x.toFixed(1) + '" cy="' + n.y.toFixed(1) + '" r="' + r.toFixed(1) + '" fill="' + col + '" fill-opacity="' + fillOp + '" stroke="var(--bg)" stroke-width="1.1"/>' +
-        '<text x="' + (n.x + r + 3).toFixed(1) + '" y="' + (n.y + 3).toFixed(1) + '" font-size="9.5" fill="var(--mut)" font-family="ui-monospace,monospace">' + n.id + '</text></g>';
-    }).join('');
-
-    return '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">' + lines + glabels + dots + '</svg>';
+    for (const question of QS) {
+      const ids = (question.pt || []).filter(id => index.has(id));
+      connect(ids, 3);
+      if (!question.u || !ids.length) continue;
+      if (!units.has(question.u)) units.set(question.u, new Set());
+      ids.forEach(id => units.get(question.u).add(id));
+    }
+    units.forEach(ids => connect(ids, 1));
+    return { nodes, edges: [...pairs.values()] };
   }
+
+  function pointModuleColor(module) { return KIND[module]?.color || '#eea2aa'; }
+
+  function pointGraphHTML(groups) {
+    return '<section class="card point-network" aria-labelledby="point-network-title">' +
+      '<header class="point-network-head"><div><h2 id="point-network-title">知识网络</h2>' +
+      '<p class="small">节点是考点，连线表示在同一道题或同一篇材料中共同出现。</p></div>' +
+      '<div class="point-network-tools" role="group" aria-label="图谱视角">' +
+      '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphZoom(0.8)" aria-label="缩小图谱">−</button>' +
+      '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphZoom(1.25)" aria-label="放大图谱">+</button>' +
+      '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphReset()">复位</button></div></header>' +
+      '<div class="point-network-frame"><canvas id="point-network-canvas" tabindex="0" role="img" aria-label="三维考点关系图谱" aria-describedby="point-network-help">' +
+      '可从下方的考点列表打开详情。</canvas><div id="point-network-status" class="point-network-status" role="status"></div></div>' +
+      '<p id="point-network-help" class="point-network-help small">拖空白处旋转，拖节点调整位置，点节点看详情。滚轮或双指缩放。<span class="point-network-desktop">按住 Shift 拖动可平移，方向键也可旋转。</span></p>' +
+      '<div class="point-network-legend" aria-label="节点颜色图例">' + groups.map(([label, [module]]) =>
+        '<span><i aria-hidden="true" style="--point-color:' + pointModuleColor(module) + '"></i>' + label + '</span>').join('') +
+      '<span class="point-network-mastery">外圈表示练习正确率</span></div></section>';
+  }
+
+  let pointGraph = null;
+  function mountBrainGraph() {
+    const canvas = document.getElementById('point-network-canvas');
+    const status = document.getElementById('point-network-status');
+    if (!canvas || !status) return;
+    const { nodes, edges } = pointGraphData();
+    pointGraph = window.mountPointGraph(canvas, status, nodes, edges, openPoint);
+  }
+
 
   function bestPoint() {
     let best = null, bm = -1;
@@ -5365,6 +5655,8 @@ window.lookup = lookup;
   }
 
   function render() {
+    pointGraph?.destroy();
+    pointGraph = null;
     const crumbs = {
       desk: '工作台', train: '训练', run: sess && sess.exam ? '套卷模考' : '训练中',
       paperReview: '逐题解析', brain: '考点地图', wrong: '错题本', words: '单词本',
@@ -5406,6 +5698,7 @@ window.lookup = lookup;
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
       '<main class="main">' + topbar(crumb, questionLookup) + mobileNav() + body + '</main></div>' + dock;
     if (view === 'desk') drawStudyGraph();
+    if (view === 'brain') mountBrainGraph();
     const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
     if (currentTab) {
       const nav = currentTab.parentElement;
@@ -5420,6 +5713,8 @@ window.lookup = lookup;
   /* ================= 对外 ================= */
   const DESK = {
     go: go,
+    pointGraphZoom(factor) { pointGraph?.zoom(factor); },
+    pointGraphReset() { pointGraph?.reset(); },
     setMode(m) { setup.mode = m; if (m === 'module' && !setup.kind) setup.kind = 'R'; render(); },
     setKind(k) { setup.kind = k; render(); },
     setSize(n) { setup.size = n; render(); },
