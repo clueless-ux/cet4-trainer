@@ -402,15 +402,43 @@
     { kind: 'C', x: 113, y: 238 },
     { kind: 'M', x: 373, y: 252 },
   ];
+  const graphMotionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  let studyFlow = null;
+
+  function graphMotionEnabled() { return S.graphMotion ?? !graphMotionPreference?.matches; }
+
+  function graphMotionToggle(extraClass = '') {
+    const enabled = graphMotionEnabled();
+    return '<button id="graph-motion-toggle" type="button" class="btn sm ghost graph-motion-toggle ' + extraClass +
+      '" onclick="DESK.toggleGraphMotion()" aria-label="流动动效" aria-pressed="' + enabled + '">' +
+      (enabled ? '动效开启' : '动效暂停') + '</button>';
+  }
+
+  function syncGraphMotion() {
+    const button = document.getElementById('graph-motion-toggle');
+    const enabled = graphMotionEnabled();
+    if (button) {
+      button.setAttribute('aria-pressed', String(enabled));
+      button.textContent = enabled ? '动效开启' : '动效暂停';
+    }
+    studyFlow?.sync();
+    pointGraph?.syncMotion();
+  }
 
   function studyGraph() {
     return '<div class="study-graph" role="group" aria-label="选择训练专项">' +
       '<canvas id="study-graph-canvas" width="1000" height="656" aria-hidden="true"></canvas>' +
+      '<canvas id="study-flow-canvas" width="1000" height="656" aria-hidden="true"></canvas>' +
       '<div class="study-graph-core" aria-hidden="true"><span>CET</span><i></i><span>04</span></div>' +
       STUDY_MODULES.map(({ kind, x, y }) =>
         '<button type="button" class="study-node" style="--node-x:' + x / 5 + '%;--node-y:' + (y / 328 * 100).toFixed(2) + '%"' +
         ' onclick="DESK.startSetup(\'module\',10,\'' + kind + '\')"><span lang="en">' + KIND[kind].english + '</span>' +
-        '<small>' + KIND[kind].full + '</small></button>').join('') + '</div>';
+        '<small>' + KIND[kind].full + '</small></button>').join('') + graphMotionToggle('study-motion-toggle') + '</div>';
+  }
+
+  function studyCurve(end, index) {
+    const bend = index % 2 ? 22 : -22;
+    return { x: (250 + end.x) / 2 + bend, y: (164 + end.y) / 2 - bend };
   }
 
   function drawStudyGraph() {
@@ -429,12 +457,12 @@
       context.stroke();
     }
     context.setLineDash([]);
-    STUDY_MODULES.forEach(({ x, y }, index) => {
-      const bend = index % 2 ? 22 : -22;
+    STUDY_MODULES.forEach((end, index) => {
+      const control = studyCurve(end, index);
       context.strokeStyle = 'rgba(246,160,121,.56)';
       context.beginPath();
       context.moveTo(cx, cy);
-      context.quadraticCurveTo((cx + x) / 2 + bend, (cy + y) / 2 - bend, x, y);
+      context.quadraticCurveTo(control.x, control.y, end.x, end.y);
       context.stroke();
     });
     // A fixed golden-angle sequence keeps the particle field stable between renders.
@@ -447,6 +475,41 @@
       context.arc(cx + Math.cos(angle) * distance * 1.16, cy + Math.sin(angle) * distance * .76, i % 17 ? .76 : 1.45, 0, Math.PI * 2);
       context.fill();
     }
+  }
+
+  function mountStudyFlow() {
+    const canvas = document.getElementById('study-flow-canvas');
+    const ctx = canvas?.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    studyFlow = window.mountGraphMotion(canvas, time => {
+      ctx.clearRect(0, 0, 500, 328);
+      if (time == null) return;
+      for (let i = 0; i < 27; i++) {
+        const theta = i * 2.399963 + time * (i % 3 ? .16 : -.22);
+        const radius = 65 + (i * 19 % 94);
+        ctx.globalAlpha = .24 + .29 * (1 + Math.sin(time * 1.3 + i)) / 2;
+        ctx.fillStyle = i % 4 ? '#cdb9f3' : '#ffc2a0';
+        ctx.beginPath();
+        ctx.arc(250 + Math.cos(theta) * radius * 1.14, 164 + Math.sin(theta) * radius * .72, i % 3 ? 1.1 : 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      STUDY_MODULES.forEach((end, index) => {
+        const control = studyCurve(end, index);
+        const phase = (time * (.24 + index * .025) + index * .27) % 1;
+        ctx.fillStyle = KIND[end.kind].color;
+        for (let i = 6; i >= 0; i--) {
+          const t = phase - i * .022;
+          if (t < 0) continue;
+          const u = 1 - t;
+          const x = 250 * u * u + 2 * u * t * control.x + t * t * end.x;
+          const y = 164 * u * u + 2 * u * t * control.y + t * t * end.y;
+          ctx.globalAlpha = (.78 - i * .1) * Math.min(1, t * 6, (1 - t) * 8);
+          ctx.beginPath(); ctx.arc(x, y, 3.3 - i * .32, 0, Math.PI * 2); ctx.fill();
+        }
+      });
+      ctx.globalAlpha = 1;
+    }, graphMotionEnabled);
   }
 
   function viewDesk() {
@@ -1898,12 +1961,14 @@
     return '<section class="card point-network" aria-labelledby="point-network-title">' +
       '<header class="point-network-head"><div><h2 id="point-network-title">知识网络</h2>' +
       '<p class="small">节点是考点，连线表示在同一道题或同一篇材料中共同出现。</p></div>' +
-      '<div class="point-network-tools" role="group" aria-label="图谱视角">' +
+      '<div class="point-network-tools" role="group" aria-label="图谱控制">' +
+      graphMotionToggle() +
       '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphZoom(0.8)" aria-label="缩小图谱">−</button>' +
       '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphZoom(1.25)" aria-label="放大图谱">+</button>' +
       '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphReset()">复位</button></div></header>' +
       '<div class="point-network-frame"><canvas id="point-network-canvas" tabindex="0" role="img" aria-label="三维考点关系图谱" aria-describedby="point-network-help">' +
-      '可从下方的考点列表打开详情。</canvas><div id="point-network-status" class="point-network-status" role="status"></div></div>' +
+      '可从下方的考点列表打开详情。</canvas><canvas id="point-network-flow" aria-hidden="true"></canvas>' +
+      '<div id="point-network-status" class="point-network-status" role="status"></div></div>' +
       '<p id="point-network-help" class="point-network-help small">拖空白处旋转，拖节点调整位置，点节点看详情。滚轮或双指缩放。<span class="point-network-desktop">按住 Shift 拖动可平移，方向键也可旋转。</span></p>' +
       '<div class="point-network-legend" aria-label="节点颜色图例">' + groups.map(([label, [module]]) =>
         '<span><i aria-hidden="true" style="--point-color:' + pointModuleColor(module) + '"></i>' + label + '</span>').join('') +
@@ -1916,7 +1981,8 @@
     const status = document.getElementById('point-network-status');
     if (!canvas || !status) return;
     const { nodes, edges } = pointGraphData();
-    pointGraph = window.mountPointGraph(canvas, status, nodes, edges, openPoint);
+    pointGraph = window.mountPointGraph(canvas, status, nodes, edges, openPoint,
+      document.getElementById('point-network-flow'), graphMotionEnabled);
   }
 
 
@@ -3414,6 +3480,8 @@
   }
 
   function render() {
+    studyFlow?.destroy();
+    studyFlow = null;
     pointGraph?.destroy();
     pointGraph = null;
     const crumbs = {
@@ -3456,7 +3524,7 @@
     if (!questionLookup && view !== 'words' && document.getElementById('wpanel')?.classList.contains('dictionary-panel')) closePanel();
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
       '<main class="main">' + topbar(crumb, questionLookup) + mobileNav() + body + '</main></div>' + dock;
-    if (view === 'desk') drawStudyGraph();
+    if (view === 'desk') { drawStudyGraph(); mountStudyFlow(); }
     if (view === 'brain') mountBrainGraph();
     const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
     if (currentTab) {
@@ -3472,6 +3540,11 @@
   /* ================= 对外 ================= */
   const DESK = {
     go: go,
+    toggleGraphMotion() {
+      S.graphMotion = !graphMotionEnabled();
+      save();
+      syncGraphMotion();
+    },
     pointGraphZoom(factor) { pointGraph?.zoom(factor); },
     pointGraphReset() { pointGraph?.reset(); },
     setMode(m) { setup.mode = m; if (m === 'module' && !setup.kind) setup.kind = 'R'; render(); },
@@ -3693,6 +3766,8 @@
   }
   initSelection();
   initDictionary();
+  if (graphMotionPreference?.addEventListener) graphMotionPreference.addEventListener('change', syncGraphMotion);
+  else graphMotionPreference?.addListener?.(syncGraphMotion);
   render();
 
   /* ---------- PWA：manifest / 图标 / 离线缓存 ----------

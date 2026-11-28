@@ -53,7 +53,61 @@
     return nodes;
   }
 
-  function mountPointGraph(canvas, status, points, edges, openPoint) {
+  function mountGraphMotion(canvas, paint, enabled) {
+    if (typeof window.requestAnimationFrame !== 'function') {
+      return { sync() {}, redraw() {}, destroy() {} };
+    }
+    let frame = 0, elapsed = 0, lastPaint = null, visible = true, destroyed = false;
+    const playing = () => !destroyed && visible && !document.hidden && enabled();
+
+    function tick(timestamp) {
+      frame = 0;
+      if (!playing()) { sync(); return; }
+      const delta = lastPaint == null ? 0 : timestamp - lastPaint;
+      if (lastPaint == null || delta >= 32) {
+        elapsed += Math.min(delta, 75) / 1000;
+        lastPaint = timestamp;
+        paint(elapsed);
+      }
+      frame = window.requestAnimationFrame(tick);
+    }
+
+    function stop() {
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = 0;
+      lastPaint = null;
+    }
+
+    function sync() {
+      if (destroyed) return;
+      if (playing()) {
+        if (!frame) frame = window.requestAnimationFrame(tick);
+      } else {
+        stop();
+        paint(null);
+      }
+    }
+
+    const observer = typeof IntersectionObserver === 'function' ? new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    }) : null;
+    observer?.observe(canvas);
+    document.addEventListener('visibilitychange', sync);
+    sync();
+    return {
+      sync,
+      redraw() { if (playing()) paint(elapsed); },
+      destroy() {
+        destroyed = true;
+        stop();
+        observer?.disconnect();
+        document.removeEventListener('visibilitychange', sync);
+      },
+    };
+  }
+
+  function mountPointGraph(canvas, status, points, edges, openPoint, motionCanvas, motionEnabled) {
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       status.textContent = '当前浏览器无法绘制图谱，可从下方列表打开考点。';
@@ -67,6 +121,36 @@
     const camera = { ...homeCamera };
     const pointers = new Map();
     let width = 1, height = 1, projected = [], hover = -1, frame = 0, gesture = null;
+    const motionContext = motionCanvas?.getContext('2d');
+    const flowEdges = edges.map((edge, index) => ({ ...edge, index }));
+    const idleEdges = flowEdges.filter(edge => edge.index % 7 === 2);
+    let nearbyEdges = [];
+
+    function drawMotion(time) {
+      motionContext.clearRect(0, 0, width, height);
+      if (time == null || !projected.length) return;
+      const active = hover >= 0;
+      for (const edge of active ? nearbyEdges : idleEdges) {
+        const a = projected[edge.a], b = projected[edge.b];
+        const progress = (time * (.14 + edge.index % 5 * .019) + edge.index * .618) % 1;
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const tail = Math.max(0, progress - Math.min(.22, 26 / (Math.hypot(dx, dy) || 1)));
+        const x = a.x + dx * progress, y = a.y + dy * progress;
+        const fade = Math.min(1, progress * 7, (1 - progress) * 7);
+        motionContext.strokeStyle = motionContext.fillStyle = nodes[active ? hover : edge.b].color;
+        motionContext.globalAlpha = fade * (active ? .82 : .55);
+        motionContext.lineWidth = active ? 1.7 : 1.15;
+        motionContext.beginPath();
+        motionContext.moveTo(a.x + dx * tail, a.y + dy * tail);
+        motionContext.lineTo(x, y);
+        motionContext.stroke();
+        motionContext.beginPath();
+        motionContext.arc(x, y, active ? 2.5 : 1.75, 0, Math.PI * 2);
+        motionContext.fill();
+      }
+      motionContext.globalAlpha = 1;
+    }
+    const motion = motionContext ? mountGraphMotion(motionCanvas, drawMotion, motionEnabled) : null;
 
     function project() {
       const cy = Math.cos(camera.yaw), sy = Math.sin(camera.yaw);
@@ -151,6 +235,7 @@
         ctx.fillText(label, x, y);
       }
       ctx.globalAlpha = 1;
+      motion?.redraw();
     }
 
     function schedule() {
@@ -165,6 +250,11 @@
       canvas.width = Math.round(width * pixelRatio);
       canvas.height = Math.round(height * pixelRatio);
       ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      if (motionContext) {
+        motionCanvas.width = canvas.width;
+        motionCanvas.height = canvas.height;
+        motionContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      }
       schedule();
     }
 
@@ -187,6 +277,7 @@
     function setHover(index) {
       if (index === hover) return;
       hover = index;
+      nearbyEdges = hover < 0 ? [] : flowEdges.filter(edge => edge.a === hover || edge.b === hover);
       const node = nodes[index];
       status.textContent = node ? node.id + ' ' + node.name + ' · ' + node.count + ' 题 · ' +
         (node.mastery == null ? '未练' : '正确率 ' + Math.round(node.mastery * 100) + '%') : '';
@@ -311,8 +402,9 @@
     resize();
 
     return {
-      zoom, reset,
+      zoom, reset, syncMotion() { motion?.sync(); },
       destroy() {
+        motion?.destroy();
         if (frame) window.cancelAnimationFrame(frame);
         handlers.forEach(args => canvas.removeEventListener(...args));
         if (observer) observer.disconnect(); else window.removeEventListener('resize', resize);
@@ -321,4 +413,5 @@
   }
 
   window.mountPointGraph = mountPointGraph;
+  window.mountGraphMotion = mountGraphMotion;
 })();

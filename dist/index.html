@@ -14,7 +14,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>四级训练工作台</title>
-<script>window.__VER__="20261128142425";</script>
+<script>window.__VER__="20261128145155";</script>
 <style>/*
 Copyright 2022 The Instrument Serif Project Authors (https://github.com/Instrument/instrument-serif)
 
@@ -332,6 +332,12 @@ h3{font-size:14.5px;margin:0 0 10px;font-weight:620}
   width:min(100%,555px);aspect-ratio:500/328;
 }
 .study-graph canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .study-motion-toggle{
+  position:absolute;right:2px;bottom:4px;z-index:2;min-height:32px;
+  padding:4px 8px;font-size:11px;font-weight:550;
+}
+.graph-motion-toggle[aria-pressed="true"]{color:#f5bba6;border-color:#735466;background:#29202e}
+.graph-motion-toggle:hover{border-color:#d28e7d}
 .study-graph-core{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:19%;aspect-ratio:1;
   display:flex;align-items:center;justify-content:center;gap:5px;border-radius:50%;border:1px solid #90645e;
@@ -614,6 +620,7 @@ audio{width:100%;height:38px;accent-color:var(--acc)}
   position:relative;display:block;width:100%;height:clamp(350px,48vw,530px);
   touch-action:none;user-select:none;cursor:grab;
 }
+#point-network-flow{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
 #point-network-canvas.over-node{cursor:pointer}
 #point-network-canvas.dragging{cursor:grabbing}
 #point-network-canvas:focus-visible{outline:2px solid var(--acc);outline-offset:-3px}
@@ -1969,7 +1976,61 @@ window.lookup = lookup;
     return nodes;
   }
 
-  function mountPointGraph(canvas, status, points, edges, openPoint) {
+  function mountGraphMotion(canvas, paint, enabled) {
+    if (typeof window.requestAnimationFrame !== 'function') {
+      return { sync() {}, redraw() {}, destroy() {} };
+    }
+    let frame = 0, elapsed = 0, lastPaint = null, visible = true, destroyed = false;
+    const playing = () => !destroyed && visible && !document.hidden && enabled();
+
+    function tick(timestamp) {
+      frame = 0;
+      if (!playing()) { sync(); return; }
+      const delta = lastPaint == null ? 0 : timestamp - lastPaint;
+      if (lastPaint == null || delta >= 32) {
+        elapsed += Math.min(delta, 75) / 1000;
+        lastPaint = timestamp;
+        paint(elapsed);
+      }
+      frame = window.requestAnimationFrame(tick);
+    }
+
+    function stop() {
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = 0;
+      lastPaint = null;
+    }
+
+    function sync() {
+      if (destroyed) return;
+      if (playing()) {
+        if (!frame) frame = window.requestAnimationFrame(tick);
+      } else {
+        stop();
+        paint(null);
+      }
+    }
+
+    const observer = typeof IntersectionObserver === 'function' ? new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    }) : null;
+    observer?.observe(canvas);
+    document.addEventListener('visibilitychange', sync);
+    sync();
+    return {
+      sync,
+      redraw() { if (playing()) paint(elapsed); },
+      destroy() {
+        destroyed = true;
+        stop();
+        observer?.disconnect();
+        document.removeEventListener('visibilitychange', sync);
+      },
+    };
+  }
+
+  function mountPointGraph(canvas, status, points, edges, openPoint, motionCanvas, motionEnabled) {
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       status.textContent = '当前浏览器无法绘制图谱，可从下方列表打开考点。';
@@ -1983,6 +2044,36 @@ window.lookup = lookup;
     const camera = { ...homeCamera };
     const pointers = new Map();
     let width = 1, height = 1, projected = [], hover = -1, frame = 0, gesture = null;
+    const motionContext = motionCanvas?.getContext('2d');
+    const flowEdges = edges.map((edge, index) => ({ ...edge, index }));
+    const idleEdges = flowEdges.filter(edge => edge.index % 7 === 2);
+    let nearbyEdges = [];
+
+    function drawMotion(time) {
+      motionContext.clearRect(0, 0, width, height);
+      if (time == null || !projected.length) return;
+      const active = hover >= 0;
+      for (const edge of active ? nearbyEdges : idleEdges) {
+        const a = projected[edge.a], b = projected[edge.b];
+        const progress = (time * (.14 + edge.index % 5 * .019) + edge.index * .618) % 1;
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const tail = Math.max(0, progress - Math.min(.22, 26 / (Math.hypot(dx, dy) || 1)));
+        const x = a.x + dx * progress, y = a.y + dy * progress;
+        const fade = Math.min(1, progress * 7, (1 - progress) * 7);
+        motionContext.strokeStyle = motionContext.fillStyle = nodes[active ? hover : edge.b].color;
+        motionContext.globalAlpha = fade * (active ? .82 : .55);
+        motionContext.lineWidth = active ? 1.7 : 1.15;
+        motionContext.beginPath();
+        motionContext.moveTo(a.x + dx * tail, a.y + dy * tail);
+        motionContext.lineTo(x, y);
+        motionContext.stroke();
+        motionContext.beginPath();
+        motionContext.arc(x, y, active ? 2.5 : 1.75, 0, Math.PI * 2);
+        motionContext.fill();
+      }
+      motionContext.globalAlpha = 1;
+    }
+    const motion = motionContext ? mountGraphMotion(motionCanvas, drawMotion, motionEnabled) : null;
 
     function project() {
       const cy = Math.cos(camera.yaw), sy = Math.sin(camera.yaw);
@@ -2067,6 +2158,7 @@ window.lookup = lookup;
         ctx.fillText(label, x, y);
       }
       ctx.globalAlpha = 1;
+      motion?.redraw();
     }
 
     function schedule() {
@@ -2081,6 +2173,11 @@ window.lookup = lookup;
       canvas.width = Math.round(width * pixelRatio);
       canvas.height = Math.round(height * pixelRatio);
       ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      if (motionContext) {
+        motionCanvas.width = canvas.width;
+        motionCanvas.height = canvas.height;
+        motionContext.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+      }
       schedule();
     }
 
@@ -2103,6 +2200,7 @@ window.lookup = lookup;
     function setHover(index) {
       if (index === hover) return;
       hover = index;
+      nearbyEdges = hover < 0 ? [] : flowEdges.filter(edge => edge.a === hover || edge.b === hover);
       const node = nodes[index];
       status.textContent = node ? node.id + ' ' + node.name + ' · ' + node.count + ' 题 · ' +
         (node.mastery == null ? '未练' : '正确率 ' + Math.round(node.mastery * 100) + '%') : '';
@@ -2227,8 +2325,9 @@ window.lookup = lookup;
     resize();
 
     return {
-      zoom, reset,
+      zoom, reset, syncMotion() { motion?.sync(); },
       destroy() {
+        motion?.destroy();
         if (frame) window.cancelAnimationFrame(frame);
         handlers.forEach(args => canvas.removeEventListener(...args));
         if (observer) observer.disconnect(); else window.removeEventListener('resize', resize);
@@ -2237,6 +2336,7 @@ window.lookup = lookup;
   }
 
   window.mountPointGraph = mountPointGraph;
+  window.mountGraphMotion = mountGraphMotion;
 })();
 </script>
 <script>/* ================= 四级训练工作台 · 应用 ================= */
@@ -2643,15 +2743,43 @@ window.lookup = lookup;
     { kind: 'C', x: 113, y: 238 },
     { kind: 'M', x: 373, y: 252 },
   ];
+  const graphMotionPreference = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  let studyFlow = null;
+
+  function graphMotionEnabled() { return S.graphMotion ?? !graphMotionPreference?.matches; }
+
+  function graphMotionToggle(extraClass = '') {
+    const enabled = graphMotionEnabled();
+    return '<button id="graph-motion-toggle" type="button" class="btn sm ghost graph-motion-toggle ' + extraClass +
+      '" onclick="DESK.toggleGraphMotion()" aria-label="流动动效" aria-pressed="' + enabled + '">' +
+      (enabled ? '动效开启' : '动效暂停') + '</button>';
+  }
+
+  function syncGraphMotion() {
+    const button = document.getElementById('graph-motion-toggle');
+    const enabled = graphMotionEnabled();
+    if (button) {
+      button.setAttribute('aria-pressed', String(enabled));
+      button.textContent = enabled ? '动效开启' : '动效暂停';
+    }
+    studyFlow?.sync();
+    pointGraph?.syncMotion();
+  }
 
   function studyGraph() {
     return '<div class="study-graph" role="group" aria-label="选择训练专项">' +
       '<canvas id="study-graph-canvas" width="1000" height="656" aria-hidden="true"></canvas>' +
+      '<canvas id="study-flow-canvas" width="1000" height="656" aria-hidden="true"></canvas>' +
       '<div class="study-graph-core" aria-hidden="true"><span>CET</span><i></i><span>04</span></div>' +
       STUDY_MODULES.map(({ kind, x, y }) =>
         '<button type="button" class="study-node" style="--node-x:' + x / 5 + '%;--node-y:' + (y / 328 * 100).toFixed(2) + '%"' +
         ' onclick="DESK.startSetup(\'module\',10,\'' + kind + '\')"><span lang="en">' + KIND[kind].english + '</span>' +
-        '<small>' + KIND[kind].full + '</small></button>').join('') + '</div>';
+        '<small>' + KIND[kind].full + '</small></button>').join('') + graphMotionToggle('study-motion-toggle') + '</div>';
+  }
+
+  function studyCurve(end, index) {
+    const bend = index % 2 ? 22 : -22;
+    return { x: (250 + end.x) / 2 + bend, y: (164 + end.y) / 2 - bend };
   }
 
   function drawStudyGraph() {
@@ -2670,12 +2798,12 @@ window.lookup = lookup;
       context.stroke();
     }
     context.setLineDash([]);
-    STUDY_MODULES.forEach(({ x, y }, index) => {
-      const bend = index % 2 ? 22 : -22;
+    STUDY_MODULES.forEach((end, index) => {
+      const control = studyCurve(end, index);
       context.strokeStyle = 'rgba(246,160,121,.56)';
       context.beginPath();
       context.moveTo(cx, cy);
-      context.quadraticCurveTo((cx + x) / 2 + bend, (cy + y) / 2 - bend, x, y);
+      context.quadraticCurveTo(control.x, control.y, end.x, end.y);
       context.stroke();
     });
     // A fixed golden-angle sequence keeps the particle field stable between renders.
@@ -2688,6 +2816,41 @@ window.lookup = lookup;
       context.arc(cx + Math.cos(angle) * distance * 1.16, cy + Math.sin(angle) * distance * .76, i % 17 ? .76 : 1.45, 0, Math.PI * 2);
       context.fill();
     }
+  }
+
+  function mountStudyFlow() {
+    const canvas = document.getElementById('study-flow-canvas');
+    const ctx = canvas?.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    studyFlow = window.mountGraphMotion(canvas, time => {
+      ctx.clearRect(0, 0, 500, 328);
+      if (time == null) return;
+      for (let i = 0; i < 27; i++) {
+        const theta = i * 2.399963 + time * (i % 3 ? .16 : -.22);
+        const radius = 65 + (i * 19 % 94);
+        ctx.globalAlpha = .24 + .29 * (1 + Math.sin(time * 1.3 + i)) / 2;
+        ctx.fillStyle = i % 4 ? '#cdb9f3' : '#ffc2a0';
+        ctx.beginPath();
+        ctx.arc(250 + Math.cos(theta) * radius * 1.14, 164 + Math.sin(theta) * radius * .72, i % 3 ? 1.1 : 1.8, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      STUDY_MODULES.forEach((end, index) => {
+        const control = studyCurve(end, index);
+        const phase = (time * (.24 + index * .025) + index * .27) % 1;
+        ctx.fillStyle = KIND[end.kind].color;
+        for (let i = 6; i >= 0; i--) {
+          const t = phase - i * .022;
+          if (t < 0) continue;
+          const u = 1 - t;
+          const x = 250 * u * u + 2 * u * t * control.x + t * t * end.x;
+          const y = 164 * u * u + 2 * u * t * control.y + t * t * end.y;
+          ctx.globalAlpha = (.78 - i * .1) * Math.min(1, t * 6, (1 - t) * 8);
+          ctx.beginPath(); ctx.arc(x, y, 3.3 - i * .32, 0, Math.PI * 2); ctx.fill();
+        }
+      });
+      ctx.globalAlpha = 1;
+    }, graphMotionEnabled);
   }
 
   function viewDesk() {
@@ -4139,12 +4302,14 @@ window.lookup = lookup;
     return '<section class="card point-network" aria-labelledby="point-network-title">' +
       '<header class="point-network-head"><div><h2 id="point-network-title">知识网络</h2>' +
       '<p class="small">节点是考点，连线表示在同一道题或同一篇材料中共同出现。</p></div>' +
-      '<div class="point-network-tools" role="group" aria-label="图谱视角">' +
+      '<div class="point-network-tools" role="group" aria-label="图谱控制">' +
+      graphMotionToggle() +
       '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphZoom(0.8)" aria-label="缩小图谱">−</button>' +
       '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphZoom(1.25)" aria-label="放大图谱">+</button>' +
       '<button class="btn sm ghost" type="button" onclick="DESK.pointGraphReset()">复位</button></div></header>' +
       '<div class="point-network-frame"><canvas id="point-network-canvas" tabindex="0" role="img" aria-label="三维考点关系图谱" aria-describedby="point-network-help">' +
-      '可从下方的考点列表打开详情。</canvas><div id="point-network-status" class="point-network-status" role="status"></div></div>' +
+      '可从下方的考点列表打开详情。</canvas><canvas id="point-network-flow" aria-hidden="true"></canvas>' +
+      '<div id="point-network-status" class="point-network-status" role="status"></div></div>' +
       '<p id="point-network-help" class="point-network-help small">拖空白处旋转，拖节点调整位置，点节点看详情。滚轮或双指缩放。<span class="point-network-desktop">按住 Shift 拖动可平移，方向键也可旋转。</span></p>' +
       '<div class="point-network-legend" aria-label="节点颜色图例">' + groups.map(([label, [module]]) =>
         '<span><i aria-hidden="true" style="--point-color:' + pointModuleColor(module) + '"></i>' + label + '</span>').join('') +
@@ -4157,7 +4322,8 @@ window.lookup = lookup;
     const status = document.getElementById('point-network-status');
     if (!canvas || !status) return;
     const { nodes, edges } = pointGraphData();
-    pointGraph = window.mountPointGraph(canvas, status, nodes, edges, openPoint);
+    pointGraph = window.mountPointGraph(canvas, status, nodes, edges, openPoint,
+      document.getElementById('point-network-flow'), graphMotionEnabled);
   }
 
 
@@ -5655,6 +5821,8 @@ window.lookup = lookup;
   }
 
   function render() {
+    studyFlow?.destroy();
+    studyFlow = null;
     pointGraph?.destroy();
     pointGraph = null;
     const crumbs = {
@@ -5697,7 +5865,7 @@ window.lookup = lookup;
     if (!questionLookup && view !== 'words' && document.getElementById('wpanel')?.classList.contains('dictionary-panel')) closePanel();
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
       '<main class="main">' + topbar(crumb, questionLookup) + mobileNav() + body + '</main></div>' + dock;
-    if (view === 'desk') drawStudyGraph();
+    if (view === 'desk') { drawStudyGraph(); mountStudyFlow(); }
     if (view === 'brain') mountBrainGraph();
     const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
     if (currentTab) {
@@ -5713,6 +5881,11 @@ window.lookup = lookup;
   /* ================= 对外 ================= */
   const DESK = {
     go: go,
+    toggleGraphMotion() {
+      S.graphMotion = !graphMotionEnabled();
+      save();
+      syncGraphMotion();
+    },
     pointGraphZoom(factor) { pointGraph?.zoom(factor); },
     pointGraphReset() { pointGraph?.reset(); },
     setMode(m) { setup.mode = m; if (m === 'module' && !setup.kind) setup.kind = 'R'; render(); },
@@ -5934,6 +6107,8 @@ window.lookup = lookup;
   }
   initSelection();
   initDictionary();
+  if (graphMotionPreference?.addEventListener) graphMotionPreference.addEventListener('change', syncGraphMotion);
+  else graphMotionPreference?.addListener?.(syncGraphMotion);
   render();
 
   /* ---------- PWA：manifest / 图标 / 离线缓存 ----------

@@ -196,6 +196,12 @@ h3{font-size:14.5px;margin:0 0 10px;font-weight:620}
   width:min(100%,555px);aspect-ratio:500/328;
 }
 .study-graph canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero .study-motion-toggle{
+  position:absolute;right:2px;bottom:4px;z-index:2;min-height:32px;
+  padding:4px 8px;font-size:11px;font-weight:550;
+}
+.graph-motion-toggle[aria-pressed="true"]{color:#f5bba6;border-color:#735466;background:#29202e}
+.graph-motion-toggle:hover{border-color:#d28e7d}
 .study-graph-core{
   position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:19%;aspect-ratio:1;
   display:flex;align-items:center;justify-content:center;gap:5px;border-radius:50%;border:1px solid #90645e;
@@ -478,6 +484,7 @@ audio{width:100%;height:38px;accent-color:var(--acc)}
   position:relative;display:block;width:100%;height:clamp(350px,48vw,530px);
   touch-action:none;user-select:none;cursor:grab;
 }
+#point-network-flow{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
 #point-network-canvas.over-node{cursor:pointer}
 #point-network-canvas.dragging{cursor:grabbing}
 #point-network-canvas:focus-visible{outline:2px solid var(--acc);outline-offset:-3px}
