@@ -320,6 +320,7 @@
   let wrongFilter = 'all';
 
   function go(v) {
+    if (v !== view && document.getElementById('wpanel')?.classList.contains('on')) closePanel();
     view = v;
     render();
     window.scrollTo(0, 0);
@@ -386,9 +387,10 @@
     return '<nav class="mobilenav" aria-label="工作台导航">' + items.map(item => navButton(item, true)).join('') + '</nav>';
   }
 
-  function topbar(crumb) {
+  function topbar(crumb, questionLookup) {
     return '<header class="topbar"><div class="crumb">' + crumb + '</div><div class="right">' +
-      '<button type="button" class="btn sm utility" onclick="DESK.search()" title="查词 / 译句">' + svg(IC.search) + '<span lang="en">Dictionary</span></button>' +
+      (questionLookup ? '<button type="button" class="btn sm utility" onclick="DESK.search()" title="查词 / 译句">' +
+        svg(IC.search) + '<span lang="en">Dictionary</span></button>' : '') +
       '<button type="button" class="btn sm utility" onclick="DESK.runDiag()" title="划词与存储自检"><span lang="en">Diagnostics</span></button>' +
       '</div></header>';
   }
@@ -769,7 +771,7 @@
     } else if (isL && UN[q.u]) {
       h += '<div class="qcol"><div class="pane scroll"><div class="pane-title">听力原文 · 自建模题</div>' +
         '<div class="small dim" style="margin-bottom:8px">这套没有录音，先把原文当阅读材料读，再选；练的是「选项差异 → 原文对应」。</div>' +
-        '<div class="passage">' + esc(pretty(UN[q.u].text)) + '</div></div></div>';
+        '<div class="passage" lang="en" data-question-english>' + esc(pretty(UN[q.u].text)) + '</div></div></div>';
     }
 
     h += '<div class="qcol"><div class="pane">';
@@ -782,17 +784,17 @@
         h += audioHTML(q);
         h += '<div class="small" style="margin:10px 0 4px">听录音作答。交卷后可在逐题解析中查看对应原文。</div>';
       } else {
-        h += '<div class="stem en">' + esc(q.st) + '</div>';
+        h += '<div class="stem en" lang="en" data-question-english>' + esc(q.st) + '</div>';
       }
     } else if (isC) {
-      h += '<div class="stem en">' + blankSentence(q) + '</div>';
+      h += '<div class="stem en" lang="en" data-question-english>' + blankSentence(q) + '</div>';
       h += '<div class="small dim" style="margin:-6px 0 10px">空位需要填一个 <b>' + posName(q.pos) + '</b>。先按词性排除，再看语义；<b>十个空填完才统一公布答案</b>。</div>';
     } else if (isM) {
-      h += '<div class="stem en">' + esc(q.st) + '</div><div class="small dim" style="margin:-6px 0 10px">这句在说哪一段？左边是段落原文。</div>';
+      h += '<div class="stem en" lang="en" data-question-english>' + esc(q.st) + '</div><div class="small dim" style="margin:-6px 0 10px">这句在说哪一段？左边是段落原文。</div>';
     } else if (isR) {
-      h += '<div class="stem en">' + esc(q.st) + '</div>';
+      h += '<div class="stem en" lang="en" data-question-english>' + esc(q.st) + '</div>';
     } else if (isW) {
-      h += '<div class="stem en">' + esc(q.st) + '</div>';
+      h += '<div class="stem en" lang="en" data-question-english>' + esc(q.st) + '</div>';
       const txt = sess.text[q.id] || '';
       h += '<div class="small dim" style="margin:10px 0 6px">写在这里，交卷后保存并给自评档位。建议 30 分钟、120–180 词。</div>' +
         '<textarea class="exwrite" placeholder="Write your essay here…" oninput="DESK.examText(this.value)">' + esc(txt) + '</textarea>' +
@@ -1062,14 +1064,16 @@
       h += '<div class="qcol"><div class="pane scroll">' + materialHTML(q, true) + '</div></div>';
     } else if (isL && UN[q.u]) {
       h += '<div class="qcol"><div class="pane scroll"><div class="pane-title">听力原文 · 自建模题</div>' +
-        '<div class="passage">' + highlight(esc(pretty(UN[q.u].text)), pretty(q.loc)) + '</div></div></div>';
+        '<div class="passage" lang="en" data-question-english>' + highlight(esc(pretty(UN[q.u].text)), pretty(q.loc)) + '</div></div></div>';
     }
     h += '<div class="qcol"><div class="pane">';
     h += '<div class="qtag"><span class="chip">' + (q.n ? '第 ' + q.n + ' 题' : KIND[q.k].n) + '</span>' +
       '<span class="chip">' + esc(q.ty || '') + '</span>' + doneChip(q.id) + '</div>';
     if (isL && sess.src === 'real') h += audioHTML(q);
-    if (isC) h += '<div class="stem en">' + blankSentence(q) + '</div>';
-    else if (q.k !== 'W' && q.k !== 'T' && !(isL && sess.src === 'real' && !q.st)) h += '<div class="stem en">' + esc(q.st || '') + '</div>';
+    if (isC) h += '<div class="stem en" lang="en" data-question-english>' + blankSentence(q) + '</div>';
+    else if (q.k !== 'W' && q.k !== 'T' && !(isL && sess.src === 'real' && !q.st)) {
+      h += '<div class="stem en" lang="en" data-question-english>' + esc(q.st || '') + '</div>';
+    }
     if (q.k === 'W' || q.k === 'T') {
       h += '<div class="quote">' + esc(cut(sess.text[q.id] || '（没写）', 600)) + '</div>';
       if (q.sample) h += '<div class="sec-block"><div class="sec-h">参考范文</div><div class="small" style="white-space:pre-wrap">' + esc(q.sample) + '</div></div>';
@@ -1132,12 +1136,12 @@
       h += audioHTML(q);
       h += '<div class="small" style="margin:10px 0 12px">听录音，选最佳答案。作答后可展开本题原文。</div>';
     } else if (isC) {
-      h += '<div class="stem en">' + blankSentence(q) + '</div>';
+      h += '<div class="stem en" lang="en" data-question-english>' + blankSentence(q) + '</div>';
       h += '<div class="small dim" style="margin:-6px 0 10px">空位需要填一个 <b>' + posName(q.pos) + '</b>。先按词性排除，再看语义；<b>十个空填完才统一公布答案</b>。</div>';
     } else if (isM) {
-      h += '<div class="stem en">' + esc(q.st) + '</div><div class="small dim" style="margin:-6px 0 10px">这句在说哪一段？左边是 A–O 十五段原文。</div>';
+      h += '<div class="stem en" lang="en" data-question-english>' + esc(q.st) + '</div><div class="small dim" style="margin:-6px 0 10px">这句在说哪一段？左边是 A–O 十五段原文。</div>';
     } else {
-      h += '<div class="stem en">' + esc(q.st) + '</div>';
+      h += '<div class="stem en" lang="en" data-question-english>' + esc(q.st) + '</div>';
     }
 
     h += optionsHTML(q, judged);
@@ -1170,7 +1174,7 @@
       if (!u) return '<div class="small">材料缺失</div>';
       let text = esc(pretty(u.text));
       if (answered && q.loc) text = highlight(text, pretty(q.loc));
-      return '<div class="pane-title">' + (q.n <= 50 ? 'Passage One' : 'Passage Two') + '</div><div class="passage">' +
+      return '<div class="pane-title">' + (q.n <= 50 ? 'Passage One' : 'Passage Two') + '</div><div class="passage" lang="en" data-question-english>' +
         text.split(/\n+/).map(x => '<p>' + x + '</p>').join('') + '</div>';
     }
     if (q.k === 'M') {
@@ -1179,7 +1183,8 @@
       return '<div class="pane-title">A – O 十五段</div><div class="passage" style="font-size:13.6px;line-height:1.8">' +
         u.paras.map(([l, t]) => {
           const hit = answered && q.a === l;
-          return '<p' + (hit ? ' style="background:rgba(67,209,158,.12);border-left:2px solid var(--ok);padding:6px 8px;border-radius:0 6px 6px 0"' : '') + '><span class="para-l">[' + l + ']</span>' + esc(pretty(t)) + '</p>';
+          return '<p' + (hit ? ' style="background:rgba(67,209,158,.12);border-left:2px solid var(--ok);padding:6px 8px;border-radius:0 6px 6px 0"' : '') +
+            '><span class="para-l">[' + l + ']</span><span lang="en" data-question-english>' + esc(pretty(t)) + '</span></p>';
         }).join('') + '</div>';
     }
     if (q.k === 'C') {
@@ -1200,7 +1205,7 @@
           ' title="第 ' + (+n) + ' 空' + (mine ? ' · 已填 ' + esc(mine) : ' · 点一下填') + '" style="cursor:pointer;' + color + '">' +
           esc(mine || String(+n)) + '</span>';
       });
-      return '<div class="pane-title">Section A · 选词填空</div><div class="passage" style="font-size:14.4px">' +
+      return '<div class="pane-title">Section A · 选词填空</div><div class="passage" lang="en" data-question-english style="font-size:14.4px">' +
         text.split(/\n+/).map(x => '<p>' + x + '</p>').join('') + '</div>';
     }
     return '';
@@ -1235,22 +1240,23 @@
       '<span class="listen-transcript-range" lang="en">' + esc(segment.section) + ' · Q' + segment.first + '–' + segment.last + '</span>' + svg(IC.chevron) +
       '</summary><div class="listen-transcript-body"><h3 lang="en">' + esc(segment.title) + '</h3>' +
       '<p class="small dim">音频转写稿，个别数字或专有名词可能有偏差。</p>' +
-      '<div class="passage" lang="en">' + segment.paragraphs.map(text => '<p>' + esc(pretty(text)) + '</p>').join('') + '</div>' +
-      (prompt ? '<div class="listen-transcript-question"><span class="small">录音问题 · Q' + q.n + '</span><p lang="en">' + esc(pretty(prompt[1])) + '</p></div>' : '') +
+      '<div class="passage" lang="en" data-question-english>' + segment.paragraphs.map(text => '<p>' + esc(pretty(text)) + '</p>').join('') + '</div>' +
+      (prompt ? '<div class="listen-transcript-question"><span class="small">录音问题 · Q' + q.n + '</span><p lang="en" data-question-english>' + esc(pretty(prompt[1])) + '</p></div>' : '') +
       '</div></details>';
   }
 
   function optionsHTML(q, answered) {
     const sel = sess.ans[q.id];
+    const tapHint = S.tapDict && !answered ? '<div class="small dim" style="margin:8px 0">点英文查词，点选项字母作答。</div>' : '';
     if (q.k === 'C') {
       const u = UN[q.u]; if (!u) return '';
-      return '<div class="wordbank">' + u.bank.map(b => {
+      return tapHint + '<div class="wordbank">' + u.bank.map(b => {
         let cls = 'wb';
         if (answered) {
           if (b.l === q.a) cls += ' ok';
           else if (b.l === sel) cls += ' on';
         } else if (b.l === sel) cls += ' on';
-        return '<div class="' + cls + '" onclick="DESK.answer(\'' + b.l + '\')"><span class="l">' + b.l + '</span>' + esc(b.w) + '</div>';
+        return '<div class="' + cls + '" onclick="DESK.answer(\'' + b.l + '\')"><span class="l">' + b.l + '</span><span lang="en" data-question-english>' + esc(b.w) + '</span></div>';
       }).join('') + '</div>';
     }
     if (q.k === 'M') {
@@ -1262,7 +1268,7 @@
         return '<div class="' + cls + '" style="min-width:42px;justify-content:center;font-weight:600" onclick="DESK.answer(\'' + l + '\')">' + l + '</div>';
       }).join('') + '</div><div class="small dim" style="margin-top:8px">选段落字母；答案段会在左边高亮。</div>';
     }
-    return '<div class="opts">' + (q.o || []).map((o, i) => {
+    return tapHint + '<div class="opts">' + (q.o || []).map((o, i) => {
       const l = 'ABCD'[i];
       let cls = 'opt en';
       if (answered) {
@@ -1270,7 +1276,7 @@
         else if (l === sel) cls += ' wrong';
         else cls += ' dim';
       } else if (l === sel) cls += ' sel';
-      return '<div class="' + cls + '" onclick="DESK.answer(\'' + l + '\')"><span class="l">' + l + '</span><span class="grow">' + esc(o) + '</span>' +
+      return '<div class="' + cls + '" onclick="DESK.answer(\'' + l + '\')"><span class="l">' + l + '</span><span class="grow" lang="en" data-question-english>' + esc(o) + '</span>' +
         (answered && l === q.a ? '<span class="mk" style="color:var(--ok)">正确</span>' : answered && l === sel ? '<span class="mk" style="color:var(--bad)">你选</span>' : '') + '</div>';
     }).join('') + '</div>';
   }
@@ -1357,7 +1363,7 @@
   function evidenceHTML(q) {
     if (q.why && q.k !== 'C') {
       let h = '<div class="small" style="line-height:1.8">' + esc(q.why) + '</div>';
-      if (q.loc) h += '<div class="quote" style="margin-top:10px">' + esc(pretty(q.loc)) + '</div>' +
+      if (q.loc) h += '<div class="quote" lang="en" data-question-english style="margin-top:10px">' + esc(pretty(q.loc)) + '</div>' +
         '<div class="small dim" style="margin-top:6px">上面这段就是原文依据' + (q.pit ? '；常见错法：' + esc(q.pit) : '') + '。</div>';
       if (q.on && q.on.length) {
         h += '<div style="margin-top:10px">' + q.on.map((t, i) => '<div class="dist-item"><span class="lb">' + 'ABCD'[i] + '</span>' +
@@ -1368,7 +1374,7 @@
     if (q.k === 'R') {
       let h = '';
       if (q.loc) {
-        h += '<div class="quote">' + esc(pretty(q.loc)) + '</div>';
+        h += '<div class="quote" lang="en" data-question-english>' + esc(pretty(q.loc)) + '</div>';
         h += '<div class="small dim" style="margin-top:6px">定位句由「题干实词 + 罕见词加权 + 题文同序」算出，是可核对的线索；和你判断不一致时以原文为准。</div>';
       } else {
         h += '<div class="small">这题没匹配到明确依据句，回原文自己划一句，写在复盘里。</div>';
@@ -1384,7 +1390,7 @@
       const u = UN[q.u];
       const para = u ? u.paras.find(p => p[0] === q.a) : null;
       return '<div class="small" style="margin-bottom:6px">答案段落 <b style="color:var(--ok)">[' + q.a + ']</b>：</div>' +
-        (para ? '<div class="quote">' + esc(cut(para[1], 420)) + '</div>' : '<div class="small">材料缺失</div>') +
+        (para ? '<div class="quote" lang="en" data-question-english>' + esc(cut(para[1], 420)) + '</div>' : '<div class="small">材料缺失</div>') +
         '<div class="small dim" style="margin-top:6px">陈述句和该段之间是同义改写，不是同一个词——找到“意思一样、说法不同”的那一句。</div>';
     }
     if (q.k === 'C') {
@@ -2056,17 +2062,6 @@
     if (!EN_RE.test(t)) return '';
     return t;
   }
-  function sentenceOK(raw) {
-    const t = String(raw || '').replace(/\s+/g, ' ').trim();
-    if (!t || t.length < 6 || t.length > 420) return '';
-    if (CJK_RE.test(t)) return '';
-    const ws = t.match(/[A-Za-z][A-Za-z'’\-]*/g) || [];
-    if (ws.length < 2) return '';
-    const hasEnd = /[.!?]["'”)]?$/.test(t);
-    if (ws.length <= 6 && !hasEnd) return '';
-    return t;
-  }
-
   function viewWords() {
     const all = S.words || [];
     const y = all.filter(w => w.c === 'y').length;
@@ -2191,353 +2186,197 @@
     return '';
   }
 
-  /* ---------- 划词：浮动条（移动端优先） ----------
-     鸿蒙 / 安卓的长按选词常常拿不到「一个词」：
-       · 长按粒度粗，选中的往往是整行或整段 → enOnly 拒、sentenceOK 也拒，于是什么都不弹；
-       · 选好之后用户拖手柄调整范围，只有 selectionchange，不会再有第二次 touchend；
-       · 点浮动条时浏览器先取消选择，部分机型因此吞掉 click。
-     所以三条路一起上：selection（桌面主路径）+ 落点取词（移动主路径）+ 常驻「查词」入口（兜底）。 */
-  let selText = '', selMode = 'word';
-  let lastPoint = null, barGuard = 0, barShownAt = 0;
+  /* ================= 题目英文取词 ================= */
   const IS_TOUCH = ('ontouchstart' in window) || (navigator.maxTouchPoints || 0) > 0;
-  /* 鸿蒙 / 部分国产内核：长按只给整段选择，caretRangeFromPoint 也可能不可用。
-     所以取词走三级：标准 caret API → Range 矩形命中 → 元素首个英文词。 */
   const UA = navigator.userAgent || '';
   const IS_HARMONY = /HarmonyOS|OpenHarmony|ArkWeb|HuaweiBrowser|HUAWEI/i.test(UA);
+  let wordBar = null;
+
+  function lookupRegion(target) {
+    const element = target?.nodeType === 3 ? target.parentElement : target;
+    const region = element?.closest?.('[data-question-english]');
+    if (!region?.isConnected || element.closest('input,textarea,select,button,a,.blank,[contenteditable],#wpanel,#modal')) return null;
+    return region;
+  }
 
   function hideBar() {
-    const bar = document.getElementById('wbar');
-    if (bar) bar.classList.remove('on');
-  }
-  function barOn() {
-    const b = document.getElementById('wbar');
-    return !!(b && b.classList.contains('on'));
+    wordBar = null;
+    document.getElementById('wbar')?.classList.remove('on');
   }
 
-  /* 从一个文本节点 + 偏移，向两边扩出完整的英文词 */
-  function wordAround(str, off) {
-    if (!str) return '';
-    const W = /[A-Za-z'’\-]/;
-    let i = Math.min(Math.max(off || 0, 0), str.length);
-    const inWord = (k) => (k < str.length && W.test(str.charAt(k))) || (k > 0 && W.test(str.charAt(k - 1)));
-    if (!inWord(i)) {
-      /* 落点常落在词尾空格上，往右挪一小段找最近的字母 */
-      let j = i;
-      while (j < str.length && !W.test(str.charAt(j)) && j - i <= 14) j++;
-      if (j < str.length && j - i <= 14) i = j;
-      else {
-        let k = i;
-        while (k > 0 && !W.test(str.charAt(k - 1)) && i - k <= 14) k--;
-        i = k;
-      }
-    }
-    let a = i, b = i;
-    while (a > 0 && W.test(str.charAt(a - 1))) a--;
-    while (b < str.length && W.test(str.charAt(b))) b++;
-    return enOnly(str.slice(a, b)) || '';
+  function selectedEnglish() {
+    const selection = window.getSelection?.();
+    if (!selection || selection.isCollapsed || selection.rangeCount !== 1) return null;
+    const range = selection.getRangeAt(0);
+    const region = lookupRegion(range.startContainer);
+    if (!region || lookupRegion(range.endContainer) !== region) return null;
+    const text = String(selection).replace(/\s+/g, ' ').trim();
+    if (CJK_RE.test(text) || !/[A-Za-z]/.test(text) || text.length > 420) return null;
+    const term = enOnly(text);
+    const mode = !term || (/\s/.test(term) && /[.!?]["'”’)]?$/.test(text)) ? 'sent' : 'word';
+    return { region, text: mode === 'word' ? term : text, mode, rect: range.getBoundingClientRect() };
   }
 
-  /* 通用兜底：用 Range.getClientRects() 做字符命中，不依赖 caretRangeFromPoint */
-  function charNodeAtPoint(x, y) {
-    const hit = document.elementFromPoint(x, y);
-    if (!hit) return null;
-    let root = hit;
-    try { root = hit.closest('p,li,blockquote,td,th,h1,h2,h3,h4,h5,h6,dd,dt,.qtext,.stem,.small') || hit; } catch (e) { }
-    if (!root || !root.nodeType) return null;
-    let walker;
-    try {
-      walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
-        acceptNode(n) {
-          const v = n.nodeValue;
-          if (!v || !/[A-Za-z]/.test(v)) return NodeFilter.FILTER_REJECT;
-          const pe = n.parentElement;
-          if (!pe) return NodeFilter.FILTER_REJECT;
-          const tag = pe.tagName;
-          if (tag === 'SCRIPT' || tag === 'STYLE' || tag === 'TEXTAREA' || tag === 'INPUT') return NodeFilter.FILTER_REJECT;
-          return NodeFilter.FILTER_ACCEPT;
-        },
-      });
-    } catch (e) { return null; }
+  function rectContains(rect, x, y) {
+    return rect.width > 0 && x >= rect.left && x < rect.right && y >= rect.top && y < rect.bottom;
+  }
+
+  function wordAtOffset(node, offset, x, y, range) {
+    const text = node.nodeValue || '';
+    if (!/[A-Za-z'’\-]/.test(text.charAt(offset))) return '';
+    range.setStart(node, offset); range.setEnd(node, offset + 1);
+    if (!Array.from(range.getClientRects()).some(rect => rectContains(rect, x, y))) return '';
+    let start = offset, end = offset + 1;
+    while (start && /[A-Za-z'’\-]/.test(text.charAt(start - 1))) start--;
+    while (end < text.length && /[A-Za-z'’\-]/.test(text.charAt(end))) end++;
+    return enOnly(text.slice(start, end));
+  }
+
+  function wordAtPoint(x, y, region) {
+    if (!Number.isFinite(x) || !Number.isFinite(y) || !region || !document.createRange ||
+      lookupRegion(document.elementFromPoint(x, y)) !== region) return '';
     const range = document.createRange();
-    let n, guard = 0;
-    while ((n = walker.nextNode()) && guard < 300) {
-      guard++;
-      const len = (n.nodeValue || '').length;
-      if (!len || len > 1200) continue;
-      try {
-        range.setStart(n, 0); range.setEnd(n, len);
-        const br = range.getBoundingClientRect();
-        if (!br || !br.width || x < br.left - 2 || x > br.right + 2 || y < br.top - 2 || y > br.bottom + 2) continue;
-        const step = len > 260 ? 2 : 1;
-        for (let i = 0; i < len; i += step) {
-          range.setStart(n, i); range.setEnd(n, Math.min(i + step, len));
-          const rs = range.getClientRects();
-          for (let k = 0; k < rs.length; k++) {
-            const r = rs[k];
-            if (x >= r.left - 1 && x <= r.right + 1 && y >= r.top - 1 && y <= r.bottom + 1) {
-              return { node: n, off: i };
-            }
-          }
-        }
-      } catch (e) { }
+    const caret = document.caretRangeFromPoint?.(x, y) || document.caretPositionFromPoint?.(x, y);
+    const node = caret?.startContainer || caret?.offsetNode;
+    const offset = caret?.startOffset ?? caret?.offset;
+    if (node?.nodeType === 3 && Number.isInteger(offset) && lookupRegion(node) === region) {
+      return wordAtOffset(node, offset, x, y, range) || wordAtOffset(node, offset - 1, x, y, range);
     }
-    return null;
-  }
 
-  /* 从屏幕坐标反推落点所在的那个英文词 */
-  function wordAtPoint(x, y) {
-    if (typeof x !== 'number' || typeof y !== 'number' || !isFinite(x) || !isFinite(y)) return '';
-    let node = null, off = 0;
-    /* ① 标准 API */
-    try {
-      if (document.caretRangeFromPoint) {
-        const r = document.caretRangeFromPoint(x, y);
-        if (r && r.startContainer) { node = r.startContainer; off = r.startOffset; }
-      } else if (document.caretPositionFromPoint) {
-        const p = document.caretPositionFromPoint(x, y);
-        if (p && p.offsetNode) { node = p.offsetNode; off = p.offset; }
+    // Older touch browsers may expose only character rectangles.
+    const walker = document.createTreeWalker(region, NodeFilter.SHOW_TEXT);
+    for (let textNode = walker.nextNode(); textNode; textNode = walker.nextNode()) {
+      if (lookupRegion(textNode) !== region || !/[A-Za-z]/.test(textNode.nodeValue)) continue;
+      range.selectNodeContents(textNode);
+      if (!rectContains(range.getBoundingClientRect(), x, y)) continue;
+      for (let i = 0; i < textNode.nodeValue.length; i++) {
+        const word = wordAtOffset(textNode, i, x, y, range);
+        if (word) return word;
       }
-    } catch (e) { }
-    if (node && node.nodeType === 3) {
-      const w = wordAround(node.nodeValue || '', off);
-      if (w) return w;
     }
-    /* ② Range 矩形命中（不挑内核） */
-    try {
-      const h = charNodeAtPoint(x, y);
-      if (h) {
-        const w = wordAround(h.node.nodeValue || '', h.off);
-        if (w) return w;
-      }
-    } catch (e) { }
-    /* ③ 元素里第一个英文词（最粗糙，但不至于什么都不弹） */
-    try {
-      const el = document.elementFromPoint(x, y);
-      if (el && el.textContent) {
-        const m = el.textContent.match(/[A-Za-z][A-Za-z'’\-]{1,20}/);
-        if (m) return enOnly(m[0]) || '';
-      }
-    } catch (e) { }
     return '';
   }
 
-  /* 用 visualViewport 夹住位置 —— 手机上软键盘 / 缩放后 innerHeight 不等于可视高度 */
-  function placeBar(rect) {
+  function showBar(entry) {
     const bar = document.getElementById('wbar');
-    if (!bar) return;
-    const vv = window.visualViewport;
-    const vw = vv ? vv.width : window.innerWidth;
-    const vh = vv ? vv.height : window.innerHeight;
-    const ox = vv ? vv.offsetLeft : 0;
-    const oy = vv ? vv.offsetTop : 0;
-    bar.style.left = '0px'; bar.style.top = '0px';
-    const bw = bar.offsetWidth || 180, bh = bar.offsetHeight || 34;
-    let left, top;
-    if (rect && (rect.width || rect.left || rect.top)) {
-      left = (rect.left || 0) + (rect.width || 0) / 2 - bw / 2;
-      top = (rect.bottom || rect.top || 0) + 10;
-    } else {
-      left = vw / 2 - bw / 2;
-      top = vh - bh - 96;
-    }
-    left = Math.max(ox + 8, Math.min(left, ox + vw - bw - 8));
-    top = Math.max(oy + 8, Math.min(top, oy + vh - bh - 12));
-    bar.style.left = Math.round(left) + 'px';
-    bar.style.top = Math.round(top) + 'px';
-  }
-
-  function showBar(txt, mode, rect) {
-    const bar = document.getElementById('wbar');
-    if (!bar) return;
-    selText = txt; selMode = mode;
-    const bs = bar.querySelectorAll('button');
-    if (bs[0]) bs[0].textContent = mode === 'sent' ? '译整句' : '译';
-    if (bs[1]) bs[1].style.display = mode === 'sent' ? 'none' : '';
-    if (bs[2]) bs[2].style.display = mode === 'sent' ? 'none' : '';
+    if (!bar || !entry.region.isConnected) return;
+    wordBar = entry;
+    const buttons = bar.querySelectorAll('button');
+    buttons[0].textContent = entry.mode === 'sent' ? '译整句' : '译';
+    buttons[1].hidden = buttons[2].hidden = entry.mode === 'sent';
     bar.classList.add('on');
-    barShownAt = Date.now();
-    placeBar(rect);
-  }
-
-  /* 不管长按选中了整行还是整段，都尽量抽出「一个词」或「一句」 */
-  function pickFromRaw(raw) {
-    const t = String(raw || '').replace(/\s+/g, ' ').trim();
-    if (!t) return null;
-    const one = enOnly(t);
-    if (one && /^[A-Za-z][A-Za-z'’\-]*$/.test(one)) return { txt: one, mode: 'word' };
-    const ws = t.match(/[A-Za-z][A-Za-z'’\-]*/g) || [];
-    if (!ws.length) return null;
-    if (ws.length === 1) return { txt: enOnly(ws[0]) || '', mode: 'word' };
-    const sent = sentenceOK(t);
-    if (sent && /[.!?;:]$/.test(sent)) return { txt: sent, mode: 'sent' };
-    if (ws.length <= 3) return { txt: enOnly(ws.join(' ')) || ws[0], mode: 'word' };
-    /* 整段：挑最长的那个词，长按基本是冲着它去的 */
-    let best = ws[0];
-    ws.forEach(w => { if (w.length > best.length) best = w; });
-    return { txt: enOnly(best) || '', mode: 'word' };
-  }
-
-  function checkSel(allowPoint) {
-    const sel = window.getSelection();
-    let raw = '', rect = null;
-    try {
-      raw = sel && sel.toString ? sel.toString() : '';
-      if (sel && sel.rangeCount) {
-        const r = sel.getRangeAt(0).getBoundingClientRect();
-        if (r && (r.width || r.height)) rect = r;
-      }
-    } catch (e) { }
-
-    const node = sel && sel.anchorNode;
-    const el = node && (node.nodeType === 3 ? node.parentElement : node);
-    const blocked = el && (el.closest('#modal, #wpanel, #wbar') || el.closest('input,textarea,select'));
-    const panelOn = (() => { const p = document.getElementById('wpanel'); return !!(p && p.classList.contains('on')); })();
-    if (panelOn) return;
-
-    if (!blocked) {
-      /* 刚弹出来的条不要被随后的 selectionchange / touchend 覆盖掉 */
-      if (barOn() && Date.now() - barShownAt < 1600 && (!raw || raw.indexOf(selText) >= 0)) return;
-      /* 落点取词优先：长按选中整段时，落点那个词才是用户想要的 */
-      if (allowPoint && lastPoint) {
-        const w = wordAtPoint(lastPoint.x, lastPoint.y);
-        if (w) { showBar(w, 'word', { left: lastPoint.x, top: lastPoint.y, bottom: lastPoint.y, width: 0 }); return; }
-      }
-      const p = pickFromRaw(raw);
-      if (p && p.txt) { showBar(p.txt, p.mode, rect); return; }
-    }
-    hideBar();
-  }
-
-  /* 「点词即译」：轻点正文英文词直接出释义，完全绕开系统的长按选择 */
-  function tapWord(x, y) {
-    let el = null;
-    try { el = document.elementFromPoint(x, y); } catch (e) { }
-    if (!el) return false;
-    if (el.closest && el.closest('button,a,input,textarea,select,label,.opt,.wb,.blank,.wordbank,.chip,.nav-item,.btn,' +
-      '.topbar,.mobilenav,.passage-hd,#wbar,#wpanel,#wdock,#modal,.wxhint')) return false;
-    const w = wordAtPoint(x, y);
-    if (!w) return false;
-    hideBar();
-    openWordPanel(w);
-    return true;
-  }
-
-  function barAct(a) {
-    barGuard = Date.now();
-    if (selMode === 'sent') { if (a === 'tr') openSentPanel(selText); }
-    else if (a === 'tr') openWordPanel(selText);
-    else if (selText) saveWord(selText, a);
-    hideBar();
+    const { left, width, bottom } = entry.rect;
+    const viewport = window.visualViewport;
+    const ox = viewport?.offsetLeft || 0, oy = viewport?.offsetTop || 0;
+    const vw = viewport?.width || window.innerWidth, vh = viewport?.height || window.innerHeight;
+    bar.style.left = Math.round(Math.max(ox + 8, Math.min(left + width / 2 - bar.offsetWidth / 2, ox + vw - bar.offsetWidth - 8))) + 'px';
+    bar.style.top = Math.round(Math.max(oy + 8, Math.min(bottom + 10, oy + vh - bar.offsetHeight - 12))) + 'px';
   }
 
   function initSelection() {
     const bar = document.getElementById('wbar');
     if (!bar) return;
+    let press = null, pressTimer = 0, selectionTimer = 0, pointerAt = 0, heldRegion = null, heldUntil = 0;
+    const inOverlay = target => target?.closest?.('#wbar,#wpanel,#wdock');
+    const panelOn = () => document.getElementById('wpanel')?.classList.contains('on');
 
-    let downAt = 0, downPt = null, moved = false, pressT = 0, lastPtrAt = 0, lastTouchUp = 0;
-    const clearPress = () => { if (pressT) { clearTimeout(pressT); pressT = 0; } };
+    function stopPress() {
+      clearTimeout(pressTimer);
+      press = null;
+    }
 
-    const startPress = (x, y) => {
-      downAt = Date.now(); moved = false;
-      downPt = { x: x, y: y };
-      lastPoint = downPt;
-      hideBar(); clearPress();
-      /* 鸿蒙长按后手指常常一直按着、或者抬起时系统把事件吃掉，
-         所以不等 touchend，按住 0.5 秒就地取词。 */
-      pressT = setTimeout(() => {
-        pressT = 0;
-        if (moved || !downPt) return;
-        const w = wordAtPoint(downPt.x, downPt.y);
-        if (w) showBar(w, 'word', { left: downPt.x, top: downPt.y, bottom: downPt.y, width: 0 });
+    function startPress(event, point) {
+      if (inOverlay(event.target)) return;
+      stopPress();
+      hideBar();
+      heldRegion = null;
+      const region = lookupRegion(event.target);
+      if (!region || !point) return;
+      press = { x: point.clientX, y: point.clientY, region };
+      pressTimer = setTimeout(() => {
+        if (panelOn() || !press) return;
+        const { x, y, region } = press;
+        const word = wordAtPoint(x, y, region);
+        if (!word) return;
+        heldRegion = region;
+        heldUntil = Date.now() + 1000;
+        showBar({ region, text: word, mode: 'word', rect: { left: x, width: 0, bottom: y } });
       }, 500);
-    };
-    const movePress = (x, y) => {
-      if (!downPt) return;
-      if (Math.abs(x - downPt.x) > 12 || Math.abs(y - downPt.y) > 12) { moved = true; clearPress(); }
-    };
+    }
 
-    document.addEventListener('pointerdown', e => {
-      if (!e.target || !e.target.closest) return;
-      if (e.target.closest('#wbar,#wpanel,#wdock')) return;
-      lastPtrAt = Date.now();
-      startPress(e.clientX, e.clientY);
+    function movePress(point) {
+      if (press && point && (Math.abs(press.x - point.clientX) > 12 || Math.abs(press.y - point.clientY) > 12)) stopPress();
+    }
+
+    function refreshSelection() {
+      if (panelOn()) return;
+      const entry = selectedEnglish();
+      if (entry) showBar(entry);
+      else if (!window.getSelection?.()?.isCollapsed || heldRegion !== wordBar?.region || Date.now() > heldUntil) hideBar();
+    }
+
+    document.addEventListener('pointerdown', event => {
+      if (event.button !== 0) return;
+      pointerAt = Date.now();
+      startPress(event, event);
     }, true);
-
-    document.addEventListener('pointermove', e => { movePress(e.clientX, e.clientY); }, true);
-    document.addEventListener('pointercancel', () => { clearPress(); downPt = null; }, true);
-
-    /* 微信 / 老 X5 内核可能只发 touch 事件，不发 pointer：补一条同样的路 */
-    document.addEventListener('touchstart', e => {
-      if (Date.now() - lastPtrAt < 80) return;
-      const t = e.touches && e.touches[0];
-      if (!t || !e.target || !e.target.closest) return;
-      if (e.target.closest('#wbar,#wpanel,#wdock')) return;
-      startPress(t.clientX, t.clientY);
+    document.addEventListener('pointermove', movePress, true);
+    document.addEventListener('pointercancel', stopPress, true);
+    document.addEventListener('touchstart', event => {
+      if (Date.now() - pointerAt >= 80) startPress(event, event.touches?.[0]);
     }, { capture: true, passive: true });
-
-    document.addEventListener('touchmove', e => {
-      const t = e.touches && e.touches[0];
-      if (t) movePress(t.clientX, t.clientY);
-    }, { capture: true, passive: true });
-
-    const up = e => {
-      clearPress();
-      if (!e.target || !e.target.closest) { downPt = null; return; }
-      if (e.target.closest('#wbar,#wpanel,#wdock')) { downPt = null; return; }
-      /* 触屏上 touchend 之后浏览器还会补一个 mouseup，别算两次 */
-      if (e.type === 'mouseup' && Date.now() - lastTouchUp < 800) { downPt = null; return; }
-      if (e.type === 'touchend') lastTouchUp = Date.now();
-      const t = (e.changedTouches && e.changedTouches[0]) || e;
-      const pt = (t && typeof t.clientX === 'number' && isFinite(t.clientX)) ? { x: t.clientX, y: t.clientY } : downPt;
-      const held = downAt ? Date.now() - downAt : 999;
-      const tap = held < 350 && !moved && !!pt;
-      downAt = 0; downPt = null;
-      if (pt) lastPoint = pt;
-      if (tap && S.tapDict) { if (tapWord(pt.x, pt.y)) return; }
-      [50, 260].forEach(d => setTimeout(() => checkSel(held >= 350), d));
-    };
-    document.addEventListener('mouseup', up, true);
-    document.addEventListener('touchend', up, true);
-
-    /* 拖动手柄调整范围时不会再有 touchend，只能靠 selectionchange 收口 */
+    document.addEventListener('touchmove', event => movePress(event.touches?.[0]), { capture: true, passive: true });
+    document.addEventListener('mouseup', stopPress, true);
+    document.addEventListener('touchend', stopPress, true);
+    document.addEventListener('touchcancel', stopPress, true);
+    document.addEventListener('scroll', () => { stopPress(); hideBar(); }, true);
     document.addEventListener('selectionchange', () => {
-      clearTimeout(initSelection._t);
-      initSelection._t = setTimeout(() => checkSel(false), 300);
+      clearTimeout(selectionTimer);
+      selectionTimer = setTimeout(refreshSelection, 140);
     });
 
-    document.addEventListener('scroll', hideBar, true);
-
-    /* 微信里 pointer / touch 都可能被接管，但 click 一定有 —— 再补一条 */
-    document.addEventListener('click', e => {
+    document.addEventListener('click', event => {
+      const region = lookupRegion(event.target);
+      if (!region || !event.detail) return;
+      // Selecting an option's text must not submit that option.
+      if (window.getSelection?.()?.isCollapsed === false || (heldRegion === region && Date.now() <= heldUntil)) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
       if (!S.tapDict) return;
-      if (Date.now() - lastTouchUp < 900) return;
-      const pn = document.getElementById('wpanel');
-      if (pn && pn.classList.contains('on')) return;
-      if (!e.target || !e.target.closest) return;
-      if (typeof e.clientX !== 'number' || !isFinite(e.clientX)) return;
-      setTimeout(() => tapWord(e.clientX, e.clientY), 30);
+      const word = wordAtPoint(event.clientX, event.clientY, region);
+      if (!word) return;
+      event.preventDefault();
+      event.stopPropagation();
+      hideBar();
+      openSearchPanel(word);
     }, true);
 
-    const fire = e => {
-      const b = e.target && e.target.closest ? e.target.closest('button') : null;
-      if (!b) return;
-      if (e.cancelable) e.preventDefault();
-      e.stopPropagation();
-      barAct(b.dataset.act);
-    };
-    bar.addEventListener('touchend', fire, { passive: false });
-    bar.addEventListener('click', e => {
-      if (Date.now() - barGuard < 400) return;
-      fire(e);
-    });
-    /* 点浮条时先别让浏览器把选区清掉（清了会立刻 hideBar，看着像没反应） */
-    bar.addEventListener('pointerdown', e => { e.stopPropagation(); }, true);
+    let lastAction = 0;
+    function runBarAction(event) {
+      const button = event.target?.closest?.('button[data-act]');
+      if (!button || !wordBar?.region.isConnected) return;
+      if (event.cancelable) event.preventDefault();
+      event.stopPropagation();
+      if (Date.now() - lastAction < 400) return;
+      lastAction = Date.now();
+      const { text, mode } = wordBar;
+      const action = button.dataset.act;
+      hideBar();
+      if (action === 'tr') openSearchPanel(text, mode === 'sent');
+      else if (mode === 'word' && (action === 'y' || action === 'r')) saveWord(text, action);
+    }
+    bar.addEventListener('touchend', runBarAction, { passive: false });
+    bar.addEventListener('click', runBarAction);
+    bar.addEventListener('pointerdown', event => event.stopPropagation(), true);
 
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', fitPanel);
       window.visualViewport.addEventListener('scroll', fitPanel);
     }
   }
+
 
   function setTapDict(on) {
     S.tapDict = !!on;
@@ -2582,7 +2421,7 @@
         '<input id="wq" type="search" enterkeyhint="search" autocapitalize="off" autocomplete="off" spellcheck="false" maxlength="480" placeholder="输入单词、短语或英文句子" aria-describedby="dict-form-message"></label>' +
         '<button type="submit" class="btn pri dict-submit">查词</button></form>' +
         '<div class="dict-tools"><button type="button" class="dict-text-button" data-dict-action="paste">' + svg(IC.clipboard) + '粘贴</button>' +
-        '<label class="dict-toggle"><input type="checkbox" id="wtap"' + (S.tapDict ? ' checked' : '') + '>点词即译</label></div>' +
+        '<label class="dict-toggle"><input type="checkbox" id="wtap"' + (S.tapDict ? ' checked' : '') + '>点题目英文即译</label></div>' +
         '<div id="dict-form-message" class="dict-form-message" role="status"></div></div>' +
         '<div id="dict-scroll" class="dict-scroll"><div id="dict-result"><div class="dict-empty">' +
         '<p>直接查词，也可以在题目里划词或长按查询。</p><div class="dict-examples" aria-label="查询示例">' +
@@ -2673,9 +2512,6 @@
     dictAnchor = null;
     pickQ = null;
   }
-
-  function openWordPanel(text) { openSearchPanel(text); }
-  function openSentPanel(text) { openSearchPanel(text, true); }
 
   function dictionarySenses(definition) {
     const markers = [...definition.matchAll(/(^|[\s；;，,])(adj|adv|prep|pron|conj|abbr|num|int|aux|det|ad|vt|vi|a|n|v)\.\s*/gi)];
@@ -3002,11 +2838,7 @@
       '<button class="btn sm ghost" onclick="DESK.pingTr()">测在线翻译</button>' +
       '<button class="btn sm ghost" onclick="DESK.forceUpdate()">强制更新页面</button></div>' +
       '<div id="diagtr" class="small" style="margin-top:8px"></div>' +
-      '<div class="small dim" style="margin-top:12px;line-height:1.7">下面这条英文用来实测取词：手指按在 <b>wonderful</b> 上停 0.5 秒，看会不会弹出翻译条；也可以直接轻点它（需先开启点词即译）。</div>' +
-      '<div class="small" id="diagtest" style="margin-top:6px;line-height:1.9;padding:8px 10px;border:1px dashed var(--line);border-radius:8px" ' +
-      'onclick="DESK.testPoint(event.clientX,event.clientY)" ontouchend="var t=event.changedTouches[0];DESK.testPoint(t.clientX,t.clientY)">' +
-      'The wonderful thing about this dictionary is that it works offline.</div>' +
-      '<div id="diagpt" class="small dim" style="margin-top:6px"></div></div>');
+      '<div class="small dim" style="margin-top:12px;line-height:1.7">进入题目后，可划选英文题干、选项或原文测试查词。</div></div>');
   }
   function pingTr() {
     const el = document.getElementById('diagtr');
@@ -3431,7 +3263,8 @@
       h += '<div class="card"><div class="row" style="margin-bottom:10px"><span class="chip acc">' + (q.k === 'W' ? '写作' : '翻译') + '</span>' +
         '<span class="chip">' + paperLabel(q.p) + '</span><span class="grow"></span>' +
         '<button class="btn sm ghost" onclick="DESK.copyNote(\'' + q.id + '\')">复制双链</button></div>' +
-        '<div class="' + (q.k === 'W' ? 'passage' : '') + '" style="font-size:14.5px;line-height:1.9">' + esc(q.st) + '</div>';
+        '<div' + (q.k === 'W' ? ' class="passage" lang="en" data-question-english' : '') +
+        ' style="font-size:14.5px;line-height:1.9">' + esc(q.st) + '</div>';
       if (q.k === 'T') h += '<div class="small dim" style="margin-top:10px">主题：' + esc(q.tp || '—') + '</div>';
 
       const draft = S.write[q.id] || '';
@@ -3687,17 +3520,18 @@
         '<button class="btn sm ghost" onclick="DESK.dismissWX()">知道了</button></div>'
       : '';
     /* 鸿蒙/部分国产浏览器长按选词会失灵 —— 主动给一个「点词即译」的开关 */
-    const tapTip = (IS_TOUCH && !S.tapDict && !S.tapTip)
-      ? '<div class="wxhint tap"><span class="grow">长按取词不灵？打开<b>点词即译</b>：轻点句子里的英文词就直接出中文释义' +
+    const questionLookup = body.includes(' data-question-english');
+    const tapTip = (questionLookup && IS_TOUCH && !S.tapDict && !S.tapTip)
+      ? '<div class="wxhint tap"><span class="grow">长按取词不灵？打开<b>点词即译</b>后，轻点题目里的英文查词，点选项字母作答' +
         (IS_HARMONY ? '（鸿蒙推荐）' : '') + '。</span>' +
         '<button class="btn sm pri" onclick="DESK.turnOnTap()">打开</button>' +
         '<button class="btn sm ghost" onclick="DESK.dismissTap()">不用</button></div>'
       : '';
-    /* 窄屏保留练习中的随手查词入口。首页和脑库页使用顶栏的查词按钮。 */
-    const dock = view === 'desk' || view === 'vault' ? '' :
-      '<button type="button" id="wdock" onclick="DESK.search()" aria-label="查词 / 译句"><b>查</b><small>单词</small></button>';
+    const dock = questionLookup ?
+      '<button type="button" id="wdock" onclick="DESK.search()" aria-label="查词 / 译句"><b>查</b><small>单词</small></button>' : '';
+    if (!questionLookup && view !== 'words' && document.getElementById('wpanel')?.classList.contains('dictionary-panel')) closePanel();
     document.getElementById('app').innerHTML = wxTip + tapTip + '<div class="shell">' + rail() +
-      '<main class="main">' + topbar(crumb) + mobileNav() + body + '</main></div>' + dock;
+      '<main class="main">' + topbar(crumb, questionLookup) + mobileNav() + body + '</main></div>' + dock;
     if (view === 'desk') drawStudyGraph();
     const currentTab = document.querySelector('.mobilenav [aria-current="page"]');
     if (currentTab) {
@@ -3705,8 +3539,7 @@
       const edge = currentTab.offsetLeft + currentTab.offsetWidth;
       if (edge > nav.clientWidth) nav.scrollLeft = edge - nav.clientWidth + 16;
     }
-    const wb = document.getElementById('wbar');
-    if (wb) wb.classList.remove('on');
+    hideBar();
     const clock = document.getElementById('clock');
     if (clock && sess && !sess.done) clock.textContent = fmtDur(Date.now() - sess.t0);
   }
@@ -3855,15 +3688,6 @@
     },
     turnOnTap() { S.tapDict = true; S.tapTip = 1; save(); toast('已开启：轻点正文英文词即可查'); render(); },
     dismissTap() { S.tapTip = 1; save(); render(); },
-    testPoint(x, y) {
-      const w = wordAtPoint(x, y);
-      const el = document.elementFromPoint(x, y);
-      const box = document.getElementById('diagpt');
-      const msg = (w ? '取到「' + w + '」' : '没取到词') + ' · 元素 ' + (el ? el.tagName.toLowerCase() : '无');
-      toast(msg);
-      if (box) box.textContent = msg;
-      return w;
-    },
     runDiag() { runDiag(); },
     pingTr() { pingTr(); },
     dismissWX() { dismissWX(); },
